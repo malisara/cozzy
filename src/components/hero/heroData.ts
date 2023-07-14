@@ -4,21 +4,27 @@ import HeroJewelry from "../../../public/hero-jewelry.png";
 
 export const heroData = [
   {
-    id: 1,
+    id: 0,
     src: HeroWomen,
     alt: "women's clothes",
     title: "Comfort",
+    buttonContent: "women's clothing",
+    url: "/",
   },
   {
-    id: 2,
+    id: 1,
     src: HeroMen,
     alt: "men's clothes",
     title: "Elegance",
+    buttonContent: "men's clothing",
+    url: "/",
   },
   {
-    id: 3,
+    id: 2,
     src: HeroJewelry,
     alt: "jewelry",
-    title: "Timeless peaces",
+    title: "Timeless pieces",
+    buttonContent: "jewelry",
+    url: "/",
   },
 ];

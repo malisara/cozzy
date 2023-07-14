@@ -1,90 +1,103 @@
-import React from "react";
+"use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+
 import { heroData } from "./heroData";
 
-// https://tailwind-elements.com/docs/standard/components/carousel/
+//todo
+// animation
+//darker image
+//routes
 
-type Props = {};
+function Hero(): JSX.Element {
+  const [shownImage, setShownImage] = useState<number>(1);
+  const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
 
-function Hero({}: Props) {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShownImage((prev) => (prev + 1) % 3);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [shownImage]);
+
   return (
+    // carousel insipred by:
+    //https://tailwind-elements.com/docs/standard/components/carousel/
     <div>
-      <div
-        id="default-carousel"
-        className="relative w-full bg-fuchsia-400"
-        data-carousel="slide"
-      >
-        {/* <!-- Carousel wrapper --> */}
-        <div className="relative h-[15rem] overflow-hidden lg:h-[50rem]">
-          {/* <!-- Items --> */}
-          {heroData.map((hero) => {
-            return (
-              <div
-                key={hero.id}
-                className="duration-700 ease-in-out bg-pink-300"
-                data-carousel-item
-              >
-                <Image
-                  src={hero.src}
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="center center"
-                  alt={hero.alt}
-                />
-              </div>
-            );
-          })}
+      <div className="fixed w-full top-0" data-carousel="slide">
+        <div className="relative h-[20rem] overflow-hidden lg:h-[50rem]">
+          {/* Hero Images */}
+          {heroData
+            .filter((hero) => hero.id === shownImage)
+            .map((hero) => {
+              return (
+                <div
+                  key={hero.id}
+                  className="h-full w-full relative transition ease-linear
+                   hover:-translate-y-1 hover:scale-110 delay-300"
+                >
+                  <Image src={hero.src} fill={true} alt={hero.alt} />
+                  <div
+                    className="absolute inset-0 flex flex-col gap-5 lg:gap-10 
+                  items-center justify-center"
+                  >
+                    <div className="text-base-secondary text-4xl lg:text-6xl">
+                      {hero.title}.
+                    </div>
+                    <button
+                      className="rounded border-base-secondary border-2 p-1 
+                      md:p-2 text-base-secondary hover:bg-gray-50/10 
+                      text-sm md:text-lg"
+                    >
+                      <Link href={hero.url} />
+                      Explore {hero.buttonContent}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
         </div>
-        {/* <!-- Slider indicators --> */}
-        <div className="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="true"
-            aria-label="Slide 1"
-            data-carousel-slide-to="0"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 2"
-            data-carousel-slide-to="1"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 3"
-            data-carousel-slide-to="2"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 4"
-            data-carousel-slide-to="3"
-          ></button>
-          <button
-            type="button"
-            className="w-3 h-3 rounded-full"
-            aria-current="false"
-            aria-label="Slide 5"
-            data-carousel-slide-to="4"
-          ></button>
-        </div>
-        {/* <!-- Slider controls --> */}
-        <button
-          type="button"
-          className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-          data-carousel-prev
+
+        {/* Slider Indicators */}
+        <div
+          className="absolute z-40 flex gap-3 -translate-x-1/2 
+        bottom-16 left-1/2"
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <button
+            onClick={() => setShownImage(0)}
+            id="sliderBtn-0"
+            aria-current={0 === shownImage}
+            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
+          ></button>
+          <button
+            onClick={() => setShownImage(1)}
+            id="sliderBtn-1"
+            aria-current={1 === shownImage}
+            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
+          ></button>
+          <button
+            onClick={() => setShownImage(2)}
+            id="sliderBtn-2"
+            aria-current={2 === shownImage}
+            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
+          ></button>
+        </div>
+
+        {/* Contro Buttons */}
+        <div
+          className="absolute top-0 left-0 z-30 flex items-center
+           justify-center h-full px-4"
+        >
+          <button
+            className="inline-flex items-center justify-center w-10 h-10 
+          rounded-full bg-gray-300 hover:bg-gray-50"
+            onClick={() => setShownImage((prev) => (prev + 2) % 3)}
+          >
             <svg
-              className="w-4 h-4 text-white dark:text-gray-800"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4 dark:text-gray-800"
               fill="none"
               viewBox="0 0 6 10"
             >
@@ -96,19 +109,20 @@ function Hero({}: Props) {
                 d="M5 1 1 5l4 4"
               />
             </svg>
-            <span className="sr-only">Previous</span>
-          </span>
-        </button>
-        <button
-          type="button"
-          className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-          data-carousel-next
+          </button>
+        </div>
+
+        <div
+          className="absolute top-0 right-0 z-30 flex items-center
+           justify-center h-full px-4"
         >
-          <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <button
+            className="inline-flex items-center justify-center w-10 h-10 
+          rounded-full bg-gray-300 hover:bg-gray-50"
+            onClick={() => setShownImage((prev) => (prev + 1) % 3)}
+          >
             <svg
-              className="w-4 h-4 text-white dark:text-gray-800"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4 dark:text-gray-800"
               fill="none"
               viewBox="0 0 6 10"
             >
@@ -120,9 +134,8 @@ function Hero({}: Props) {
                 d="m1 9 4-4-4-4"
               />
             </svg>
-            <span className="sr-only">Next</span>
-          </span>
-        </button>
+          </button>
+        </div>
       </div>
     </div>
   );
