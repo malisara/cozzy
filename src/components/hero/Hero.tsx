@@ -37,9 +37,9 @@ function Hero(): JSX.Element {
                 <AnimatePresence>
                   <motion.div
                     key={hero.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0.5 }}
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 1, transition: { duration: 0.4 } }}
+                    exit={{ opacity: 0.8, transition: { duration: 0.4 } }}
                     className="h-full relative"
                   >
                     <Image
@@ -48,24 +48,26 @@ function Hero(): JSX.Element {
                       alt={hero.alt}
                       className="object-cover"
                     />
-                  </motion.div>
-
-                  <div
-                    className="absolute inset-0 flex flex-col gap-5 lg:gap-10 
-                  items-center justify-center"
-                  >
-                    <div className="text-base-secondary text-4xl lg:text-6xl">
-                      {hero.title}.
-                    </div>
-                    <button
-                      className="rounded border-base-secondary border-2 p-1 
-                      md:p-2 text-base-secondary hover:bg-gray-50/10 
-                      text-sm md:text-lg"
+                    <div
+                      className="absolute inset-0 flex flex-col gap-5
+                         lg:gap-10 items-center justify-center"
                     >
-                      <Link href={hero.url} />
-                      Explore {hero.buttonContent}
-                    </button>
-                  </div>
+                      <div
+                        className="text-base-secondary text-4xl 
+                        lg:text-6xl"
+                      >
+                        {hero.title}.
+                      </div>
+                      <button
+                        className="rounded border-base-secondary border-2 
+                          p-1 md:p-2 text-base-secondary hover:bg-gray-50/10 
+                          text-sm md:text-lg"
+                      >
+                        <Link href={hero.url} />
+                        Explore {hero.buttonContent}
+                      </button>
+                    </div>
+                  </motion.div>
                 </AnimatePresence>
               );
             })}
