@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -7,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import { heroData } from "./heroData";
 
 //todo
-// animation
 //darker image
 //routes
 
@@ -18,7 +18,7 @@ function Hero(): JSX.Element {
   useEffect(() => {
     const interval = setInterval(() => {
       setShownImage((prev) => (prev + 1) % 3);
-    }, 4000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [shownImage]);
@@ -27,19 +27,29 @@ function Hero(): JSX.Element {
     // carousel insipred by:
     //https://tailwind-elements.com/docs/standard/components/carousel/
     <div>
-      <div className="fixed w-full top-0" data-carousel="slide">
+      <div className="fixed w-full top-0">
         <div className="relative h-[20rem] overflow-hidden lg:h-[50rem]">
           {/* Hero Images */}
           {heroData
             .filter((hero) => hero.id === shownImage)
             .map((hero) => {
               return (
-                <div
-                  key={hero.id}
-                  className="h-full w-full relative transition ease-linear
-                   hover:-translate-y-1 hover:scale-110 delay-300"
-                >
-                  <Image src={hero.src} fill={true} alt={hero.alt} />
+                <AnimatePresence>
+                  <motion.div
+                    key={hero.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0.5 }}
+                    className="h-full relative"
+                  >
+                    <Image
+                      src={hero.src}
+                      fill={true}
+                      alt={hero.alt}
+                      className="object-cover"
+                    />
+                  </motion.div>
+
                   <div
                     className="absolute inset-0 flex flex-col gap-5 lg:gap-10 
                   items-center justify-center"
@@ -56,7 +66,7 @@ function Hero(): JSX.Element {
                       Explore {hero.buttonContent}
                     </button>
                   </div>
-                </div>
+                </AnimatePresence>
               );
             })}
         </div>
