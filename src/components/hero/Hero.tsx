@@ -1,52 +1,80 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { heroData } from "./heroData";
+//TODO
+//keys
 
-//todo
-//darker image
-//routes
+const variants = {
+  //taken from:
+  //https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed=&file=/src/Example.tsx:1038-1045
+  enter: (direction: number) => {
+    return {
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0,
+    };
+  },
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => {
+    return {
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0,
+    };
+  },
+};
 
 function Hero(): JSX.Element {
-  const [shownImage, setShownImage] = useState<number>(1);
-  const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
+  const [[shownImage, direction], setShownImage] = useState<number[]>([1, -1]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setShownImage((prev) => (prev + 1) % 3);
+      nextImage(true);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [shownImage]);
+
+  function nextImage(nextImg: boolean) {
+    if (nextImg) {
+      setShownImage((prevState) => [(prevState[0] + 1) % 3, -1]);
+    } else {
+      setShownImage((prev) => [(prev[0] + 2) % 3, 1]);
+    }
+  }
 
   return (
     // carousel insipred by:
     //https://tailwind-elements.com/docs/standard/components/carousel/
     <div>
       <div className="fixed w-full top-0">
-        <div className="relative h-[20rem] overflow-hidden lg:h-[50rem]">
-          {/* Hero Images */}
-          {heroData
-            .filter((hero) => hero.id === shownImage)
-            .map((hero) => {
-              return (
-                <AnimatePresence>
-                  <motion.div
-                    key={hero.id}
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 1, transition: { duration: 0.4 } }}
-                    exit={{ opacity: 0.8, transition: { duration: 0.4 } }}
-                    className="h-full relative"
-                  >
-                    <Image
-                      src={hero.src}
-                      fill={true}
-                      alt={hero.alt}
-                      className="object-cover"
+        <div className="h-[20rem] overflow-hidden lg:h-[50rem]">
+          <AnimatePresence custom={direction} initial={false}>
+            {/* Hero Images */}
+            {heroData
+              .filter((hero) => hero.id === shownImage)
+              .map((hero) => {
+                return (
+                  <>
+                    <motion.img
+                      key={hero.id}
+                      src={hero.src.src}
+                      className="object-cover w-full h-full"
+                      variants={variants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{
+                        x: { type: "spring", stiffness: 300, damping: 30 },
+                        opacity: { duration: 0.1 },
+                      }}
+                      custom={direction}
                     />
                     <div
                       className="absolute inset-0 flex flex-col gap-5
@@ -60,42 +88,17 @@ function Hero(): JSX.Element {
                       </div>
                       <button
                         className="rounded border-base-secondary border-2 
-                          p-1 md:p-2 text-base-secondary hover:bg-gray-50/10 
-                          text-sm md:text-lg"
+                          p-1 md:p-2 text-base-secondary
+                          hover:bg-gray-50/10 text-sm md:text-lg"
                       >
                         <Link href={hero.url} />
                         Explore {hero.buttonContent}
                       </button>
                     </div>
-                  </motion.div>
-                </AnimatePresence>
-              );
-            })}
-        </div>
-
-        {/* Slider Indicators */}
-        <div
-          className="absolute z-40 flex gap-3 -translate-x-1/2 
-        bottom-16 left-1/2"
-        >
-          <button
-            onClick={() => setShownImage(0)}
-            id="sliderBtn-0"
-            aria-current={0 === shownImage}
-            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
-          ></button>
-          <button
-            onClick={() => setShownImage(1)}
-            id="sliderBtn-1"
-            aria-current={1 === shownImage}
-            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
-          ></button>
-          <button
-            onClick={() => setShownImage(2)}
-            id="sliderBtn-2"
-            aria-current={2 === shownImage}
-            className={`[&[aria-current='true']]:bg-white ${indicatorStyle}`}
-          ></button>
+                  </>
+                );
+              })}
+          </AnimatePresence>
         </div>
 
         {/* Contro Buttons */}
@@ -106,7 +109,7 @@ function Hero(): JSX.Element {
           <button
             className="inline-flex items-center justify-center w-10 h-10 
           rounded-full bg-gray-300 hover:bg-gray-50"
-            onClick={() => setShownImage((prev) => (prev + 2) % 3)}
+            onClick={() => nextImage(false)}
           >
             <svg
               className="w-4 h-4 dark:text-gray-800"
@@ -131,7 +134,7 @@ function Hero(): JSX.Element {
           <button
             className="inline-flex items-center justify-center w-10 h-10 
           rounded-full bg-gray-300 hover:bg-gray-50"
-            onClick={() => setShownImage((prev) => (prev + 1) % 3)}
+            onClick={() => nextImage(true)}
           >
             <svg
               className="w-4 h-4 dark:text-gray-800"
