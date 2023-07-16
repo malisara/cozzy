@@ -5,8 +5,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { heroData } from "./heroData";
-//TODO
-//keys
 
 const variants = {
   //taken from:
@@ -33,6 +31,7 @@ const variants = {
 
 function Hero(): JSX.Element {
   const [[shownImage, direction], setShownImage] = useState<number[]>([1, -1]);
+  const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,20 +60,23 @@ function Hero(): JSX.Element {
               .filter((hero) => hero.id === shownImage)
               .map((hero) => {
                 return (
-                  <>
+                  <div
+                    className="object-cover w-full h-full"
+                    key={"animate-div"}
+                  >
                     <motion.img
-                      key={hero.id}
-                      src={hero.src.src}
-                      className="object-cover w-full h-full"
                       variants={variants}
                       initial="enter"
                       animate="center"
                       exit="exit"
                       transition={{
                         x: { type: "spring", stiffness: 300, damping: 30 },
-                        opacity: { duration: 0.1 },
+                        opacity: { duration: 0.2 },
                       }}
                       custom={direction}
+                      key={hero.id}
+                      src={hero.src.src}
+                      className="object-cover w-full h-full"
                     />
                     <div
                       className="absolute inset-0 flex flex-col gap-5
@@ -94,10 +96,36 @@ function Hero(): JSX.Element {
                         <Link href={hero.url} />
                         Explore {hero.buttonContent}
                       </button>
+
+                      {/* indicators */}
+                      <div
+                        className="absolute z-40 flex gap-3 -translate-x-1/2 
+                          bottom-16 left-1/2"
+                      >
+                        <p
+                          id="sliderBtn-0"
+                          aria-current={0 === shownImage}
+                          className={`[&[aria-current='true']]:bg-white 
+                          ${indicatorStyle}`}
+                        ></p>
+                        <p
+                          id="sliderBtn-1"
+                          aria-current={1 === shownImage}
+                          className={`[&[aria-current='true']]:bg-white
+                           ${indicatorStyle}`}
+                        ></p>
+                        <p
+                          id="sliderBtn-2"
+                          aria-current={2 === shownImage}
+                          className={`[&[aria-current='true']]:bg-white 
+                          ${indicatorStyle}`}
+                        ></p>
+                      </div>
                     </div>
-                  </>
+                  </div>
                 );
               })}
+            [0]
           </AnimatePresence>
         </div>
 
