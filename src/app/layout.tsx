@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 const dmSans = DM_Sans({ weight: "400", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cossy",
+  title: "Cozzy",
   description: "E-commerce app",
 };
 
