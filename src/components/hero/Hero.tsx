@@ -52,7 +52,7 @@ function Hero(): JSX.Element {
     // carousel insipred by:
     //https://tailwind-elements.com/docs/standard/components/carousel/
     <div>
-      <div className="fixed w-full top-0">
+      <div className="absolute w-full top-0">
         <div className="h-[20rem] overflow-hidden lg:h-[50rem]">
           <AnimatePresence custom={direction} initial={false}>
             {/* Hero Images */}
