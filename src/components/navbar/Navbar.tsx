@@ -41,7 +41,9 @@ function Navbar({}: Props): JSX.Element {
       flex items-center px-10 z-10 ${navbarBg}`}
       >
         {/* navbar */}
-        <div className="pe-5">LOGO</div>
+        <Link href="/" className="pe-5">
+          LOGO
+        </Link>
 
         {/* links */}
         {isDesktop && (
@@ -79,7 +81,7 @@ function Navbar({}: Props): JSX.Element {
       </div>
       {!isDesktop && mobileNavOpen && (
         <div
-          className=" fixed top-0 w-[50vw] h-[100vh] z-30 
+          className="fixed top-0 w-[50vw] h-[100vh] z-30 
         bg-stone-50 drop-shadow-lg ps-10 "
         >
           <div className="pe-10 flex py-10 justify-between items-center">
