@@ -88,14 +88,14 @@ function Hero(): JSX.Element {
                       >
                         {hero.title}.
                       </div>
-                      <button
+                      <Link
+                        href={hero.url}
                         className="rounded border-base-secondary border-2 
                           p-1 md:p-2 text-base-secondary
                           hover:bg-gray-50/10 text-sm md:text-lg"
                       >
-                        <Link href={hero.url} />
                         Explore {hero.buttonContent}
-                      </button>
+                      </Link>
 
                       {/* indicators */}
                       <div
@@ -156,7 +156,7 @@ function Hero(): JSX.Element {
         </div>
 
         <div
-          className="absolute top-0 right-0 z-30 flex items-center
+          className="absolute top-0 right-0 flex items-center
            justify-center h-full px-4"
         >
           <button
