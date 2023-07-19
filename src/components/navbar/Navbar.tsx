@@ -8,19 +8,18 @@ import { AiOutlineUser, AiOutlineClose } from "react-icons/ai";
 
 import useMediaQuery from "../hooks/useMediaQuery";
 import { links } from "./routes";
+import { usePathname } from "next/navigation";
 
-// todo
-//hover
-//transparent bg
-
-type Props = {
-  // transparentNav: boolean;
-};
-
-function Navbar({}: Props): JSX.Element {
+function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
+  const router = usePathname();
+  const navbarBg =
+    navOnTop && router === "/"
+      ? "bg-transparent"
+      : "bg-stone-50 drop-shadow-lg";
+  const iconStyle = "hover:text-base-secondary text-lg";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,10 +28,6 @@ function Navbar({}: Props): JSX.Element {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   });
-
-  const navbarBg = navOnTop ? "bg-transparent" : "bg-stone-50 drop-shadow-lg";
-
-  const iconStyle = "hover:text-base-secondary text-lg";
 
   return (
     <div>
@@ -53,7 +48,9 @@ function Navbar({}: Props): JSX.Element {
                 <Link
                   key={link.id}
                   href={link.url}
-                  className="hover:text-base-secondary"
+                  className={`hover:text-base-secondary
+                  ${router === link.url && "text-base-secondary"}
+                  `}
                 >
                   {link.title.toUpperCase()}
                 </Link>
@@ -81,11 +78,12 @@ function Navbar({}: Props): JSX.Element {
       </div>
       {!isDesktop && mobileNavOpen && (
         <div
-          className="fixed top-0 w-[50vw] h-[100vh] z-30 
-        bg-stone-50 drop-shadow-lg ps-10 "
+          className="fixed top-0 w-[50vw] h-[100vh] z-20
+        bg-stone-50 drop-shadow-lg ps-10"
         >
           <div className="pe-10 flex py-10 justify-between items-center">
-            LOGO
+            <Link href="/">LOGO</Link>
+
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
               <AiOutlineClose className="text-gray-400" />
             </button>
@@ -94,7 +92,11 @@ function Navbar({}: Props): JSX.Element {
           <div className="flex flex-col gap-10">
             {links.map((link) => {
               return (
-                <Link key={link.id} href={link.url}>
+                <Link
+                  key={link.id}
+                  href={link.url}
+                  onClick={() => setMobileNavOpen(false)}
+                >
                   {link.title.toUpperCase()}
                 </Link>
               );
