@@ -99,7 +99,7 @@ function Hero(): JSX.Element {
 
                       {/* indicators */}
                       <div
-                        className="absolute z-40 flex gap-3 -translate-x-1/2 
+                        className="absolute flex gap-3 -translate-x-1/2 
                           bottom-16 left-1/2"
                       >
                         <p
@@ -129,9 +129,9 @@ function Hero(): JSX.Element {
           </AnimatePresence>
         </div>
 
-        {/* Contro Buttons */}
+        {/* Control Buttons */}
         <div
-          className="absolute top-0 left-0 z-30 flex items-center
+          className="absolute top-0 left-0 flex items-center
            justify-center h-full px-4"
         >
           <button
