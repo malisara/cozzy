@@ -9,7 +9,7 @@ export const heroData = [
     alt: "women's clothes",
     title: "Comfort",
     buttonContent: "women's clothing",
-    url: "/",
+    url: "/women",
   },
   {
     id: 1,
@@ -17,7 +17,7 @@ export const heroData = [
     alt: "men's clothes",
     title: "Elegance",
     buttonContent: "men's clothing",
-    url: "/",
+    url: "/men",
   },
   {
     id: 2,
@@ -25,6 +25,6 @@ export const heroData = [
     alt: "jewelry",
     title: "Timeless pieces",
     buttonContent: "jewelry",
-    url: "/",
+    url: "/jewelry",
   },
 ];
