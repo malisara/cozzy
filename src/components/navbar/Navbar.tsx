@@ -9,6 +9,7 @@ import { AiOutlineUser, AiOutlineClose } from "react-icons/ai";
 import useMediaQuery from "../hooks/useMediaQuery";
 import { links } from "./routes";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
@@ -18,7 +19,7 @@ function Navbar(): JSX.Element {
   const navbarBg =
     navOnTop && router === "/"
       ? "bg-transparent"
-      : "bg-stone-50 drop-shadow-lg";
+      : "bg-stone-50 border-b-2 border-b-base-secondary";
   const iconStyle = "hover:text-base-secondary text-lg";
 
   useEffect(() => {
@@ -32,8 +33,8 @@ function Navbar(): JSX.Element {
   return (
     <div>
       <div
-        className={`fixed top-0 w-full h-16 
-      flex items-center px-10 z-10 ${navbarBg}`}
+        className={`fixed top-0 w-full h-16 flex items-center 
+        px-10 z-10 transtion-all duration-300 ${navbarBg}`}
       >
         {/* navbar */}
         <Link href="/" className="pe-5">
@@ -76,34 +77,40 @@ function Navbar(): JSX.Element {
           )}
         </div>
       </div>
-      {!isDesktop && mobileNavOpen && (
-        <div
-          className="fixed top-0 w-[50vw] h-[100vh] z-20
+      <AnimatePresence>
+        {!isDesktop && mobileNavOpen && (
+          <motion.div
+            className="fixed top-0 w-[50vw] h-[100vh] z-20
         bg-stone-50 drop-shadow-lg ps-10"
-        >
-          <div className="pe-10 flex py-10 justify-between items-center">
-            <Link href="/">LOGO</Link>
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="pe-10 flex py-10 justify-between items-center">
+              <Link href="/">LOGO</Link>
 
-            <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
-              <AiOutlineClose className="text-gray-400" />
-            </button>
-          </div>
+              <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
+                <AiOutlineClose className="text-gray-400" />
+              </button>
+            </div>
 
-          <div className="flex flex-col gap-10">
-            {links.map((link) => {
-              return (
-                <Link
-                  key={link.id}
-                  href={link.url}
-                  onClick={() => setMobileNavOpen(false)}
-                >
-                  {link.title.toUpperCase()}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
+            <div className="flex flex-col gap-10">
+              {links.map((link) => {
+                return (
+                  <Link
+                    key={link.id}
+                    href={link.url}
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    {link.title.toUpperCase()}
+                  </Link>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
