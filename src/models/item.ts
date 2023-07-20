@@ -5,6 +5,7 @@ export default class Item {
   image: string;
   rate?: number;
   rate_count?: number;
+  description?: string;
 
   constructor(
     id: number,
@@ -12,7 +13,8 @@ export default class Item {
     price: number,
     image: string,
     rate?: number,
-    rate_count?: number
+    rate_count?: number,
+    description?: string
   ) {
     this.id = id;
     this.title = title;
@@ -20,5 +22,6 @@ export default class Item {
     this.image = image;
     this.rate = rate;
     this.rate_count = rate_count;
+    this.description = description;
   }
 }
