@@ -1,20 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import { BiDownArrow, BiUpArrow } from "react-icons/bi";
 import { sortByPricedata } from "./sortData";
-type Props = {};
 
-function SortButton({}: Props) {
+type Props = {
+  onSortChange: (value: boolean) => void;
+};
+
+function SortButton({ onSortChange }: Props): JSX.Element {
   const [[dropDownOpen, filter], setDropDownOpen] = useState<[boolean, number]>(
     [false, 0]
   );
 
   const filterObject = sortByPricedata.find((item) => item.id === filter);
   const filterTitle = filterObject ? filterObject.title : "";
-
   const liStyle =
     "block w-full px-4 py-2 text-xs hover:text-black active:no-underline";
-
   return (
     <div className="relative w-fit">
       <button
@@ -40,6 +41,7 @@ function SortButton({}: Props) {
                   className={`[&[aria-current='true']]:bg-gray-200
                   [&[aria-current='true']]:text-black
                   text-gray-600`}
+                  onClick={() => onSortChange(Boolean(data.id))}
                 >
                   <button
                     className={`${liStyle}`}
