@@ -17,6 +17,9 @@ function Items({
   const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
   const gridDisplayStyle = "flex-wrap justify-center";
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
+  const [savedItems, setSavedItems] = useState<string[]>(
+    JSON.parse(localStorage.getItem("saved") || "[]")
+  );
 
   useEffect(() => {
     let apiUrl = "https://fakestoreapi.com/products";
@@ -54,6 +57,18 @@ function Items({
     return items;
   }
 
+  function toggleSaveItem(id: number) {
+    if (savedItems.includes(id.toString())) {
+      setSavedItems(savedItems.filter((itemId) => itemId !== id.toString()));
+    } else {
+      setSavedItems([...savedItems, id.toString()]);
+    }
+  }
+
+  useEffect(() => {
+    localStorage.setItem("saved", JSON.stringify(savedItems));
+  }, [savedItems]);
+
   return (
     <div
       className={`${
@@ -61,7 +76,14 @@ function Items({
       } flex gap-[5rem]`}
     >
       {itemsToDisplay.map((item: any) => {
-        return <SingleItem item={item} key={item.id} />;
+        return (
+          <SingleItem
+            item={item}
+            key={item.id}
+            handleItemSave={toggleSaveItem} //todo naming
+            savedItems={savedItems}
+          />
+        );
       })}
     </div>
   );

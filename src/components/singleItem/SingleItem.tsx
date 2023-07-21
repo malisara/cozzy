@@ -2,16 +2,17 @@
 import Image from "next/image";
 import Item from "@/models/item";
 import Link from "next/link";
+import { AiFillHeart } from "react-icons/ai";
 
-//todo
-//add to basket
 type Props = {
   item: Item;
+  handleItemSave: (id: number) => void;
+  savedItems: string[];
 };
 
-function SingleItem({ item }: Props): JSX.Element {
+function SingleItem({ item, handleItemSave, savedItems }: Props): JSX.Element {
   return (
-    <div className="flex flex-col w-[20rem] gap-2 text-center flex-shrink-0">
+    <div className="flex flex-col w-[20rem] gap-2 text-start flex-shrink-0">
       <div className="w-full h-[19rem] relative">
         <Link href={`/item/${item.id}`}>
           <Image
@@ -23,16 +24,20 @@ function SingleItem({ item }: Props): JSX.Element {
             alt=""
           />
         </Link>
+        <button
+          className="absolute bottom-0 right-0 p-2"
+          onClick={() => handleItemSave(item.id)}
+        >
+          <AiFillHeart
+            className={`text-2xl hover:fill-red-600  ${
+              savedItems.includes(item.id.toString()) && "fill-red-600"
+            }
+            `}
+          />
+        </button>
       </div>
       <div className="mt-5">{item.title}</div>
-      <div className="text-black">{item.price}€</div>
-      <button
-        className="border border-base-secondary w-full py-2 rounded-md
-         mt-auto text-base-secondary transtion-all duration-500 
-         hover:bg-base-secondary hover:text-white"
-      >
-        Add to cart
-      </button>
+      <div className="text-gray-600 text-xl font-bold">{item.price}€</div>
     </div>
   );
 }
