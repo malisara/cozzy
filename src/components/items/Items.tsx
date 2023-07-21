@@ -7,12 +7,14 @@ type Props = {
   gridDisplay: boolean;
   sortPriceDescending: boolean;
   category?: string;
+  limit?: number;
 };
 
 function Items({
   gridDisplay,
   sortPriceDescending,
   category,
+  limit,
 }: Props): JSX.Element {
   const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
   const gridDisplayStyle = "flex-wrap justify-center";
@@ -27,6 +29,11 @@ function Items({
     if (category) {
       apiUrl += `/category/${category}`;
     }
+
+    if (limit) {
+      apiUrl += `?limit=${limit}`;
+    }
+
     fetch(`${apiUrl}`)
       .then((response) => response.json())
       .then((data) => {

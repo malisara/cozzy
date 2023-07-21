@@ -8,9 +8,10 @@ import { useState } from "react";
 
 type Props = {
   category?: string;
+  limit?: number;
 };
 
-function ItemsDisplay({ category }: Props): JSX.Element {
+function ItemsDisplay({ category, limit }: Props): JSX.Element {
   const [gridDisplay, setGridDisplay] = useState<boolean>(true);
   const [sortPriceDescending, setsortPriceDescending] =
     useState<boolean>(false);
@@ -41,6 +42,7 @@ function ItemsDisplay({ category }: Props): JSX.Element {
           gridDisplay={gridDisplay}
           sortPriceDescending={sortPriceDescending}
           category={category}
+          limit={limit}
         />
       </div>
     </>
