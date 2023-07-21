@@ -92,7 +92,8 @@ function Hero(): JSX.Element {
                         href={hero.url}
                         className="rounded border-base-secondary border-2 
                           p-1 md:p-2 text-base-secondary
-                          hover:bg-gray-50/10 text-sm md:text-lg"
+                          hover:bg-gray-50/10 text-sm md:text-lg
+                          transtion-all duration-500"
                       >
                         Explore {hero.buttonContent}
                       </Link>
