@@ -2,22 +2,28 @@ import HeroMen from "../../../public/hero-men.png";
 import HeroWomen from "../../../public/hero-women.png";
 import HeroJewelry from "../../../public/hero-jewelry.png";
 
-export const heroData = [
+import CategoryMen from "../../../public/category-men.png";
+import CategoryWomen from "../../../public/category-women.png";
+import CategoryJewelry from "../../../public/category-jewelry.png";
+
+export const urlData = [
   {
     id: 0,
     src: HeroWomen,
-    alt: "women's clothes",
+    alt: "women's clothing",
     title: "Comfort",
-    buttonContent: "women's clothing",
+    buttonContent: "women",
     url: "/women",
+    category_image: CategoryWomen,
   },
   {
     id: 1,
     src: HeroMen,
-    alt: "men's clothes",
+    alt: "men's clothing",
     title: "Elegance",
-    buttonContent: "men's clothing",
+    buttonContent: "men",
     url: "/men",
+    category_image: CategoryMen,
   },
   {
     id: 2,
@@ -26,5 +32,6 @@ export const heroData = [
     title: "Timeless pieces",
     buttonContent: "jewelry",
     url: "/jewelry",
+    category_image: CategoryJewelry,
   },
 ];
