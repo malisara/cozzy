@@ -2,25 +2,26 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { AiOutlineUser, AiOutlineClose } from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { AiOutlineUser, AiOutlineClose } from "react-icons/ai";
 
-import useMediaQuery from "../hooks/useMediaQuery";
-import { links } from "./routes";
-import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import useMediaQuery from "../hooks/useMediaQuery";
+import { usePathname } from "next/navigation";
+import { urlData } from "../utils/routes";
 
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const router = usePathname();
+
+  const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
     navOnTop && router === "/"
       ? "bg-transparent"
       : "bg-stone-50 border-b-2 border-b-base-secondary";
-  const iconStyle = "hover:text-base-secondary text-lg";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,7 +45,7 @@ function Navbar(): JSX.Element {
         {/* links */}
         {isDesktop && (
           <div className="flex gap-5">
-            {links.map((link) => {
+            {urlData.map((link) => {
               return (
                 <Link
                   key={link.id}
@@ -53,7 +54,7 @@ function Navbar(): JSX.Element {
                   ${router === link.url && "text-base-secondary"}
                   `}
                 >
-                  {link.title.toUpperCase()}
+                  {link.nav_title.toUpperCase()}
                 </Link>
               );
             })}
@@ -96,14 +97,14 @@ function Navbar(): JSX.Element {
             </div>
 
             <div className="flex flex-col gap-10">
-              {links.map((link) => {
+              {urlData.map((link) => {
                 return (
                   <Link
                     key={link.id}
                     href={link.url}
                     onClick={() => setMobileNavOpen(false)}
                   >
-                    {link.title.toUpperCase()}
+                    {link.nav_title.toUpperCase()}
                   </Link>
                 );
               })}

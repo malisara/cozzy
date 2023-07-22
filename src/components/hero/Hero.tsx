@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-import { heroData } from "./heroData";
+import { urlData } from "../utils/routes";
 
 const variants = {
   //taken from:
@@ -56,7 +56,7 @@ function Hero(): JSX.Element {
         <div className="h-[20rem] overflow-hidden lg:h-[50rem]">
           <AnimatePresence custom={direction} initial={false}>
             {/* Hero Images */}
-            {heroData
+            {urlData
               .filter((hero) => hero.id === shownImage)
               .map((hero) => {
                 return (
@@ -95,7 +95,7 @@ function Hero(): JSX.Element {
                           hover:bg-gray-50/10 text-sm md:text-lg
                           transtion-all duration-500"
                       >
-                        Explore {hero.buttonContent}
+                        Explore {hero.alt}
                       </Link>
 
                       {/* indicators */}

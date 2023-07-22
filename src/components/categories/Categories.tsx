@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { urlData } from "../hero/heroData";
+import { urlData } from "../utils/routes";
 import useMediaQuery from "../hooks/useMediaQuery";
 
 function Categories(): JSX.Element {
