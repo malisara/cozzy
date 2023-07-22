@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { AiOutlineUser, AiOutlineClose } from "react-icons/ai";
+import { AiOutlineUser, AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
@@ -37,7 +37,6 @@ function Navbar(): JSX.Element {
         className={`fixed top-0 w-full h-16 flex items-center 
         px-10 z-10 transtion-all duration-300 ${navbarBg}`}
       >
-        {/* navbar */}
         <Link href="/" className="pe-5">
           LOGO
         </Link>
@@ -62,7 +61,12 @@ function Navbar(): JSX.Element {
         )}
 
         {/* icons */}
+        {/* todo */}
         <div className="flex gap-5 ml-auto">
+          <Link href={"/saved"}>
+            <AiOutlineHeart className={`${iconStyle}`} />
+          </Link>
+
           <Link href={"/"}>
             <BsBasket3 className={`${iconStyle}`} />
           </Link>
