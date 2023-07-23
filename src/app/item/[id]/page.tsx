@@ -4,34 +4,35 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
+import useSWR from "swr";
 
 import Sizes from "@/components/sizes/Sizes";
 import Item from "@/models/item";
 
+import { fetcher } from "@/components/utils/fetchers";
 function DetailView(): JSX.Element {
   const params = useParams();
-  const [item, setItem] = useState<Item>();
   const [quantity, setQuantity] = useState<number>(1);
+
+  const { data, error, isLoading } = useSWR<any>(
+    `https://fakestoreapi.com/products/${params.id}`,
+    fetcher
+  );
+
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
 
   const quantityBtnStyle = "hover:text-black";
 
-  useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${params.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setItem(
-          new Item(
-            data.id,
-            data.title,
-            data.price,
-            data.image,
-            data.rating.rate,
-            data.rating.count,
-            data.description
-          )
-        );
-      });
-  }, []);
+  const item = new Item(
+    data.id,
+    data.title,
+    data.price,
+    data.image,
+    data.rating.rate,
+    data.rating.count,
+    data.description
+  );
 
   function handleSetQuantity(e: React.FormEvent, increase: boolean) {
     e.preventDefault();
