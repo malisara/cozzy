@@ -1,10 +1,10 @@
-import React from "react";
+import { flexCenter } from "../utils/style";
 
 function Footer(): JSX.Element {
   return (
     <footer
-      className="flex fixed bottom-0 w-full h-16 justify-center
-     items-center bg-stone-50 drop-shadow-lg"
+      className={`fixed bottom-0 w-full h-16 bg-stone-50 drop-shadow-lg 
+      ${flexCenter}`}
     >
       copyright © Cozzy 2023{" "}
     </footer>

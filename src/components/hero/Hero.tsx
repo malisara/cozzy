@@ -2,9 +2,10 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { urlData } from "../utils/routes";
+import { flexCenter } from "../utils/style";
 
 const variants = {
   //taken from:
@@ -79,8 +80,8 @@ function Hero(): JSX.Element {
                       className="object-cover w-full h-full"
                     />
                     <div
-                      className="absolute inset-0 flex flex-col gap-5
-                         lg:gap-10 items-center justify-center"
+                      className={`absolute inset-0 flex-col gap-5
+                         lg:gap-10 ${flexCenter}`}
                     >
                       <div
                         className="text-base-secondary text-4xl 
@@ -131,13 +132,10 @@ function Hero(): JSX.Element {
         </div>
 
         {/* Control Buttons */}
-        <div
-          className="absolute top-0 left-0 flex items-center
-           justify-center h-full px-4"
-        >
+        <div className={`absolute top-0 left-0 h-full px-4 ${flexCenter}`}>
           <button
-            className="inline-flex items-center justify-center w-10 h-10 
-          rounded-full bg-gray-300 hover:bg-gray-50"
+            className={`w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-50 
+            ${flexCenter}`}
             onClick={() => nextImage(false)}
           >
             <svg
@@ -156,13 +154,10 @@ function Hero(): JSX.Element {
           </button>
         </div>
 
-        <div
-          className="absolute top-0 right-0 flex items-center
-           justify-center h-full px-4"
-        >
+        <div className={`absolute top-0 right-0 h-full px-4 ${flexCenter}`}>
           <button
-            className="inline-flex items-center justify-center w-10 h-10 
-          rounded-full bg-gray-300 hover:bg-gray-50"
+            className={`w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-50
+             ${flexCenter}`}
             onClick={() => nextImage(true)}
           >
             <svg

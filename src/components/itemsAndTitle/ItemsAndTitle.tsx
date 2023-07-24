@@ -4,16 +4,23 @@ import GridDisplay from "../gridDisplay/GridDisplay";
 import AllItems from "../allItems/AllItems";
 import SortButton from "../sortButton/SortButton";
 
+import { DEFAULT_HOMEPAGE_CATEGORY } from "@/constants";
 import { useState } from "react";
 import Title from "../title/Title";
 
 type Props = {
   title: string;
+  onHomePage?: boolean;
   category?: string;
   limit?: number;
 };
 
-function ItemsAndTitle({ title, category, limit }: Props): JSX.Element {
+function ItemsAndTitle({
+  title,
+  category = DEFAULT_HOMEPAGE_CATEGORY,
+  limit,
+  onHomePage,
+}: Props): JSX.Element {
   const [gridDisplay, setGridDisplay] = useState<boolean>(true);
   const [sortPriceDescending, setsortPriceDescending] =
     useState<boolean>(false);
@@ -28,7 +35,7 @@ function ItemsAndTitle({ title, category, limit }: Props): JSX.Element {
 
   return (
     <div className="bg-white">
-      <Title title={title} />{" "}
+      <Title title={title} onHomePage={onHomePage} />
       <div
         className="px-4 h-fit w-full flex flex-wrap 
       justify-center gap-6 mb-6"

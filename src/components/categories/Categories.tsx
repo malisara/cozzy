@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { urlData } from "../utils/routes";
 import useMediaQuery from "../hooks/useMediaQuery";
+import { urlData } from "../utils/routes";
+import { flexCenter } from "../utils/style";
 
 function Categories(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
@@ -39,9 +40,8 @@ function Categories(): JSX.Element {
                 </div>
               ) : (
                 <div
-                  className="absolute inset-0 flex items-center
-                   justify-center transition-opacity duration-300
-                   bg-black/40"
+                  className={`absolute inset-0 transition-opacity duration-300
+                   bg-black/40 ${flexCenter}`}
                 >
                   <p className={`${categoryTitleSTyle}`}>
                     {category.alt.toUpperCase()}

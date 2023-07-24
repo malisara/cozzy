@@ -32,7 +32,7 @@ function SortButton({ onSortChange }: Props): JSX.Element {
       </button>
       {dropDownOpen && (
         <>
-          <ul className="absolute rounded-md shadow-lg w-full">
+          <ul className="absolute rounded-md shadow-lg w-full bg-white">
             {sortByPricedata.map((data) => {
               return (
                 <li

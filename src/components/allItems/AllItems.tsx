@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import SingleItem from "../singleItem/SingleItem";
+
+import { BACKEND_API_URL, LOCAL_STORAGE_KEY } from "@/constants";
 import Item from "@/models/item";
+import SingleItem from "../singleItem/SingleItem";
 
 type Props = {
   gridDisplay: boolean;
@@ -20,11 +22,11 @@ function AllItems({
   const gridDisplayStyle = "flex-wrap justify-center";
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
   const [savedItems, setSavedItems] = useState<string[]>(
-    JSON.parse(localStorage.getItem("saved") || "[]")
+    JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]")
   );
 
   useEffect(() => {
-    let apiUrl = "https://fakestoreapi.com/products";
+    let apiUrl = `${BACKEND_API_URL}/products`;
 
     if (category) {
       apiUrl += `/category/${category}`;
@@ -73,7 +75,7 @@ function AllItems({
   }
 
   useEffect(() => {
-    localStorage.setItem("saved", JSON.stringify(savedItems));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedItems));
   }, [savedItems]);
 
   return (
