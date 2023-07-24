@@ -1,17 +1,19 @@
 "use client";
 
 import GridDisplay from "../gridDisplay/GridDisplay";
-import Items from "../items/Items";
+import AllItems from "../allItems/AllItems";
 import SortButton from "../sortButton/SortButton";
 
 import { useState } from "react";
+import Title from "../title/Title";
 
 type Props = {
+  title: string;
   category?: string;
   limit?: number;
 };
 
-function ItemsDisplay({ category, limit }: Props): JSX.Element {
+function ItemsAndTitle({ title, category, limit }: Props): JSX.Element {
   const [gridDisplay, setGridDisplay] = useState<boolean>(true);
   const [sortPriceDescending, setsortPriceDescending] =
     useState<boolean>(false);
@@ -25,7 +27,8 @@ function ItemsDisplay({ category, limit }: Props): JSX.Element {
   }
 
   return (
-    <>
+    <div className="bg-white">
+      <Title title={title} />{" "}
       <div
         className="px-4 h-fit w-full flex flex-wrap 
       justify-center gap-6 mb-6"
@@ -36,17 +39,16 @@ function ItemsDisplay({ category, limit }: Props): JSX.Element {
           gridDisplay={gridDisplay}
         />
       </div>
-
       <div className="pt-16 pb-[7rem] px-10 lg:px-[13rem]">
-        <Items
+        <AllItems
           gridDisplay={gridDisplay}
           sortPriceDescending={sortPriceDescending}
           category={category}
           limit={limit}
         />
       </div>
-    </>
+    </div>
   );
 }
 
-export default ItemsDisplay;
+export default ItemsAndTitle;

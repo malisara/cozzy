@@ -10,7 +10,7 @@ type Props = {
   limit?: number;
 };
 
-function Items({
+function AllItems({
   gridDisplay,
   sortPriceDescending,
   category,
@@ -96,4 +96,4 @@ function Items({
   );
 }
 
-export default Items;
+export default AllItems;

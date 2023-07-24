@@ -1,15 +1,7 @@
-import ItemsDisplay from "@/components/itemsDisplay/ItemsDisplay";
-import Title from "@/components/title/Title";
+import ItemsAndTitle from "@/components/itemsAndTitle/ItemsAndTitle";
 
 function Men(): JSX.Element {
-  return (
-    <div>
-      <div className="bg-white">
-        <Title title={"men's clothing"} />
-        <ItemsDisplay category={"men's clothing"} />
-      </div>
-    </div>
-  );
+  return <ItemsAndTitle title={"men's clothing"} category={"men's clothing"} />;
 }
 
 export default Men;

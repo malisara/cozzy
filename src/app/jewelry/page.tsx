@@ -1,16 +1,7 @@
-import ItemsDisplay from "@/components/itemsDisplay/ItemsDisplay";
-import Title from "@/components/title/Title";
+import ItemsAndTitle from "@/components/itemsAndTitle/ItemsAndTitle";
 
 function Jewelry(): JSX.Element {
-  return (
-    <div>
-      {/* todo */}
-      <div className="bg-white">
-        <Title title={"jewelry"} />
-        <ItemsDisplay category={"jewelery"} />
-      </div>
-    </div>
-  );
+  return <ItemsAndTitle title={"jewelry"} category={"jewelery"} />;
 }
 
 export default Jewelry;
