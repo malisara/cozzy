@@ -18,6 +18,7 @@
 
 body {
   color:rgb(156, 156, 156);
-  background: rgba(250, 244, 244, 0.795);
+  /* background: rgba(250, 244, 244, 0.795); */
+  background: white;
   font-size: 1.1rem;
 }
