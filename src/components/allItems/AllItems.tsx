@@ -1,31 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { BACKEND_API_URL, LOCAL_STORAGE_KEY } from "@/constants";
-import Item from "@/models/item";
-import SingleItem from "../singleItem/SingleItem";
-import useSWR from "swr";
 import NoItems from "@/components/noItems/NoItems";
 import Loading from "@/components/loading/Loading";
-
-async function fetcher(category: string, limit?: number): Promise<Item[]> {
-  let apiUrl = `${BACKEND_API_URL}/products/category/${category}`;
-  if (limit) {
-    apiUrl += `?limit=${limit}`;
-  }
-  return await fetch(apiUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      return data.map((itemObj: any) => {
-        return new Item(
-          itemObj.id,
-          itemObj.title,
-          itemObj.price,
-          itemObj.image
-        );
-      });
-    });
-}
+import { LOCAL_STORAGE_KEY } from "@/constants";
+import { getItemsByCategory } from "@/fetchers/fetchItems";
+import Item from "@/models/item";
+import SingleItem from "../singleItem/SingleItem";
 
 type Props = {
   gridDisplay: boolean;
@@ -45,9 +26,7 @@ function AllItems({
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
   const [savedItems, setSavedItems] = useState<string[]>([]);
 
-  const { data, error, isLoading } = useSWR(category, () =>
-    fetcher(category, limit)
-  );
+  const { data, error, isLoading } = getItemsByCategory(category, limit);
 
   useEffect(() => {
     //LS not defined on a window object

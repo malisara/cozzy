@@ -1,38 +1,25 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import Image from "next/image";
-import useSWR from "swr";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
+import Button from "@/components/button/Button";
+import Loading from "@/components/loading/Loading";
+import NoItems from "@/components/noItems/NoItems";
+import Reviews from "@/components/reviews/Reviews";
 import Sizes from "@/components/sizes/Sizes";
-import Item from "@/models/item";
+import { getItem } from "@/fetchers/fetchItems";
 
-import { fetcher } from "@/components/utils/fetchers";
 function DetailView(): JSX.Element {
   const params = useParams();
   const [quantity, setQuantity] = useState<number>(1);
-
-  const { data, error, isLoading } = useSWR<any>(
-    `https://fakestoreapi.com/products/${params.id}`,
-    fetcher
-  );
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
-
   const quantityBtnStyle = "hover:text-black";
+  const { data, error, isLoading } = getItem(params.id);
 
-  const item = new Item(
-    data.id,
-    data.title,
-    data.price,
-    data.image,
-    data.rating.rate,
-    data.rating.count,
-    data.description
-  );
+  if (error) return <NoItems />;
+  if (isLoading || !data) return <Loading />;
 
   function handleSetQuantity(e: React.FormEvent, increase: boolean) {
     e.preventDefault();
@@ -44,34 +31,57 @@ function DetailView(): JSX.Element {
       }
     }
   }
+
   return (
     <div
       className="mt-[10rem] mx-5 lg:mx-auto lg:w-[60%] overflow-x-hidden
      mb-[7rem]"
     >
-      {item && (
+      {data && (
         <div className="flex flex-col md:flex-row items-center">
           {/* left side  */}
           <div className="basis-1/2 flex justify-center">
-            <Image src={item.image} alt="" width={250} height={250} />
+            <Image src={data.image} alt="" width={250} height={250} />
           </div>
 
           {/* right side */}
-          <div className="basis-1/2 flex flex-wrap">
+          <div
+            className="basis-1/2 flex flex-wrap flex-col items-center
+            md:items-start text-center md:text-start"
+          >
+            {/* title */}
             <div
               className="text-base-secondary text-2xl mt-10 md:mt-0 
-            font-bold text-start"
+            font-bold"
             >
-              {item.title.toUpperCase()}
+              {data.title.toUpperCase()}
             </div>
-            <div className="mt-10">{item.description}</div>
 
-            <div className="mt-5 text-yellow-500/70 font-bold text-2xl">
-              {item.price}€
+            {/* reviews */}
+            <div className="mt-5">
+              {data.rate !== undefined && data.rate_count !== undefined && (
+                <Reviews stars={data.rate} reviews={data.rate_count} />
+              )}
             </div>
-            <div className="flex w-full mt-5 flex-col">
+
+            {/* description */}
+            <div className="mt-10 order-last lg:order-none">
+              {data.description}
+            </div>
+
+            {/* price */}
+            <div
+              className="mt-5 text-yellow-500/70 
+            font-bold text-3xl"
+            >
+              {data.price}€
+            </div>
+
+            {/* sizes */}
+            <div className="flex w-full lg:mt-5 flex-col">
               <Sizes />
 
+              {/* quantity form */}
               <div className="mt-7 flex flex-row h-[3rem]">
                 <form
                   className="border-2 w-[55%] py-auto flex 
@@ -93,13 +103,7 @@ function DetailView(): JSX.Element {
                     </button>
                   </div>
                 </form>
-                <button
-                  className="border border-base-secondary w-fit px-3 py-2 
-                  bg-base-secondary text-white hover:opacity-90 rounded
-                  transtion-all duration-500"
-                >
-                  Add to basket
-                </button>
+                <Button text={"Add to basket"} />
               </div>
             </div>
           </div>
