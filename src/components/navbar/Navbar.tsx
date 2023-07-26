@@ -71,7 +71,7 @@ function Navbar(): JSX.Element {
             <BsBasket3 className={`${iconStyle}`} />
           </Link>
 
-          <Link href={"/"}>
+          <Link href={"/login"}>
             <AiOutlineUser className={`${iconStyle}`} />
           </Link>
 
