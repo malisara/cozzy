@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { urlData } from "../utils/routes";
-import { flexCenter } from "../utils/style";
+import { flexCenter, imageCover } from "../utils/style";
 
 const variants = {
   //taken from:
@@ -61,10 +61,7 @@ function Hero(): JSX.Element {
               .filter((hero) => hero.id === shownImage)
               .map((hero) => {
                 return (
-                  <div
-                    className="object-cover w-full h-full"
-                    key={"animate-div"}
-                  >
+                  <div className={`${imageCover}`} key={"animate-div"}>
                     <motion.img
                       variants={variants}
                       initial="enter"
@@ -77,7 +74,7 @@ function Hero(): JSX.Element {
                       custom={direction}
                       key={hero.id}
                       src={hero.src.src}
-                      className="object-cover w-full h-full"
+                      className={`${imageCover}`}
                     />
                     <div
                       className={`absolute inset-0 flex-col gap-5
