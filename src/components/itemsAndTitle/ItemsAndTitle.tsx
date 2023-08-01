@@ -10,7 +10,6 @@ import Title from "../title/Title";
 
 type Props = {
   title: string;
-  onHomePage?: boolean;
   category?: string;
   limit?: number;
 };
@@ -19,7 +18,6 @@ function ItemsAndTitle({
   title,
   category = DEFAULT_HOMEPAGE_CATEGORY,
   limit,
-  onHomePage,
 }: Props): JSX.Element {
   const [gridDisplay, setGridDisplay] = useState<boolean>(true);
   const [sortPriceDescending, setsortPriceDescending] =
@@ -35,7 +33,7 @@ function ItemsAndTitle({
 
   return (
     <div className="bg-white">
-      <Title title={title} onHomePage={onHomePage} />
+      <Title title={title} />
       <div
         className="px-4 h-fit w-full flex flex-wrap 
       justify-center gap-6 mb-6"

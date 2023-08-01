@@ -15,11 +15,11 @@ function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
-  const router = usePathname();
+  const currentRoute = usePathname();
 
   const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
-    navOnTop && router === "/"
+    navOnTop && currentRoute === "/"
       ? "bg-transparent"
       : "bg-stone-50 border-b-2 border-b-base-secondary";
 
@@ -50,7 +50,7 @@ function Navbar(): JSX.Element {
                   key={link.id}
                   href={link.url}
                   className={`hover:text-base-secondary
-                  ${router === link.url && "text-base-secondary"}
+                  ${currentRoute === link.url && "text-base-secondary"}
                   `}
                 >
                   {link.nav_title.toUpperCase()}

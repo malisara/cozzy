@@ -1,13 +1,15 @@
 "use client";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 type Props = {
   title: string;
-  onHomePage?: boolean;
 };
 
-function Title({ title, onHomePage }: Props): JSX.Element {
-  const spacesStyle = onHomePage ? "pt-[2.5rem] lg:pt-[3rem]" : "mt-[7rem]";
+function Title({ title }: Props): JSX.Element {
+  const currentPath = usePathname();
+  const spacesStyle =
+    currentPath === "/" ? "pt-[2.5rem] lg:pt-[3rem]" : "mt-[7rem]";
 
   return (
     <div className={`flex pb-[3rem] justify-center ${spacesStyle}`}>
