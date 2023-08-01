@@ -1,32 +1,41 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import NoItems from "@/components/noItems/NoItems";
-import Loading from "@/components/loading/Loading";
-import { LOCAL_STORAGE_KEY } from "@/constants";
-import { getItemsByCategory } from "@/fetchers/fetchItems";
+import NoItems from "@/components/NoItems";
+import Loading from "@/components/Loading";
+import { DEFAULT_HOMEPAGE_CATEGORY, LOCAL_STORAGE_KEY } from "@/constants";
+import { getItemsByCategory, getItemsById } from "@/fetchers/fetchItems";
 import Item from "@/models/item";
-import SingleItem from "../singleItem/SingleItem";
+import SingleItem from "./SingleItem";
 
 type Props = {
-  gridDisplay: boolean;
-  sortPriceDescending: boolean;
-  category: string;
+  gridDisplay?: boolean;
+  sortPriceDescending?: boolean;
+  category?: string;
   limit?: number;
+  savedPage?: boolean;
 };
 
-function AllItems({
+function ItemList({
   gridDisplay,
   sortPriceDescending,
-  category,
+  category = DEFAULT_HOMEPAGE_CATEGORY,
   limit,
+  savedPage,
 }: Props): JSX.Element {
   const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
   const gridDisplayStyle = "flex-wrap justify-center";
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
   const [savedItems, setSavedItems] = useState<string[]>([]);
 
-  const { data, error, isLoading } = getItemsByCategory(category, limit);
+  const { data, error, isLoading } = getItems();
+
+  function getItems() {
+    if (savedPage) {
+      return getItemsById(savedItems);
+    }
+    return getItemsByCategory(category, limit);
+  }
 
   useEffect(() => {
     //LS not defined on a window object
@@ -91,4 +100,4 @@ function AllItems({
   );
 }
 
-export default AllItems;
+export default ItemList;

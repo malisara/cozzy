@@ -3,10 +3,10 @@ import { TfiViewGrid, TfiViewList } from "react-icons/tfi";
 
 type Props = {
   onDisplayChange: (value: boolean) => void;
-  gridDisplay: boolean;
+  hasGridDisplay: boolean;
 };
 
-function GridDisplay({ onDisplayChange, gridDisplay }: Props): JSX.Element {
+function ItemDisplay({ onDisplayChange, hasGridDisplay }: Props): JSX.Element {
   const chosenIcon = "bg-gray-200 py-2 px-2 border border-black duration-300";
 
   return (
@@ -14,13 +14,13 @@ function GridDisplay({ onDisplayChange, gridDisplay }: Props): JSX.Element {
       <p className="font-bold text-sm uppercase text-black">Display:</p>
       <button
         onClick={() => onDisplayChange(true)}
-        className={gridDisplay ? chosenIcon : ""}
+        className={hasGridDisplay ? chosenIcon : ""}
       >
         <TfiViewGrid />
       </button>
       <button
         onClick={() => onDisplayChange(false)}
-        className={!gridDisplay ? chosenIcon : ""}
+        className={!hasGridDisplay ? chosenIcon : ""}
       >
         <TfiViewList />
       </button>
@@ -28,4 +28,4 @@ function GridDisplay({ onDisplayChange, gridDisplay }: Props): JSX.Element {
   );
 }
 
-export default GridDisplay;
+export default ItemDisplay;

@@ -1,6 +1,6 @@
 import { PiCoatHanger } from "react-icons/pi";
 
-import { flexCenter } from "../utils/style";
+import { flexCenter } from "./utils/style";
 
 function Loading(): JSX.Element {
   return (

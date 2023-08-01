@@ -1,25 +1,25 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { AiOutlineUser, AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
-import { AnimatePresence, motion } from "framer-motion";
-import useMediaQuery from "../hooks/useMediaQuery";
-import { usePathname } from "next/navigation";
-import { urlData } from "../utils/routes";
+import useMediaQuery from "./hooks/useMediaQuery";
+import { urlData } from "./utils/routes";
 
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
-  const currentRoute = usePathname();
+  const currentPath = usePathname();
 
   const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
-    navOnTop && currentRoute === "/"
+    navOnTop && currentPath === "/"
       ? "bg-transparent"
       : "bg-stone-50 border-b-2 border-b-base-secondary";
 
@@ -50,7 +50,7 @@ function Navbar(): JSX.Element {
                   key={link.id}
                   href={link.url}
                   className={`hover:text-base-secondary
-                  ${currentRoute === link.url && "text-base-secondary"}
+                  ${currentPath === link.url && "text-base-secondary"}
                   `}
                 >
                   {link.nav_title.toUpperCase()}
@@ -67,7 +67,7 @@ function Navbar(): JSX.Element {
             <AiOutlineHeart className={`${iconStyle}`} />
           </Link>
 
-          <Link href={"/"}>
+          <Link href={"/basket"}>
             <BsBasket3 className={`${iconStyle}`} />
           </Link>
 

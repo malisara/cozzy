@@ -5,11 +5,11 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
-import Button from "@/components/button/Button";
-import Loading from "@/components/loading/Loading";
-import NoItems from "@/components/noItems/NoItems";
-import Reviews from "@/components/reviews/Reviews";
-import Sizes from "@/components/sizes/Sizes";
+import Button from "@/components/Button";
+import Loading from "@/components/Loading";
+import NoItems from "@/components/NoItems";
+import Reviews from "@/components/Reviews";
+import Sizes from "@/components/Sizes";
 import { getItem } from "@/fetchers/fetchItems";
 
 function DetailView(): JSX.Element {

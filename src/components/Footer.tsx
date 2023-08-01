@@ -1,4 +1,4 @@
-import { flexCenter } from "../utils/style";
+import { flexCenter } from "./utils/style";
 
 function Footer(): JSX.Element {
   return (

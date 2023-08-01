@@ -1,7 +1,7 @@
-import ItemsAndTitle from "@/components/itemsAndTitle/ItemsAndTitle";
+import ExploreItems from "@/components/ExploreItems";
 
 function Jewelry(): JSX.Element {
-  return <ItemsAndTitle title={"jewelry"} category={"jewelery"} />;
+  return <ExploreItems />;
 }
 
 export default Jewelry;

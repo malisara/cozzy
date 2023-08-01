@@ -1,8 +1,8 @@
-import BannerText from "@/components/bannerText/BannerText";
-import Categories from "@/components/categories/Categories";
-import Hero from "@/components/hero/Hero";
-import ItemsAndTitle from "@/components/itemsAndTitle/ItemsAndTitle";
-import Title from "@/components/title/Title";
+import BannerText from "@/components/BannerText";
+import Categories from "@/components/Categories";
+import Hero from "@/components/Hero";
+import ExploreItems from "@/components/ExploreItems";
+import Title from "@/components/Title";
 import { ITEM_DISPLAY_LIMIT } from "@/constants";
 
 export default function Home(): JSX.Element {
@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
       <BannerText />
       <Title title={"explore our categories"} />
       <Categories />
-      <ItemsAndTitle title={"all items"} limit={ITEM_DISPLAY_LIMIT} />
+      <ExploreItems limit={ITEM_DISPLAY_LIMIT} />
     </main>
   );
 }

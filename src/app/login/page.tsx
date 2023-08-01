@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-import Button from "@/components/button/Button";
+import Button from "@/components/Button";
 import { imageCover } from "@/components/utils/style";
 import { BACKEND_API_URL } from "@/constants";
 import UserCredentials from "@/models/userCredentials";

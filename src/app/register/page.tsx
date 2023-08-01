@@ -5,7 +5,7 @@ import Link from "next/link";
 import ReactModal from "react-modal";
 import { useEffect, useState } from "react";
 
-import Button from "@/components/button/Button";
+import Button from "@/components/Button";
 import { imageCover } from "@/components/utils/style";
 import registerImage from "@/../public/register.png";
 import { AiOutlineClose } from "react-icons/ai";

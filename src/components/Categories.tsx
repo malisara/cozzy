@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import useMediaQuery from "../hooks/useMediaQuery";
-import { urlData } from "../utils/routes";
-import { flexCenter } from "../utils/style";
+import useMediaQuery from "./hooks/useMediaQuery";
+import { urlData } from "./utils/routes";
+import { flexCenter } from "./utils/style";
 
 function Categories(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");

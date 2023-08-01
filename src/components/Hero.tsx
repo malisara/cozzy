@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { urlData } from "../utils/routes";
-import { flexCenter, imageCover } from "../utils/style";
+import { urlData } from "./utils/routes";
+import { flexCenter, imageCover } from "./utils/style";
 
 const variants = {
   //taken from:
