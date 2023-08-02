@@ -100,7 +100,7 @@ function Login(): JSX.Element {
           <Button text={"login"} disabled={btnDisabled} />
         </form>
         <Link
-          href="/"
+          href="/register"
           className="text-s underline
          hover:text-base-secondary"
         >

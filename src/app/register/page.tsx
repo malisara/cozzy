@@ -327,7 +327,7 @@ function Register(): JSX.Element {
           <Button text={"register"} disabled={btnDisabled} />
         </form>
         <Link
-          href="/"
+          href="/login"
           className="text-s underline
          hover:text-base-secondary"
         >
