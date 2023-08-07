@@ -47,7 +47,10 @@ function Login(): JSX.Element {
       }),
     })
       .then((res) => res.json())
-      .then((json) => console.log(json)); //todo
+      .then((json) => console.log(json))
+      .catch((error) => {
+        console.error("Error unable to login:", error);
+      });
   }
 
   useEffect(() => {

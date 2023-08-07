@@ -198,7 +198,10 @@ function Register(): JSX.Element {
       }),
     })
       .then((res) => res.json())
-      .then((json) => console.log(json));
+      .then((json) => console.log(json))
+      .catch((error) => {
+        console.error("Error unable to register:", error);
+      });
 
     setModalIsOpen(true);
   }
