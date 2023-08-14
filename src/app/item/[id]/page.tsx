@@ -7,7 +7,7 @@ import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
-import NoItems from "@/components/NoItems";
+import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Reviews from "@/components/Reviews";
 import Sizes from "@/components/Sizes";
 import { getItem } from "@/fetchers/fetchItems";
@@ -18,7 +18,7 @@ function DetailView(): JSX.Element {
   const quantityBtnStyle = "hover:text-black";
   const { data, error, isLoading } = getItem(params.id);
 
-  if (error) return <NoItems />;
+  if (error) return <NoItemsError />;
   if (isLoading || !data) return <Loading />;
 
   function handleSetQuantity(e: React.FormEvent, increase: boolean) {

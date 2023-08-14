@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function NoItems(): JSX.Element {
+function NoItemsError(): JSX.Element {
   const margins = "mt-10 lg:mt-10";
   return (
     <div className="mt-[8rem] text-center text-xl px-4">
@@ -21,4 +21,4 @@ function NoItems(): JSX.Element {
   );
 }
 
-export default NoItems;
+export default NoItemsError;

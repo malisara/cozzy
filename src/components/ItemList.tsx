@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-import NoItems from "@/components/NoItems";
+import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Loading from "@/components/Loading";
 import { DEFAULT_HOMEPAGE_CATEGORY, LOCAL_STORAGE_KEY } from "@/constants";
 import { getItemsByCategory, getItemsById } from "@/fetchers/fetchItems";
@@ -9,29 +10,28 @@ import Item from "@/models/item";
 import SingleItem from "./SingleItem";
 
 type Props = {
-  gridDisplay?: boolean;
+  hasGridDisplay?: boolean;
   sortPriceDescending?: boolean;
   category?: string;
   limit?: number;
-  savedPage?: boolean;
 };
 
 function ItemList({
-  gridDisplay,
+  hasGridDisplay = true,
   sortPriceDescending,
   category = DEFAULT_HOMEPAGE_CATEGORY,
   limit,
-  savedPage,
 }: Props): JSX.Element {
   const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
-  const gridDisplayStyle = "flex-wrap justify-center";
+  const hasGridDisplayStyle = "flex-wrap justify-center";
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
   const [savedItems, setSavedItems] = useState<string[]>([]);
+  const currentRoute = usePathname();
 
   const { data, error, isLoading } = getItems();
 
   function getItems() {
-    if (savedPage) {
+    if (currentRoute === "/saved") {
       return getItemsById(savedItems);
     }
     return getItemsByCategory(category, limit);
@@ -60,7 +60,7 @@ function ItemList({
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedItems));
   }, [savedItems]);
 
-  if (error) return <NoItems />;
+  if (error) return <NoItemsError />;
   if (isLoading || !data) return <Loading />;
 
   function sortItems(items: Item[]): Item[] {
@@ -83,7 +83,7 @@ function ItemList({
   return (
     <div
       className={`${
-        gridDisplay ? gridDisplayStyle : lineDisplayStyle
+        hasGridDisplay ? hasGridDisplayStyle : lineDisplayStyle
       } flex gap-[5rem]`}
     >
       {itemsToDisplay.map((item: Item) => {
