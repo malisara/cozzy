@@ -1,0 +1,107 @@
+import { useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
+import ReactModal from "react-modal";
+
+const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
+
+type Props = {
+  modalIsOpen: boolean;
+  setModalIsOpen: (modalIsOpen: boolean) => void;
+  setDiscount: ([discountValue, validDiscount]: [number, boolean]) => void;
+  discountValue: number;
+};
+
+function DiscountModal({
+  modalIsOpen,
+  setModalIsOpen,
+  setDiscount,
+  discountValue,
+}: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
+  const modalBtnStyle = btnDisabled
+    ? "bg-gray-400"
+    : "border-base-secondary bg-base-secondary hover:opacity-75 rounded-md \
+    transtion-all duration-500 border";
+
+  function handleDiscountCodeChange(
+    e: React.FormEvent<HTMLInputElement>
+  ): void {
+    if (e.currentTarget.value.trim().length > 0) {
+      setDiscount([0, false]); //resets invalid code text
+      setBtnDisabled(false);
+    } else {
+      setBtnDisabled(true);
+    }
+  }
+
+  function closeModal(): void {
+    setDiscount([0, false]); //resets invalid code text
+    setModalIsOpen(false);
+  }
+
+  function handleDiscountCodeSubmit(
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ): void {
+    e.preventDefault();
+    const inputValue = inputRef.current?.value;
+    if (inputValue && inputValue in DISCOUNT_CODES) {
+      const discountedValue =
+        DISCOUNT_CODES[inputValue as keyof typeof DISCOUNT_CODES];
+      setDiscount([discountedValue, true]);
+      setModalIsOpen(false);
+    } else {
+      setDiscount([-1, false]);
+    }
+  }
+
+  return (
+    <ReactModal
+      isOpen={modalIsOpen}
+      className="transition-opacity ease-in-out duration-600"
+      ariaHideApp={false}
+      shouldCloseOnEsc={true}
+      shouldCloseOnOverlayClick={true}
+      onRequestClose={() => setModalIsOpen(false)}
+    >
+      <div
+        className="px-4 py-10 bg-white/60 w-[70%] lg:w-[25%] top-[15rem]
+   rounded-lg border border-gray-400 absolute left-1/2 transform
+     -translate-x-1/2 text-center"
+      >
+        <button
+          className="absolute top-4 right-4 hover:text-base-secondary
+     text-gray-700 text-2xl"
+          onClick={closeModal}
+        >
+          <AiOutlineClose />
+        </button>
+
+        <div className="text-xl mb-2">Discount</div>
+        <div className="mb-2 text-sm">Enter the discount code</div>
+
+        <form action="" className="flex flex-wrap mt-5">
+          <input
+            ref={inputRef}
+            className="border border-gray-400 h-[2.5rem] rounded-lg 
+        w-[95%] lg:w-[75%] mx-auto px-2"
+            onChange={(e) => handleDiscountCodeChange(e)}
+          />
+          <button
+            disabled={btnDisabled}
+            className={` ${modalBtnStyle} w-[95%] lg:w-[20%] py-1
+           text-white mt-2 lg:mt-0 mx-auto`}
+            onClick={(e) => handleDiscountCodeSubmit(e)}
+          >
+            add
+          </button>
+        </form>
+        {discountValue === -1 && (
+          <div className="mt-2 text-red-400 text-sm">Invalid code</div>
+        )}
+      </div>
+    </ReactModal>
+  );
+}
+
+export default DiscountModal;
