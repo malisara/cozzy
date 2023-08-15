@@ -216,6 +216,9 @@ function Register(): JSX.Element {
         isOpen={modalIsOpen}
         className="transition-opacity ease-in-out duration-600"
         ariaHideApp={false}
+        shouldCloseOnEsc={true}
+        shouldCloseOnOverlayClick={true}
+        onRequestClose={() => setModalIsOpen(false)}
       >
         <div
           className="px-4 py-10 bg-white/60 w-[80%] lg:w-[45%] h-60 top-[15rem]

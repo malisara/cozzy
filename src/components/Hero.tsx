@@ -43,7 +43,7 @@ function Hero(): JSX.Element {
 
   function nextImage(nextImg: boolean) {
     if (nextImg) {
-      setShownImage((prevState) => [(prevState[0] + 1) % 3, -1]);
+      setShownImage((prev) => [(prev[0] + 1) % 3, -1]);
     } else {
       setShownImage((prev) => [(prev[0] + 2) % 3, 1]);
     }
