@@ -1,35 +1,36 @@
 "use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ImBin2 } from "react-icons/im";
+
+import Button from "@/components/Button";
+import DiscountModal from "@/components/errorComponents/DiscountModal";
+import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
+import { flexCenter } from "@/components/utils/style";
+import { SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
 import { getItemsById } from "@/fetchers/fetchItems";
 import { BasketItems, BasketItem } from "@/models/basket";
-import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { ImBin2 } from "react-icons/im";
-import GeneralError from "@/components/errorComponents/GeneralError";
-import Link from "next/link";
-import { flexCenter } from "@/components/utils/style";
-import Button from "@/components/Button";
-import ReactModal from "react-modal";
-import { AiOutlineClose } from "react-icons/ai";
+import { updateBasketData } from "@/utils/updateBasket";
 
 const POSTAGE = 15;
-const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
 
-type Props = {};
+function roundNumber(number: number): number {
+  return Math.round((number + Number.EPSILON) * 100) / 100;
+}
 
-function Basket({}: Props): JSX.Element {
+function Basket(): JSX.Element {
   const [basketItems, setBasketItems] = useState<BasketItems | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const modalBtnStyle = btnDisabled
-    ? "bg-gray-400"
-    : "border-base-secondary bg-base-secondary hover:opacity-75 rounded-md \
-    transtion-all duration-500 border";
+  const [[discountValue, validDiscount], setDiscount] = useState<
+    [number, boolean]
+  >([0, false]);
 
   useEffect(() => {
+    //Initial basket fetch
     fetch("https://fakestoreapi.com/carts/5")
       .then((res) => res.json())
       .then((json) => {
@@ -47,49 +48,11 @@ function Basket({}: Props): JSX.Element {
       });
   }, []);
 
-  function handleQuantityChange(
-    e: React.ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) {
-    if (basketItems) {
-      const basketItemsCopy = { ...basketItems };
-      basketItemsCopy.items[index].quantity = Number(e.target.value);
-      setBasketItems(basketItemsCopy);
-    }
-  }
-
-  function handleDeleteBasketItem(index: number) {
-    if (basketItems) {
-      const basketItemsCopy = { ...basketItems };
-      basketItemsCopy.items.splice(index, 1);
-      setBasketItems(basketItemsCopy);
-    }
-  }
-
-  useEffect(() => {}, [basketItems]);
   const itemIds = basketItems
     ? basketItems?.items.map((item) => item.itemId.toString())
     : [];
 
-  function handleDiscountCodeChange(
-    e: React.FormEvent<HTMLInputElement>
-  ): void {
-    if (e.currentTarget.value.trim().length > 0) {
-      setBtnDisabled(false);
-    } else {
-      setBtnDisabled(true);
-    }
-  }
-
-  function handleDiscountCodeSubmit(
-    e: React.MouseEvent<HTMLElement, MouseEvent>
-  ) {
-    e.preventDefault();
-    const inputValue = inputRef.current?.value;
-    //TODO
-  }
-
-  const { data, error, isLoading } = getItemsById(itemIds);
+  const { data, error, isLoading } = getItemsById(itemIds); //TODO
 
   if (error)
     return (
@@ -97,9 +60,43 @@ function Basket({}: Props): JSX.Element {
     );
   if (isLoading || !data) return <Loading />;
 
+  function handleQuantityChange(
+    e: React.ChangeEvent<HTMLSelectElement>,
+    index: number
+  ): void {
+    if (basketItems) {
+      const newQuantity = Number(e.target.value);
+      const basketItemsCopy = { ...basketItems };
+      basketItemsCopy.items[index].quantity = newQuantity;
+      setBasketItems(basketItemsCopy);
+      //TODO
+      updateBasketData(
+        USERT_ID,
+        SHOPPING_BAG_NUMBER,
+        basketItems.items[index].itemId,
+        newQuantity
+      );
+    }
+  }
+
+  function handleDeleteBasketItem(index: number): void {
+    if (basketItems) {
+      //TODO
+      updateBasketData(
+        USERT_ID,
+        SHOPPING_BAG_NUMBER,
+        basketItems.items[index].itemId,
+        0
+      );
+
+      const basketItemsCopy = { ...basketItems };
+      basketItemsCopy.items.splice(index, 1);
+      setBasketItems(basketItemsCopy);
+    }
+  }
+
   function calculateOrderSum(): number {
     let sum = 0;
-
     if (data !== undefined && basketItems !== null) {
       {
         data.map(
@@ -111,9 +108,19 @@ function Basket({}: Props): JSX.Element {
     return sum;
   }
 
+  function discountInEur(discount: number): number {
+    return roundNumber((discount / 100) * calculateOrderSum());
+  }
+
+  function discountedSum(discount: number): number {
+    return roundNumber(calculateOrderSum() + POSTAGE - discountInEur(discount));
+  }
+
   return (
     <div className="mt-[5rem]">
       <Title title="shopping bag" />
+
+      {/* Empty bag */}
       {basketItems === null ? (
         <div className={`${flexCenter} flex-col gap-5 mt-5`}>
           <div>Your shopping bag is currently empty</div>
@@ -122,12 +129,15 @@ function Basket({}: Props): JSX.Element {
           </Link>
         </div>
       ) : (
+        // Items to buy
         <div className="flex flex-wrap md:px-[5rem] ">
-          {/* listed items */}
-          <div className="w-[90%] lg:w-[45%] m-auto">
+          <div className="w-[90%] lg:w-[45%] mx-auto">
             {data.map((item, index) => (
               <div key={index}>
-                <div className="flex border border-gray-300 m-auto p-4 relative mb-3 h-[8rem]">
+                <div
+                  className="flex border border-gray-300 m-auto p-4 
+                relative mb-3 h-[8rem]"
+                >
                   <div
                     className="absolute top-1 right-1 p-2 cursor-pointer"
                     onClick={() => handleDeleteBasketItem(index)}
@@ -155,8 +165,8 @@ function Basket({}: Props): JSX.Element {
                         <select
                           name="quantity"
                           id="quantity"
-                          className="px-2 py-1 text-gray-700
-                border-2 bg-transparent rounded-lg me-2"
+                          className="px-2 py-1 text-gray-700 border-2
+                           bg-transparent rounded-lg me-2"
                           value={basketItems.items[index].quantity}
                           onChange={(e) => handleQuantityChange(e, index)}
                         >
@@ -180,51 +190,18 @@ function Basket({}: Props): JSX.Element {
           </div>
 
           {/* modal */}
-          <ReactModal
-            isOpen={modalIsOpen}
-            className="transition-opacity ease-in-out duration-600"
-            ariaHideApp={false}
-          >
-            <div
-              className="px-4 py-10 bg-white/60 w-[70%] lg:w-[25%] top-[15rem]
-           rounded-lg border border-gray-400 absolute left-1/2 transform
-             -translate-x-1/2 text-center"
-            >
-              <button
-                className="absolute top-4 right-4 hover:text-base-secondary
-             text-gray-700 text-2xl"
-                onClick={() => {
-                  setModalIsOpen(false);
-                }}
-              >
-                <AiOutlineClose />
-              </button>
-
-              <div className="text-xl mb-2">Discount</div>
-              <div className="mb-2 text-sm">Enter the discount code</div>
-
-              <form action="" className="flex flex-wrap mt-5">
-                <input
-                  ref={inputRef}
-                  className="border border-gray-400 h-[2.5rem] rounded-lg 
-                w-[95%] lg:w-[75%] mx-auto px-2"
-                  onChange={(e) => handleDiscountCodeChange(e)}
-                />
-                <button
-                  disabled={btnDisabled}
-                  className={` ${modalBtnStyle} w-[95%] lg:w-[20%] py-1
-                   text-white mt-2 lg:mt-0 mx-auto`}
-                  onClick={(e) => handleDiscountCodeSubmit(e)}
-                >
-                  add
-                </button>
-              </form>
-            </div>
-          </ReactModal>
+          <DiscountModal
+            modalIsOpen={modalIsOpen}
+            setModalIsOpen={setModalIsOpen}
+            setDiscount={setDiscount}
+            discountValue={discountValue}
+          />
 
           {/* total amount to pay */}
-
-          <div className="w-[80%] mx-auto my-[2rem] lg:my-0 lg:w-[25%] justify-end">
+          <div
+            className="w-[80%] mx-auto my-[2rem] 
+          lg:my-0 lg:w-[25%] justify-end"
+          >
             <div className="flex justify-between text-sm mb-10">
               <div>discount</div>
               <div
@@ -241,21 +218,43 @@ function Basket({}: Props): JSX.Element {
                 <div>{calculateOrderSum()} €</div>
               </div>
 
+              {validDiscount && (
+                <div className="flex justify-between text-red-400">
+                  <div>Discount</div>
+                  <div>-{discountValue}% </div>
+                </div>
+              )}
+
               <div className="flex justify-between">
                 <div>Postage</div>
                 <div>{POSTAGE} €</div>
               </div>
               <hr className="border-gray-500" />
 
-              <div className="flex justify-between text-gray-700 font-bold mb-10">
+              <div
+                className="flex justify-between text-gray-700 
+              font-bold mb-2"
+              >
                 <div>Sum</div>
-                <div>
-                  {Math.round(
-                    (calculateOrderSum() + POSTAGE + Number.EPSILON) * 100
-                  ) / 100}{" "}
-                  €
-                </div>
+                <div>{roundNumber(calculateOrderSum() + POSTAGE)}€</div>
               </div>
+
+              {validDiscount && (
+                <>
+                  <div className="flex justify-end text-red-400">
+                    <div>-{discountInEur(discountValue)}€</div>
+                  </div>
+
+                  <hr />
+                  <div
+                    className="flex justify-between text-gray-700
+                   font-bold text-l mb-5"
+                  >
+                    <div>Total Sum</div>
+                    <div>{discountedSum(discountValue)}€</div>
+                  </div>
+                </>
+              )}
               <Button text={"continue with purchase"} />
             </div>
           </div>
