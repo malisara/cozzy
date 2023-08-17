@@ -1,11 +1,15 @@
 import { useState } from "react";
 
-const sizes = ["2XS", "XS", "M", "L", "2XL"];
+const SIZES = ["2XS", "XS", "M", "L", "2XL"];
 
-function Sizes(): JSX.Element {
-  const [chosenSize, setChosenSize] = useState<number>(0);
-  const [available, setAvailable] = useState<boolean[]>(
-    new Array(sizes.length).fill(false)
+type Props = {
+  chosenSize: number;
+  setChosenSize: (index: number) => void;
+};
+
+function Sizes({ chosenSize, setChosenSize }: Props): JSX.Element {
+  const [available, setAvailable] = useState<boolean[]>( // API doesn't support sizing
+    new Array(SIZES.length).fill(false)
   );
   const availableStyle =
     "hover:bg-base-secondary hover:text-white border-base-secondary\
@@ -14,7 +18,7 @@ function Sizes(): JSX.Element {
 
   return (
     <div className="flex gap-2 mt-10">
-      {sizes.map((size, index) => {
+      {SIZES.map((size, index) => {
         return (
           <button
             key={index}
