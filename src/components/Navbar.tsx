@@ -4,7 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AiOutlineUser, AiOutlineClose, AiOutlineHeart } from "react-icons/ai";
+import {
+  AiOutlineUser,
+  AiOutlineClose,
+  AiOutlineHeart,
+  AiOutlineLogout,
+} from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
@@ -16,6 +21,7 @@ function Navbar(): JSX.Element {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const currentPath = usePathname();
+  const [userIsLoggedIn, setUserIsLoggenIn] = useState<boolean>(false);
 
   const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
@@ -30,6 +36,19 @@ function Navbar(): JSX.Element {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   });
+
+  useEffect(() => {
+    //check if user is authenticated
+    const token = sessionStorage.getItem("token") || "";
+    if (token.length > 0) {
+      setUserIsLoggenIn(true);
+    }
+  }, [currentPath]);
+
+  function logout(): void {
+    sessionStorage.removeItem("token");
+    setUserIsLoggenIn(false);
+  }
 
   return (
     <div>
@@ -71,9 +90,15 @@ function Navbar(): JSX.Element {
             <BsBasket3 className={`${iconStyle}`} />
           </Link>
 
-          <Link href={"/login"}>
-            <AiOutlineUser className={`${iconStyle}`} />
-          </Link>
+          {!userIsLoggedIn ? (
+            <Link href={"/login"}>
+              <AiOutlineUser className={`${iconStyle}`} />
+            </Link>
+          ) : (
+            <button onClick={logout}>
+              <AiOutlineLogout className={`${iconStyle}`} />
+            </button>
+          )}
 
           {!isDesktop && (
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
@@ -16,6 +17,7 @@ function Login(): JSX.Element {
     "rounded-md outline-none bg-white h-[3rem] px-3 \
     text-gray-600 focus:outline-base-secondary border border-gray-200";
 
+  const router = useRouter();
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false);
   const [loginData, setLoginData] = useState<UserCredentials>({
@@ -38,6 +40,8 @@ function Login(): JSX.Element {
   }
 
   function handleLogin(event: React.FormEvent) {
+    //TODO fix when issue is closed
+    //https://github.com/keikaavousi/fake-store-api/issues/97
     event.preventDefault();
     fetch(`${BACKEND_API_URL}/auth/login`, {
       method: "POST",
@@ -47,7 +51,13 @@ function Login(): JSX.Element {
       }),
     })
       .then((res) => res.json())
-      .then((json) => console.log(json))
+      .then((json) => {
+        //returns {'token' : '...'}
+        if ("token" in json) {
+          sessionStorage.setItem("token", "token");
+          router.push("/");
+        }
+      })
       .catch((error) => {
         console.error("Error unable to login:", error);
       });
