@@ -11,11 +11,11 @@ export class BasketItems {
 }
 
 export class BasketItem {
-  itemId: number;
+  productId: number;
   quantity: number;
 
-  constructor(itemId: number, quantity: number) {
-    this.itemId = itemId;
+  constructor(productId: number, quantity: number) {
+    this.productId = productId;
     this.quantity = quantity;
   }
 }
