@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Loading from "@/components/Loading";
-import { DEFAULT_HOMEPAGE_CATEGORY, LOCAL_STORAGE_KEY } from "@/constants";
+import { DEFAULT_HOMEPAGE_CATEGORY, LS_KEY_SAVED_ITEMS } from "@/constants";
 import { getItemsByCategory, getItemsById } from "@/fetchers/fetchItems";
 import Item from "@/models/item";
 import SingleItem from "./SingleItem";
@@ -40,7 +40,7 @@ function ItemList({
   useEffect(() => {
     //LS not defined on a window object
     const savedItems = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
+      localStorage.getItem(LS_KEY_SAVED_ITEMS) || "[]"
     );
     setSavedItems(savedItems);
   }, []);
@@ -57,7 +57,7 @@ function ItemList({
   }, [sortPriceDescending]);
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(savedItems));
+    localStorage.setItem(LS_KEY_SAVED_ITEMS, JSON.stringify(savedItems));
   }, [savedItems]);
 
   if (error) return <NoItemsError />;

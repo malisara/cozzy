@@ -1,3 +1,6 @@
+import { LS_KEY_BASKET } from "@/constants";
+import { BasketItem } from "@/models/basket";
+
 function getDate(): string {
   let date = new Date();
   return date.toISOString().split("T")[0];
@@ -6,20 +9,18 @@ function getDate(): string {
 export async function updateBasketData(
   userId: number,
   cardNumber: number,
-  itemId: number,
-  newQuantity: number
+  updatedBasket: BasketItem[]
 ): Promise<void> {
-  return fetch(`https://fakestoreapi.com/carts/${cardNumber}`, {
+  localStorage.setItem(LS_KEY_BASKET, JSON.stringify(updatedBasket));
+
+  fetch(`https://fakestoreapi.com/carts/${cardNumber}`, {
     method: "PUT",
     body: JSON.stringify({
       userId: userId,
       date: getDate(),
-      products: [{ productId: itemId, quantity: newQuantity }],
+      products: updatedBasket,
     }),
-  })
-    .then((res) => res.json())
-    .then((json) => console.log(json)) //card id
-    .catch((error) => {
-      console.error("Error fetching shopping bag data:", error);
-    });
+  }).catch((error) => {
+    console.error("Error fetching shopping bag data:", error);
+  });
 }
