@@ -28,7 +28,6 @@ function ExploreItems({ limit }: Props): JSX.Element {
     useState<boolean>(false);
   const result =
     categoriesAndTitles[currentPath as keyof typeof categoriesAndTitles];
-  console.log(result);
 
   function changeItemsDisplay(value: boolean) {
     sethasGridDisplay(value);

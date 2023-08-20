@@ -10,7 +10,7 @@ import Loading from "@/components/Loading";
 import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Reviews from "@/components/Reviews";
 import Sizes from "@/components/Sizes";
-import { SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
+import { LS_KEY_BASKET, SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
 import { getItem } from "@/fetchers/fetchItems";
 import { BasketItem } from "@/models/basket";
 import { updateBasketData } from "@/utils/updateBasket";
@@ -37,7 +37,7 @@ function DetailView(): JSX.Element {
   }
 
   function handleAddItemToBasket() {
-    let basketItemsLs = JSON.parse(localStorage.getItem("basket") || "[]");
+    let basketItemsLs = JSON.parse(localStorage.getItem(LS_KEY_BASKET) || "[]");
     const basketItemIndex = basketItemsLs.findIndex(
       (item: BasketItem) => item.productId === Number(params.id)
     );
