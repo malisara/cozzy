@@ -17,7 +17,7 @@ function Sizes({ chosenSize, setChosenSize }: Props): JSX.Element {
   const notAvailableStyle = "disabled bg-gray-300"; //should be disabled
 
   return (
-    <div className="flex gap-2 mt-10">
+    <div className="flex gap-2 mt-10 mx-auto lg:mx-0">
       {SIZES.map((size, index) => {
         return (
           <button
