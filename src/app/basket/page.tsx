@@ -10,7 +10,9 @@ import DiscountModal from "@/components/errorComponents/DiscountModal";
 import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
-import { LS_KEY_BASKET, SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
+import { SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
+
 import { getItemsById } from "@/fetchers/fetchItems";
 import { BasketItems, BasketItem } from "@/models/basket";
 import { updateBasketData } from "@/utils/updateBasket";
@@ -22,7 +24,7 @@ function roundNumber(number: number): number {
 }
 
 function Basket(): JSX.Element {
-  const [basketItems, setBasketItems] = useState<BasketItems | null>(null);
+  const { basketItems, setBasketItems } = useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [[discountValue, validDiscount], setDiscount] = useState<
     [number, boolean]
@@ -33,6 +35,7 @@ function Basket(): JSX.Element {
 
   useEffect(() => {
     //Initial basket fetch
+    //Todo if user is authenticated
     fetch(`https://fakestoreapi.com/carts/${SHOPPING_BAG_NUMBER}`)
       .then((res) => res.json())
       .then((json) => {
@@ -43,20 +46,14 @@ function Basket(): JSX.Element {
         if (items === undefined) {
           items = [];
         }
+
         setBasketItems(new BasketItems(json.userId, json.date, items));
+        //TODO
       })
       .catch((error) => {
         console.error("Error fetching basket data:", error);
       });
   }, []);
-
-  useEffect(() => {
-    //Save all basket items to LS
-    localStorage.setItem(
-      LS_KEY_BASKET,
-      JSON.stringify(basketItems?.items) || "[]"
-    );
-  }, [basketItems]);
 
   const { data, error, isLoading } = getItemsById(itemIds); //TODO
 
@@ -80,17 +77,15 @@ function Basket(): JSX.Element {
   }
 
   function handleDeleteBasketItem(index: number): void {
-    if (basketItems) {
-      const basketItemsCopy = { ...basketItems };
-      basketItemsCopy.items.splice(index, 1);
-      setBasketItems(basketItemsCopy);
-      updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
-    }
+    const basketItemsCopy = { ...basketItems };
+    basketItemsCopy.items.splice(index, 1);
+    setBasketItems(basketItemsCopy);
+    updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
   }
 
   function calculateOrderSum(): number {
     let sum = 0;
-    if (data !== undefined && basketItems !== null) {
+    if (data !== undefined) {
       {
         data.map(
           (item, index) =>
@@ -116,68 +111,67 @@ function Basket(): JSX.Element {
       <div className="flex flex-wrap md:px-[5rem]">
         <div className="w-[90%] lg:w-[45%] mx-auto">
           {/* Basket items */}
-          {basketItems?.items !== undefined &&
-            basketItems?.items?.length > 0 && (
-              <>
-                {data.map((item, index) => (
-                  <div key={index}>
-                    <div
-                      className="flex border border-gray-300 m-auto p-4 
+          {basketItems.items?.length > 0 && (
+            <>
+              {data.map((item, index) => (
+                <div key={index}>
+                  <div
+                    className="flex border border-gray-300 m-auto p-4 
                 relative mb-3 h-[8rem]"
+                  >
+                    <div
+                      className="absolute top-1 right-1 p-2 cursor-pointer"
+                      onClick={() => handleDeleteBasketItem(index)}
                     >
-                      <div
-                        className="absolute top-1 right-1 p-2 cursor-pointer"
-                        onClick={() => handleDeleteBasketItem(index)}
-                      >
-                        <ImBin2 className="text-[15px] hover:text-gray-500" />
-                      </div>
+                      <ImBin2 className="text-[15px] hover:text-gray-500" />
+                    </div>
+                    <Link href={`item/${item.id}`} className="flex">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        width={100}
+                        height={100}
+                        className="object-contain mr-4"
+                      />
+                    </Link>
+
+                    <div className="w-3/4 flex flex-col justify-between">
                       <Link href={`item/${item.id}`} className="flex">
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          width={100}
-                          height={100}
-                          className="object-contain mr-4"
-                        />
+                        <div className="font-bold text-sm mb-3 text-wrap">
+                          {item.title.length > 30
+                            ? item.title.slice(0, 25) + "..."
+                            : item.title}
+                        </div>
                       </Link>
-
-                      <div className="w-3/4 flex flex-col justify-between">
-                        <Link href={`item/${item.id}`} className="flex">
-                          <div className="font-bold text-sm mb-3 text-wrap">
-                            {item.title.length > 30
-                              ? item.title.slice(0, 25) + "..."
-                              : item.title}
-                          </div>
-                        </Link>
-                        <div className="flex justify-between">
-                          <form>
-                            <select
-                              name="quantity"
-                              id="quantity"
-                              className="px-2 py-1 text-gray-700 border-2
+                      <div className="flex justify-between">
+                        <form>
+                          <select
+                            name="quantity"
+                            id="quantity"
+                            className="px-2 py-1 text-gray-700 border-2
                            bg-transparent rounded-lg me-2"
-                              value={basketItems.items[index].quantity}
-                              onChange={(e) => handleQuantityChange(e, index)}
-                            >
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                              {/* API doesn't support available quantity of items */}
-                            </select>
-                          </form>
+                            value={basketItems.items[index].quantity}
+                            onChange={(e) => handleQuantityChange(e, index)}
+                          >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            {/* API doesn't support available quantity of items */}
+                          </select>
+                        </form>
 
-                          <div className="font-bold text-l text-gray-600">
-                            {basketItems.items[index].quantity * item.price}€
-                          </div>
+                        <div className="font-bold text-l text-gray-600">
+                          {basketItems.items[index].quantity * item.price}€
                         </div>
                       </div>
                     </div>
                   </div>
-                ))}
-              </>
-            )}
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
         {/* modal */}

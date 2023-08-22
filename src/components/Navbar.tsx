@@ -13,8 +13,11 @@ import {
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
+import { SESSION_TOKEN } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
+import { flexCenter } from "./utils/style";
 
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
@@ -22,6 +25,8 @@ function Navbar(): JSX.Element {
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const currentPath = usePathname();
   const [userIsLoggedIn, setUserIsLoggenIn] = useState<boolean>(false);
+  const { basketItems } = useGlobalContext();
+  const [basketItemsCOunt, setBasketItemsCount] = useState(0);
 
   const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
@@ -30,6 +35,7 @@ function Navbar(): JSX.Element {
       : "bg-stone-50 border-b-2 border-b-base-secondary";
 
   useEffect(() => {
+    //handle scroll
     const handleScroll = () => {
       window.scrollY === 0 ? setNavOnTop(true) : setNavOnTop(false);
     };
@@ -39,16 +45,26 @@ function Navbar(): JSX.Element {
 
   useEffect(() => {
     //check if user is authenticated
-    const token = sessionStorage.getItem("token") || "";
+    //TODO
+    const token = sessionStorage.getItem(SESSION_TOKEN) || "";
     if (token.length > 0) {
       setUserIsLoggenIn(true);
     }
   }, [currentPath]);
 
   function logout(): void {
-    sessionStorage.removeItem("token");
+    sessionStorage.removeItem(SESSION_TOKEN);
     setUserIsLoggenIn(false);
   }
+
+  useEffect(() => {
+    //calculate number of items in basket
+    const basketItemsCount = basketItems.items.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+    setBasketItemsCount(basketItemsCount);
+  }, [basketItems]);
 
   return (
     <div>
@@ -80,29 +96,38 @@ function Navbar(): JSX.Element {
         )}
 
         {/* icons */}
-        {/* todo */}
         <div className="flex gap-5 ml-auto">
           <Link href={"/saved"}>
-            <AiOutlineHeart className={`${iconStyle}`} />
+            <AiOutlineHeart className={iconStyle} />
           </Link>
 
-          <Link href={"/basket"}>
-            <BsBasket3 className={`${iconStyle}`} />
+          <Link href="/basket" className="relative">
+            <BsBasket3 className={iconStyle} />
+
+            {basketItemsCOunt > 0 && (
+              <div
+                className={`absolute top-0 right-0 bg-yellow-500
+                 text-white font-bold rounded-full w-5 h-5 text-xs 
+                 -translate-y-2 translate-x-2 ${flexCenter}`}
+              >
+                {basketItemsCOunt}
+              </div>
+            )}
           </Link>
 
           {!userIsLoggedIn ? (
             <Link href={"/login"}>
-              <AiOutlineUser className={`${iconStyle}`} />
+              <AiOutlineUser className={iconStyle} />
             </Link>
           ) : (
             <button onClick={logout}>
-              <AiOutlineLogout className={`${iconStyle}`} />
+              <AiOutlineLogout className={iconStyle} />
             </button>
           )}
 
           {!isDesktop && (
             <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
-              <RxHamburgerMenu className={`${iconStyle}`} />
+              <RxHamburgerMenu className={iconStyle} />
             </button>
           )}
         </div>

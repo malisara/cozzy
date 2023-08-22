@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { GlobalContextProvider } from "@/context/GlobalContext";
 import "./globals.css";
 
 const dmSans = DM_Sans({ weight: "400", subsets: ["latin"] });
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={dmSans.className}>
-        <Navbar />
-        {children}
-        <Footer />
+        <GlobalContextProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </GlobalContextProvider>
       </body>
     </html>
   );
