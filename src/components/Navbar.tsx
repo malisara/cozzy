@@ -13,7 +13,6 @@ import {
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
-import { SESSION_TOKEN } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
@@ -24,8 +23,7 @@ function Navbar(): JSX.Element {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const currentPath = usePathname();
-  const [userIsLoggedIn, setUserIsLoggenIn] = useState<boolean>(false);
-  const { basketItems } = useGlobalContext();
+  const { basketItems, userToken, setUserToken } = useGlobalContext();
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
 
   const iconStyle = "hover:text-base-secondary text-lg";
@@ -43,18 +41,8 @@ function Navbar(): JSX.Element {
     return () => window.removeEventListener("scroll", handleScroll);
   });
 
-  useEffect(() => {
-    //check if user is authenticated
-    //TODO
-    const token = sessionStorage.getItem(SESSION_TOKEN) || "";
-    if (token.length > 0) {
-      setUserIsLoggenIn(true);
-    }
-  }, [currentPath]);
-
   function logout(): void {
-    sessionStorage.removeItem(SESSION_TOKEN);
-    setUserIsLoggenIn(false);
+    setUserToken("");
   }
 
   useEffect(() => {
@@ -115,7 +103,7 @@ function Navbar(): JSX.Element {
             )}
           </Link>
 
-          {!userIsLoggedIn ? (
+          {userToken.length === 0 ? (
             <Link href={"/login"}>
               <AiOutlineUser className={iconStyle} />
             </Link>

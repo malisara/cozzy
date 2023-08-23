@@ -8,9 +8,25 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import Button from "@/components/Button";
 import { imageCover } from "@/components/utils/style";
-import { BACKEND_API_URL } from "@/constants";
+// import { BACKEND_API_URL } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
 import UserCredentials from "@/models/userCredentials";
 import loginImage from "@/../public/login.png";
+
+function createDummyToken(): string {
+  //taken from:
+  //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+  let token = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < 10) {
+    token += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return token;
+}
 
 function Login(): JSX.Element {
   const formStyle =
@@ -20,6 +36,7 @@ function Login(): JSX.Element {
   const router = useRouter();
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false);
+  const { setUserToken } = useGlobalContext();
   const [loginData, setLoginData] = useState<UserCredentials>({
     username: "",
     password: "",
@@ -39,28 +56,36 @@ function Login(): JSX.Element {
     }
   }
 
+  // function handleLogin(event: React.FormEvent) {
+  //   //TODO fix when issue is closed
+  //   //https://github.com/keikaavousi/fake-store-api/issues/97
+  //   event.preventDefault();
+  //   fetch(`${BACKEND_API_URL}/auth/login`, {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       username: loginData.username,
+  //       password: loginData.password,
+  //     }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((json) => {
+  //       //returns {'token' : '...'}
+  //       if ("token" in json) {
+  //         sessionStorage.setItem("token", "token");
+  //         router.push("/");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error unable to login:", error);
+  //     });
+  // }
+
   function handleLogin(event: React.FormEvent) {
-    //TODO fix when issue is closed
-    //https://github.com/keikaavousi/fake-store-api/issues/97
+    //temporary dummy function
+    //always logs in user
     event.preventDefault();
-    fetch(`${BACKEND_API_URL}/auth/login`, {
-      method: "POST",
-      body: JSON.stringify({
-        username: loginData.username,
-        password: loginData.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        //returns {'token' : '...'}
-        if ("token" in json) {
-          sessionStorage.setItem("token", "token");
-          router.push("/");
-        }
-      })
-      .catch((error) => {
-        console.error("Error unable to login:", error);
-      });
+    setUserToken(createDummyToken());
+    router.push("/");
   }
 
   useEffect(() => {
