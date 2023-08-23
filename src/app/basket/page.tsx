@@ -10,7 +10,7 @@ import DiscountModal from "@/components/errorComponents/DiscountModal";
 import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
-import { SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
+import { SHOPPING_BAG_NUMBER } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 
 import { getItemsById } from "@/fetchers/fetchItems";
@@ -24,7 +24,7 @@ function roundNumber(number: number): number {
 }
 
 function Basket(): JSX.Element {
-  const { basketItems, setBasketItems } = useGlobalContext();
+  const { basketItems, setBasketItems, userId } = useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [[discountValue, validDiscount], setDiscount] = useState<
     [number, boolean]
@@ -35,27 +35,31 @@ function Basket(): JSX.Element {
 
   useEffect(() => {
     //Initial basket fetch
-    //Todo if user is authenticated
-    fetch(`https://fakestoreapi.com/carts/${SHOPPING_BAG_NUMBER}`)
-      .then((res) => res.json())
-      .then((json) => {
-        let items = json.products.map((item: any) => {
-          return new BasketItem(item.productId, item.quantity);
+    if (userId !== 0) {
+      fetch(`https://fakestoreapi.com/carts/${SHOPPING_BAG_NUMBER}`)
+        .then((res) => res.json())
+        .then((json) => {
+          let items = json.products.map((item: any) => {
+            return new BasketItem(item.productId, item.quantity);
+          });
+
+          if (items === undefined) {
+            items = [];
+          }
+
+          setBasketItems(new BasketItems(null, json.userId, json.date, items)); //todo basket id
+        })
+        .catch((error) => {
+          console.error("Error fetching basket data:", error);
         });
+    } else {
+      const basketItemsCopy = { ...basketItems };
+      basketItemsCopy.items = [];
+      setBasketItems(basketItemsCopy);
+    }
+  }, [userId]);
 
-        if (items === undefined) {
-          items = [];
-        }
-
-        setBasketItems(new BasketItems(json.userId, json.date, items));
-        //TODO
-      })
-      .catch((error) => {
-        console.error("Error fetching basket data:", error);
-      });
-  }, []);
-
-  const { data, error, isLoading } = getItemsById(itemIds); //TODO
+  const { data, error, isLoading } = getItemsById(itemIds);
 
   if (error)
     return (
@@ -72,7 +76,7 @@ function Basket(): JSX.Element {
       const basketItemsCopy = { ...basketItems };
       basketItemsCopy.items[index].quantity = newQuantity;
       setBasketItems(basketItemsCopy);
-      updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
+      updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
     }
   }
 
@@ -80,7 +84,7 @@ function Basket(): JSX.Element {
     const basketItemsCopy = { ...basketItems };
     basketItemsCopy.items.splice(index, 1);
     setBasketItems(basketItemsCopy);
-    updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
+    updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
   }
 
   function calculateOrderSum(): number {

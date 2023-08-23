@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 
@@ -14,15 +14,15 @@ import { getItem } from "@/fetchers/fetchItems";
 import { BasketItem } from "@/models/basket";
 import { updateBasketData } from "@/utils/updateBasket";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { SHOPPING_BAG_NUMBER, USERT_ID } from "@/constants";
 import BasketPopover from "@/components/BasketPopover";
 
 function DetailView(): JSX.Element {
   const params = useParams();
   const [quantity, setQuantity] = useState<number>(1);
   const [chosenSize, setChosenSize] = useState<number>(0);
-  const { basketItems, setBasketItems } = useGlobalContext();
+  const { basketItems, setBasketItems, userId } = useGlobalContext();
   const [showPopover, setShowPopover] = useState<boolean>(false);
+  const router = useRouter();
 
   const { data, error, isLoading } = getItem(params.id);
 
@@ -40,30 +40,26 @@ function DetailView(): JSX.Element {
     }
   }
 
-  function handleAddItemToBasket() {
-    //Todo if user is authenticated
+  async function handleAddItemToBasket() {
+    if (userId === 0) {
+      //check if user auth token is missing
+      //redirect user to login when he's not authenticated
+      router.push("/login");
+      return;
+    }
 
     const existingItemIndex = basketItems.items.findIndex(
       (item) => item.productId === Number(params.id)
     );
 
-    if (existingItemIndex !== -1) {
-      // Upadate quantity when items already in the basket
-      const itemsCopy = [...basketItems.items];
-      itemsCopy[existingItemIndex].quantity += quantity;
-
-      const updatedBasket = { ...basketItems, items: itemsCopy };
-      setBasketItems(updatedBasket);
-      updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, updatedBasket.items);
+    if (basketItems.basketId === null) {
+      // initially basketItems attributes are set to null
+      // when user first adds an item, basketItems attributes values are set
+      await initializeBasket();
+    } else if (existingItemIndex === -1) {
+      addNewItem(basketItems.basketId);
     } else {
-      // Add new item to basket
-      const newItem = new BasketItem(Number(params.id), quantity);
-      const updatedBasket = {
-        ...basketItems,
-        items: [...basketItems.items, newItem],
-      };
-      setBasketItems(updatedBasket);
-      updateBasketData(USERT_ID, SHOPPING_BAG_NUMBER, updatedBasket.items);
+      updateExistingItem(existingItemIndex, basketItems.basketId);
     }
 
     setShowPopover(true);
@@ -71,6 +67,56 @@ function DetailView(): JSX.Element {
     setTimeout(() => {
       setShowPopover(false);
     }, 3000);
+  }
+
+  async function createNewBasket(
+    date: Date,
+    products: BasketItem
+  ): Promise<number> {
+    return fetch("https://fakestoreapi.com/carts", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: userId,
+        date: date,
+        products: products,
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => json.id) //returns basket Id
+      .catch((error) => {
+        console.error("Error updating basket data:", error);
+      });
+  }
+
+  async function initializeBasket(): Promise<void> {
+    const basketItemsCopy = { ...basketItems };
+    const date = new Date();
+    const items = new BasketItem(Number(params.id), quantity);
+
+    basketItemsCopy.basketId = await createNewBasket(date, items);
+    basketItemsCopy.date = date;
+    basketItemsCopy.userId = userId;
+    basketItemsCopy.items.push(items);
+    setBasketItems(basketItemsCopy);
+  }
+
+  function updateExistingItem(index: number, basketId: number): void {
+    const itemsCopy = [...basketItems.items];
+    itemsCopy[index].quantity += quantity;
+
+    const updatedBasket = { ...basketItems, items: itemsCopy };
+    updateBasketData(userId, basketId, updatedBasket.items);
+    setBasketItems(updatedBasket);
+  }
+
+  function addNewItem(basketId: number): void {
+    const newItem = new BasketItem(Number(params.id), quantity);
+    const updatedBasket = {
+      ...basketItems,
+      items: [...basketItems.items, newItem],
+    };
+    updateBasketData(userId, basketId, updatedBasket.items);
+    setBasketItems(updatedBasket);
   }
 
   return (

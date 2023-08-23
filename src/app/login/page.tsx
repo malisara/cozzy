@@ -9,6 +9,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import Button from "@/components/Button";
 import { imageCover } from "@/components/utils/style";
 // import { BACKEND_API_URL } from "@/constants";
+import { SESSION_TOKEN, USER_ID } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import UserCredentials from "@/models/userCredentials";
 import loginImage from "@/../public/login.png";
@@ -36,11 +37,18 @@ function Login(): JSX.Element {
   const router = useRouter();
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false);
-  const { setUserToken } = useGlobalContext();
+  const { userId, setUserId } = useGlobalContext();
   const [loginData, setLoginData] = useState<UserCredentials>({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    //redirect logged-in user to homepage
+    if (userId !== 0) {
+      router.push("/");
+    }
+  }, []);
 
   function togglePasswordVisibility() {
     setVisiblePassword((previous) => !previous);
@@ -80,12 +88,31 @@ function Login(): JSX.Element {
   //     });
   // }
 
-  function handleLogin(event: React.FormEvent) {
+  async function handleLogin(event: React.FormEvent) {
     //temporary dummy function
-    //always logs in user
+    //always logs in user as one of the users provided in API
     event.preventDefault();
-    setUserToken(createDummyToken());
+
+    const randomUserId = await getRandomUserId();
+    sessionStorage.setItem(SESSION_TOKEN, createDummyToken());
+    sessionStorage.setItem(USER_ID, JSON.stringify(randomUserId));
+    setUserId(randomUserId);
     router.push("/");
+  }
+
+  async function getRandomUserId(): Promise<number> {
+    const allUserIds = await fetchUsers();
+    const randomIndex = Math.floor(Math.random() * allUserIds.length);
+    return allUserIds[randomIndex];
+  }
+
+  async function fetchUsers(): Promise<number[]> {
+    return fetch("https://fakestoreapi.com/users")
+      .then((res) => res.json())
+      .then((json) => json.map((user: any) => user.id))
+      .catch((error) => {
+        console.error("Error fetching users data:", error);
+      });
   }
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { ImStarEmpty, ImStarFull, ImStarHalf } from "react-icons/im";
-//todo handle reviews
 
 type Props = {
   stars: number;

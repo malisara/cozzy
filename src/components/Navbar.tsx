@@ -13,6 +13,7 @@ import {
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 
+import { SESSION_TOKEN, USER_ID } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
@@ -23,7 +24,7 @@ function Navbar(): JSX.Element {
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const currentPath = usePathname();
-  const { basketItems, userToken, setUserToken } = useGlobalContext();
+  const { basketItems, userId, setUserId } = useGlobalContext();
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
 
   const iconStyle = "hover:text-base-secondary text-lg";
@@ -42,7 +43,9 @@ function Navbar(): JSX.Element {
   });
 
   function logout(): void {
-    setUserToken("");
+    sessionStorage.setItem(SESSION_TOKEN, "");
+    sessionStorage.setItem(USER_ID, JSON.stringify(0));
+    setUserId(0);
   }
 
   useEffect(() => {
@@ -92,7 +95,7 @@ function Navbar(): JSX.Element {
           <Link href="/basket" className="relative">
             <BsBasket3 className={iconStyle} />
 
-            {basketItemsCOunt > 0 && (
+            {basketItemsCOunt > 0 && userId !== 0 && (
               <div
                 className={`absolute top-0 right-0 bg-yellow-500
                  text-white font-bold rounded-full w-5 h-5 text-xs 
@@ -103,7 +106,7 @@ function Navbar(): JSX.Element {
             )}
           </Link>
 
-          {userToken.length === 0 ? (
+          {userId === 0 ? (
             <Link href={"/login"}>
               <AiOutlineUser className={iconStyle} />
             </Link>
