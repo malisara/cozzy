@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -23,6 +25,7 @@ export default function RootLayout({
       <body className={dmSans.className}>
         <GlobalContextProvider>
           <Navbar />
+          <ToastContainer position="top-right" theme="light" />
           {children}
           <Footer />
         </GlobalContextProvider>

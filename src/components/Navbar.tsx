@@ -12,6 +12,7 @@ import {
 } from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { toast } from "react-toastify";
 
 import { SESSION_TOKEN, USER_ID } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
@@ -46,6 +47,7 @@ function Navbar(): JSX.Element {
     sessionStorage.setItem(SESSION_TOKEN, "");
     sessionStorage.setItem(USER_ID, JSON.stringify(0));
     setUserId(0);
+    toast.success("you're logegd out");
   }
 
   useEffect(() => {
