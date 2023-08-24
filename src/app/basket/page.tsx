@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ImBin2 } from "react-icons/im";
 
-import Button from "@/components/Button";
 import DiscountModal from "@/components/errorComponents/DiscountModal";
 import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
@@ -16,19 +15,13 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import { getItemsById } from "@/fetchers/fetchItems";
 import { BasketItems, BasketItem } from "@/models/basket";
 import { updateBasketData } from "@/utils/updateBasket";
-
-const POSTAGE = 15;
-
-function roundNumber(number: number): number {
-  return Math.round((number + Number.EPSILON) * 100) / 100;
-}
+import PaymentSum from "@/components/PaymentSum";
 
 function Basket(): JSX.Element {
-  const { basketItems, setBasketItems, userId } = useGlobalContext();
+  const { basketItems, setBasketItems, userId, setOrderSum } =
+    useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [[discountValue, validDiscount], setDiscount] = useState<
-    [number, boolean]
-  >([0, false]);
+
   const itemIds = basketItems
     ? basketItems?.items.map((item) => item.productId.toString())
     : [];
@@ -61,6 +54,20 @@ function Basket(): JSX.Element {
 
   const { data, error, isLoading } = getItemsById(itemIds);
 
+  useEffect(() => {
+    //update total sum
+    let sum = 0;
+    if (data !== undefined) {
+      {
+        data.map(
+          (item, index) =>
+            (sum += basketItems.items[index].quantity * item.price)
+        );
+      }
+    }
+    setOrderSum(sum);
+  }, [data, basketItems]);
+
   if (error)
     return (
       <GeneralError errorMessage="An error occurred while loading basket items." />
@@ -85,27 +92,6 @@ function Basket(): JSX.Element {
     basketItemsCopy.items.splice(index, 1);
     setBasketItems(basketItemsCopy);
     updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
-  }
-
-  function calculateOrderSum(): number {
-    let sum = 0;
-    if (data !== undefined) {
-      {
-        data.map(
-          (item, index) =>
-            (sum += basketItems.items[index].quantity * item.price)
-        );
-      }
-    }
-    return sum;
-  }
-
-  function discountInEur(discount: number): number {
-    return roundNumber((discount / 100) * calculateOrderSum());
-  }
-
-  function discountedSum(discount: number): number {
-    return roundNumber(calculateOrderSum() + POSTAGE - discountInEur(discount));
   }
 
   return (
@@ -182,86 +168,9 @@ function Basket(): JSX.Element {
         <DiscountModal
           modalIsOpen={modalIsOpen}
           setModalIsOpen={setModalIsOpen}
-          setDiscount={setDiscount}
-          discountValue={discountValue}
         />
 
-        {/* total amount to pay */}
-        <div
-          className="w-[80%] mx-auto my-[2rem] 
-          lg:my-0 lg:w-[25%] justify-end"
-        >
-          <div className="flex justify-between text-sm mb-10">
-            <div>discount</div>
-            <div
-              className="underline hover:cursor-pointer"
-              onClick={() => setModalIsOpen(true)}
-            >
-              add a discount
-            </div>
-          </div>
-
-          <div className="text-gray-500 flex flex-col gap-3">
-            <div className="flex justify-between">
-              <div>Order value</div>
-              <div>{calculateOrderSum()} €</div>
-            </div>
-
-            {validDiscount && (
-              <div className="flex justify-between text-red-400">
-                <div>Discount</div>
-                <div>-{discountValue}% </div>
-              </div>
-            )}
-
-            {basketItems !== null && basketItems.items.length > 0 && (
-              <div className="flex justify-between">
-                <div>Postage</div>
-                <div>{POSTAGE} €</div>
-              </div>
-            )}
-
-            <hr className="border-gray-500" />
-
-            <div
-              className="flex justify-between text-gray-700 
-              font-bold mb-2"
-            >
-              <div>Sum</div>
-
-              <div>
-                {roundNumber(
-                  calculateOrderSum() +
-                    (basketItems !== null && basketItems.items.length > 0
-                      ? POSTAGE
-                      : 0)
-                )}
-                €
-              </div>
-            </div>
-
-            {validDiscount && (
-              <>
-                <div className="flex justify-end text-red-400">
-                  <div>-{discountInEur(discountValue)}€</div>
-                </div>
-
-                <hr />
-                <div
-                  className="flex justify-between text-gray-700
-                   font-bold text-l mb-5"
-                >
-                  <div>Total Sum</div>
-                  <div>{discountedSum(discountValue)}€</div>
-                </div>
-              </>
-            )}
-            <Button
-              text={"continue with purchase"}
-              disabled={basketItems === null || basketItems.items.length === 0}
-            />
-          </div>
-        </div>
+        <PaymentSum setModalIsOpen={setModalIsOpen} />
       </div>
     </div>
   );

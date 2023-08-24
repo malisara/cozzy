@@ -63,7 +63,6 @@ function DetailView(): JSX.Element {
     }
 
     setShowPopover(true);
-
     setTimeout(() => {
       setShowPopover(false);
     }, 3000);

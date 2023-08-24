@@ -2,23 +2,19 @@ import { useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import ReactModal from "react-modal";
 
+import { useGlobalContext } from "@/context/GlobalContext";
+
 const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
 
 type Props = {
   modalIsOpen: boolean;
   setModalIsOpen: (modalIsOpen: boolean) => void;
-  setDiscount: ([discountValue, validDiscount]: [number, boolean]) => void;
-  discountValue: number;
 };
 
-function DiscountModal({
-  modalIsOpen,
-  setModalIsOpen,
-  setDiscount,
-  discountValue,
-}: Props) {
+function DiscountModal({ modalIsOpen, setModalIsOpen }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
+  const { setDiscount, discount } = useGlobalContext();
   const modalBtnStyle = btnDisabled
     ? "bg-gray-400"
     : "border-base-secondary bg-base-secondary hover:opacity-75 rounded-md \
@@ -28,7 +24,7 @@ function DiscountModal({
     e: React.FormEvent<HTMLInputElement>
   ): void {
     if (e.currentTarget.value.trim().length > 0) {
-      setDiscount([0, false]); //resets invalid code text
+      setDiscount(0); //resets invalid code text
       setBtnDisabled(false);
     } else {
       setBtnDisabled(true);
@@ -36,7 +32,7 @@ function DiscountModal({
   }
 
   function closeModal(): void {
-    setDiscount([0, false]); //resets invalid code text
+    setDiscount(0); //resets invalid code text
     setModalIsOpen(false);
   }
 
@@ -48,10 +44,10 @@ function DiscountModal({
     if (inputValue && inputValue in DISCOUNT_CODES) {
       const discountedValue =
         DISCOUNT_CODES[inputValue as keyof typeof DISCOUNT_CODES];
-      setDiscount([discountedValue, true]);
+      setDiscount(discountedValue);
       setModalIsOpen(false);
     } else {
-      setDiscount([-1, false]);
+      setDiscount(-1);
     }
   }
 
@@ -83,7 +79,7 @@ function DiscountModal({
         <form action="" className="flex flex-wrap mt-5">
           <input
             ref={inputRef}
-            className="border border-gray-400 h-[2.5rem] rounded-lg 
+            className="border border-gray-400 h-[2.5rem] rounded-lg
         w-[95%] lg:w-[75%] mx-auto px-2"
             onChange={(e) => handleDiscountCodeChange(e)}
           />
@@ -96,7 +92,7 @@ function DiscountModal({
             add
           </button>
         </form>
-        {discountValue === -1 && (
+        {discount === -1 && (
           <div className="mt-2 text-red-400 text-sm">Invalid code</div>
         )}
       </div>
