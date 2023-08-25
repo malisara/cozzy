@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { urlData } from "./utils/routes";
 import { flexCenter, imageCover } from "./utils/style";
 
+const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
+
 const variants = {
   //taken from:
   //https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed=&file=/src/Example.tsx:1038-1045
@@ -32,7 +34,6 @@ const variants = {
 
 function Hero(): JSX.Element {
   const [[shownImage, direction], setShownImage] = useState<number[]>([1, -1]);
-  const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,7 +62,7 @@ function Hero(): JSX.Element {
               .filter((hero) => hero.id === shownImage)
               .map((hero) => {
                 return (
-                  <div className={`${imageCover}`} key={"animate-div"}>
+                  <div className={imageCover} key={"animate-div"}>
                     <motion.img
                       variants={variants}
                       initial="enter"
@@ -74,7 +75,7 @@ function Hero(): JSX.Element {
                       custom={direction}
                       key={hero.id}
                       src={hero.src.src}
-                      className={`${imageCover}`}
+                      className={imageCover}
                     />
                     <div
                       className={`absolute inset-0 flex-col gap-5

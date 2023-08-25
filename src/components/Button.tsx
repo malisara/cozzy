@@ -18,7 +18,7 @@ function Button({ text, disabled, handleClick, redirect }: Props): JSX.Element {
 
   function handleButtonClick() {
     if (handleClick !== undefined) {
-      handleClick;
+      handleClick();
     }
     if (redirect !== undefined) {
       router.push(redirect);

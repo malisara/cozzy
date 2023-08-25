@@ -7,9 +7,10 @@ import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
 
+const categoryTitleSTyle = "text-base-secondary text-lg font-semibold";
+
 function Categories(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
-  const categoryTitleSTyle = "text-base-secondary text-lg font-semibold";
 
   return (
     <div className="flex flex-wrap gap-5 justify-center mb-5">
@@ -34,7 +35,7 @@ function Categories(): JSX.Element {
                bg-black/50 transition-all duration-300 
                group-hover:opacity-100 scale-105"
                 >
-                  <p className={`${categoryTitleSTyle}`}>
+                  <p className={categoryTitleSTyle}>
                     {category.alt.toUpperCase()}
                   </p>
                 </div>
@@ -43,7 +44,7 @@ function Categories(): JSX.Element {
                   className={`absolute inset-0 transition-opacity duration-300
                    bg-black/40 ${flexCenter}`}
                 >
-                  <p className={`${categoryTitleSTyle}`}>
+                  <p className={categoryTitleSTyle}>
                     {category.alt.toUpperCase()}
                   </p>
                 </div>

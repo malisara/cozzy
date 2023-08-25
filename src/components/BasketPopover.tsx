@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import Item from "@/models/item";
+import { shortenTitle } from "@/utils/functions";
 
 type Props = {
   item: Item;
@@ -18,11 +19,7 @@ function BasketPopover({ item, quantity }: Props) {
           <Image src={item.image} alt={item.title} width={50} height={50} />
         </div>
         <div className="text-sm">
-          <div className="font-semibold">
-            {item.title.length > 20
-              ? item.title.slice(0, 15) + "..."
-              : item.title}
-          </div>
+          <div className="font-semibold">{shortenTitle(item.title, 20)}</div>
           <div>
             Quantity:
             {quantity}

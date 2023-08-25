@@ -9,6 +9,9 @@ import { getItemsByCategory, getItemsById } from "@/fetchers/fetchItems";
 import Item from "@/models/item";
 import SingleItem from "./SingleItem";
 
+const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
+const hasGridDisplayStyle = "flex-wrap justify-center";
+
 type Props = {
   hasGridDisplay?: boolean;
   sortPriceDescending?: boolean;
@@ -22,8 +25,6 @@ function ItemList({
   category = DEFAULT_HOMEPAGE_CATEGORY,
   limit,
 }: Props): JSX.Element {
-  const lineDisplayStyle = "flex-nowrap overflow-x-auto"; // TODO
-  const hasGridDisplayStyle = "flex-wrap justify-center";
   const [itemsToDisplay, setItemsToDisplay] = useState<Item[]>([]);
   const [savedItems, setSavedItems] = useState<string[]>([]);
   const currentRoute = usePathname();
@@ -52,8 +53,7 @@ function ItemList({
   }, [data]);
 
   useEffect(() => {
-    const items = [...itemsToDisplay];
-    setItemsToDisplay(sortItems(items));
+    setItemsToDisplay(sortItems([...itemsToDisplay]));
   }, [sortPriceDescending]);
 
   useEffect(() => {

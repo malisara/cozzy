@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ImBin2 } from "react-icons/im";
 
@@ -9,18 +10,20 @@ import DiscountModal from "@/components/errorComponents/DiscountModal";
 import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
+import PaymentSum from "@/components/PaymentSum";
+import { wideBtnStyle } from "@/components/utils/style";
 import { SHOPPING_BAG_NUMBER } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
-
 import { getItemsById } from "@/fetchers/fetchItems";
 import { BasketItems, BasketItem } from "@/models/basket";
+import { shortenTitle } from "@/utils/functions";
 import { updateBasketData } from "@/utils/updateBasket";
-import PaymentSum from "@/components/PaymentSum";
 
 function Basket(): JSX.Element {
   const { basketItems, setBasketItems, userId, setOrderSum } =
     useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   const itemIds = basketItems
     ? basketItems?.items.map((item) => item.productId.toString())
@@ -94,12 +97,16 @@ function Basket(): JSX.Element {
     updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
   }
 
+  function handleRedirect() {
+    router.push("/payment");
+  }
+
   return (
     <div className="mt-[5rem]">
       <Title title="shopping bag" />
 
       <div className="flex flex-wrap md:px-[5rem]">
-        <div className="w-[90%] lg:w-[45%] mx-auto">
+        <div className="w-[90%] lg:w-[45%] mx-auto order-2 lg:order-1">
           {/* Basket items */}
           {basketItems.items?.length > 0 && (
             <>
@@ -107,7 +114,7 @@ function Basket(): JSX.Element {
                 <div key={index}>
                   <div
                     className="flex border border-gray-300 m-auto p-4 
-                relative mb-3 h-[8rem]"
+                relative mb-7 h-[8rem]"
                   >
                     <div
                       className="absolute top-1 right-1 p-2 cursor-pointer"
@@ -128,9 +135,7 @@ function Basket(): JSX.Element {
                     <div className="w-3/4 flex flex-col justify-between">
                       <Link href={`item/${item.id}`} className="flex">
                         <div className="font-bold text-sm mb-3 text-wrap">
-                          {item.title.length > 30
-                            ? item.title.slice(0, 25) + "..."
-                            : item.title}
+                          {shortenTitle(item.title, 30)}
                         </div>
                       </Link>
                       <div className="flex justify-between">
@@ -162,6 +167,12 @@ function Basket(): JSX.Element {
               ))}
             </>
           )}
+
+          {basketItems.items?.length > 0 && (
+            <button className={wideBtnStyle} onClick={handleRedirect}>
+              Continue with purchase
+            </button>
+          )}
         </div>
 
         {/* modal */}
@@ -169,8 +180,9 @@ function Basket(): JSX.Element {
           modalIsOpen={modalIsOpen}
           setModalIsOpen={setModalIsOpen}
         />
-
-        <PaymentSum setModalIsOpen={setModalIsOpen} />
+        <div className="order-1 lg:order-2 w-full lg:w-[30%] mb-7 lg:mb-0">
+          <PaymentSum setModalIsOpen={setModalIsOpen} />
+        </div>
       </div>
     </div>
   );

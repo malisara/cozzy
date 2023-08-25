@@ -1,7 +1,8 @@
 import Link from "next/link";
 
+const margins = "mt-10 lg:mt-10";
+
 function NoItemsError(): JSX.Element {
-  const margins = "mt-10 lg:mt-10";
   return (
     <div className="mt-[8rem] text-center text-xl px-4">
       <div className="font-semibold text-3xl text-base-secondary">
@@ -12,7 +13,7 @@ function NoItemsError(): JSX.Element {
         Oops! We couldn't find any items matching your search.
       </div>
 
-      <div className={`${margins}`}>
+      <div className={margins}>
         <Link href={"/"} className="text-base-secondary underline font-light">
           go to homepage
         </Link>

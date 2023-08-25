@@ -3,6 +3,9 @@ import { useState } from "react";
 import { BiDownArrow, BiUpArrow } from "react-icons/bi";
 import { sortByPricedata } from "./sortData";
 
+const liStyle =
+  "block w-full px-4 py-2 text-xs hover:text-black active:no-underline";
+
 type Props = {
   onSortChange: (value: boolean) => void;
 };
@@ -14,8 +17,7 @@ function SortButton({ onSortChange }: Props): JSX.Element {
 
   const filterObject = sortByPricedata.find((item) => item.id === filter);
   const filterTitle = filterObject ? filterObject.title : "";
-  const liStyle =
-    "block w-full px-4 py-2 text-xs hover:text-black active:no-underline";
+
   return (
     <div className="relative w-fit">
       <button
@@ -44,7 +46,7 @@ function SortButton({ onSortChange }: Props): JSX.Element {
                   onClick={() => onSortChange(Boolean(data.id))}
                 >
                   <button
-                    className={`${liStyle}`}
+                    className={liStyle}
                     onClick={() => setDropDownOpen(() => [false, data.id])}
                   >
                     {data.title}

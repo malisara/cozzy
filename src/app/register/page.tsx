@@ -45,13 +45,14 @@ class UserRegisterCredentials {
     this.email = email;
   }
 }
+
+const formStyle =
+  "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
+     focus:outline-base-secondary border border-gray-200 w-full xl:w-[48%]";
+
 //todo better handling of input data
 //change hard-coded values
 function Register(): JSX.Element {
-  const formStyle =
-    "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
-     focus:outline-base-secondary border border-gray-200 w-full xl:w-[48%]";
-
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const [checkPassword, setCheckPassword] = useState<string>("");
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
@@ -267,64 +268,64 @@ function Register(): JSX.Element {
         >
           <div className="flex flex-wrap gap-4 justify-between">
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="first name"
               onBlur={(event) => handleBlur(event)}
               name="first-name"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="last name"
               onBlur={(event) => handleBlur(event)}
               name="last-name"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="email"
               onBlur={(event) => handleBlur(event)}
               name="email"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="username"
               onBlur={(event) => handleBlur(event)}
               name="username"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="password"
               onBlur={(event) => handleBlur(event)}
               name="password"
             />
             <input
               type="passwrod"
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="confirm password"
               onBlur={(event) => handleBlur(event)}
               name="confirm-password"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="city"
               onBlur={(event) => handleBlur(event)}
               name="city"
             />
             <input
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="street"
               onBlur={(event) => handleBlur(event)}
               name="street"
             />
             <input
               type="number"
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="house number"
               onBlur={(event) => handleBlur(event)}
               name="number"
             />
             <input
               type="number"
-              className={`${formStyle}`}
+              className={formStyle}
               placeholder="zip-code"
               onBlur={(event) => handleBlur(event)}
               name="zip-code"
@@ -341,11 +342,10 @@ function Register(): JSX.Element {
         </Link>
       </div>
       <div className="bg-yellow-200 flex-1 order-first">
-        <Image src={registerImage} alt="" className={`${imageCover}`} />
+        <Image src={registerImage} alt="" className={imageCover} />
       </div>
     </div>
   );
 }
-<div className="bg-green-200"></div>;
 
 export default Register;

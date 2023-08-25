@@ -29,11 +29,11 @@ function createDummyToken(): string {
   return token;
 }
 
-function Login(): JSX.Element {
-  const formStyle =
-    "rounded-md outline-none bg-white h-[3rem] px-3 \
+const formStyle =
+  "rounded-md outline-none bg-white h-[3rem] px-3 \
     text-gray-600 focus:outline-base-secondary border border-gray-200";
 
+function Login(): JSX.Element {
   const router = useRouter();
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false);
@@ -140,7 +140,7 @@ function Login(): JSX.Element {
           onSubmit={(event) => handleLogin(event)}
         >
           <input
-            className={`${formStyle}`}
+            className={formStyle}
             placeholder="username"
             onBlur={(event) => handleBlur(event)}
             name="username"
@@ -173,11 +173,10 @@ function Login(): JSX.Element {
         </Link>
       </div>
       <div className="bg-yellow-200 flex-1 order-first md:order-none">
-        <Image src={loginImage} alt="" className={`${imageCover}`} />
+        <Image src={loginImage} alt="" className={imageCover} />
       </div>
     </div>
   );
 }
-<div className="bg-green-200"></div>;
 
 export default Login;
