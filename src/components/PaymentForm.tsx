@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   FaCcDinersClub,
@@ -26,6 +27,7 @@ const creditCardsPattern =
 // Taken from: https://stackoverflow.com/questions/9315647/regex-credit-card-number-tests
 
 function PaymentForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -40,6 +42,10 @@ function PaymentForm() {
     const cvv = data.cvv;
     console.log("data submitted");
   };
+
+  function handleRedirect() {
+    router.push("/successfulPurchase");
+  }
 
   return (
     <div>
@@ -104,7 +110,7 @@ function PaymentForm() {
           {errors.cvv && <span>{errors.cvv.message}</span>}
         </div>
 
-        <button type="submit" className={wideBtnStyle}>
+        <button type="submit" className={wideBtnStyle} onClick={handleRedirect}>
           Pay
         </button>
       </form>
