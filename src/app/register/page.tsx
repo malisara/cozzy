@@ -11,39 +11,17 @@ import registerImage from "@/../public/register.png";
 import { AiOutlineClose } from "react-icons/ai";
 
 class UserRegisterCredentials {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-
-  city: string;
-  street: string;
-  number: number;
-  zip: number;
-  email: string;
-
   constructor(
-    username: string,
-    password: string,
-    firstName: string,
-    flastName: string,
-    city: string,
-    street: string,
-    number: number,
-    zip: number,
-    email: string
-  ) {
-    this.username = username;
-    this.password = password;
-    this.firstName = firstName;
-    this.lastName = flastName;
-
-    this.city = city;
-    this.street = street;
-    this.number = number;
-    this.zip = zip;
-    this.email = email;
-  }
+    public username: string,
+    public password: string,
+    public firstName: string,
+    public lastName: string,
+    public city: string,
+    public street: string,
+    public number: number,
+    public zip: number,
+    public email: string
+  ) {}
 }
 
 const formStyle =

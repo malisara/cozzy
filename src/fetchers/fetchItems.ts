@@ -3,15 +3,11 @@ import Item from "@/models/item";
 import useSWR from "swr";
 
 class FetchResult<T> {
-  data: T | undefined;
-  error: any;
-  isLoading: boolean;
-
-  constructor(data: T | undefined, error: any, isLoading: boolean) {
-    this.data = data;
-    this.error = error;
-    this.isLoading = isLoading;
-  }
+  constructor(
+    public data: T | undefined,
+    public error: any,
+    public isLoading: boolean
+  ) {}
 }
 
 export function getItemsById(ids: string[]): FetchResult<Item[]> {
