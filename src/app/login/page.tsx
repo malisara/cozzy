@@ -132,10 +132,10 @@ function Login(): JSX.Element {
     md:flex-row px-2 md:px-10 mb-[6rem]"
     >
       <div className="flex-1 text-center">
-        <div className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
+        <p className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
           Welcome back!
-        </div>
-        <div className=" text-l md:text-xl pb-8">Let's get you logged in</div>
+        </p>
+        <p className=" text-l md:text-xl pb-8">Let's get you logged in</p>
 
         <form
           className="flex flex-col mx-5 xl:mx-[5rem] mb-3 gap-5 md:gap-10"

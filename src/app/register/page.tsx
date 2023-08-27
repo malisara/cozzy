@@ -235,7 +235,7 @@ function Register(): JSX.Element {
           >
             <AiOutlineClose />
           </button>
-          <div
+          <p
             className="text-base font-bold mb-4 flex
            flex-col gap-5 text-gray-600"
           >
@@ -248,7 +248,7 @@ function Register(): JSX.Element {
             >
               Login here
             </Link>
-          </div>
+          </p>
         </div>
       </ReactModal>
 
@@ -257,9 +257,9 @@ function Register(): JSX.Element {
         <div className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
           Create an account and join our community today
         </div>
-        <div className=" text-l md:text-xl pb-8">
+        <p className=" text-l md:text-xl pb-8">
           We're thrilled to have you onboard!
-        </div>
+        </p>
 
         <form
           className="flex flex-col mx-5 xl:mx-[5rem] mb-3 gap-5 md:gap-10 "
