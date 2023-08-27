@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
+import logo from "@/../public/logo.png";
 
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
@@ -69,7 +71,7 @@ function Navbar(): JSX.Element {
         px-10 z-10 transtion-all duration-300 ${navbarBg}`}
       >
         <Link href="/" className="pe-5">
-          LOGO
+          <Image src={logo} alt="" height={70} width={70} />
         </Link>
 
         {/* links */}
@@ -139,7 +141,9 @@ function Navbar(): JSX.Element {
             transition={{ duration: 0.3 }}
           >
             <div className="pe-10 flex py-10 justify-between items-center">
-              <Link href="/">LOGO</Link>
+              <Link href="/" className="pe-5">
+                <Image src={logo} alt="" height={70} width={70} />
+              </Link>
 
               <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
                 <AiOutlineClose className="text-gray-400" />
