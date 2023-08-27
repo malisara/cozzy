@@ -44,8 +44,11 @@ function Navbar(): JSX.Element {
   });
 
   function logout(): void {
-    sessionStorage.setItem(SESSION_TOKEN, "");
-    sessionStorage.setItem(USER_ID, JSON.stringify(0));
+    //todo
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(SESSION_TOKEN, "");
+      sessionStorage.setItem(USER_ID, JSON.stringify(0));
+    }
     setUserId(0);
     toast.success("you're logegd out");
   }

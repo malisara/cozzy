@@ -5,8 +5,15 @@ import Confetti from "react-confetti";
 
 import { flexCenter } from "@/components/utils/style";
 
-function successfulPurchase() {
-  const windowSize = useRef([window.innerWidth, window.innerHeight]);
+function SuccessfulPurchase() {
+  function getWindowSize() {
+    if (typeof window !== "undefined") {
+      return [window.innerWidth, window.innerHeight];
+    }
+    return [0, 0];
+  }
+
+  const windowSize = useRef(getWindowSize());
   return (
     <div
       className={`${flexCenter} mt-[15rem] text-3xl px-5 flex-wrap 
@@ -18,4 +25,4 @@ function successfulPurchase() {
   );
 }
 
-export default successfulPurchase;
+export default SuccessfulPurchase;

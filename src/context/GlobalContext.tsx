@@ -3,6 +3,20 @@
 import { SESSION_TOKEN, USER_ID } from "@/constants";
 import { BasketItems } from "@/models/basket";
 
+function returnSessioToken(): string {
+  if (typeof window !== "undefined") {
+    return sessionStorage.getItem(SESSION_TOKEN) || "";
+  }
+  return "";
+}
+
+function getUserToken(): number {
+  if (typeof window !== "undefined") {
+    Number(sessionStorage.getItem(USER_ID)) || 0;
+  }
+  return 0;
+}
+
 import {
   useContext,
   createContext,
@@ -26,7 +40,7 @@ type ContextProps = {
 const GlobalContext = createContext<ContextProps>({
   basketItems: new BasketItems(null, null, null, []),
   setBasketItems: (): BasketItems => new BasketItems(null, null, null, []),
-  userToken: sessionStorage.getItem(SESSION_TOKEN) || "",
+  userToken: returnSessioToken(),
   userId: 0,
   setUserId: (): number => 0,
   orderSum: 0,
@@ -41,10 +55,8 @@ type ContextChildrenProp = {
 export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
   const newBasket = new BasketItems(null, null, null, []);
   const [basketItems, setBasketItems] = useState<BasketItems>(newBasket);
-  const userToken = sessionStorage.getItem(SESSION_TOKEN) || "";
-  const [userId, setUserId] = useState<number>(
-    Number(sessionStorage.getItem(USER_ID)) || 0
-  );
+  const userToken = returnSessioToken();
+  const [userId, setUserId] = useState<number>(getUserToken());
   const [orderSum, setOrderSum] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
 

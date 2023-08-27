@@ -94,8 +94,11 @@ function Login(): JSX.Element {
     event.preventDefault();
 
     const randomUserId = await getRandomUserId();
-    sessionStorage.setItem(SESSION_TOKEN, createDummyToken());
-    sessionStorage.setItem(USER_ID, JSON.stringify(randomUserId));
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(SESSION_TOKEN, createDummyToken());
+      sessionStorage.setItem(USER_ID, JSON.stringify(randomUserId));
+    }
     setUserId(randomUserId);
     router.push("/");
   }
