@@ -11,7 +11,7 @@ type Props = {
   postage?: number;
 };
 
-function PaymentSum({ setModalIsOpen, postage = 0 }: Props) {
+function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
   const { orderSum, basketItems, discount } = useGlobalContext();
 
   function discountInEur(discount: number): number {

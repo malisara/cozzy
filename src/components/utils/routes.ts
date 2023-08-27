@@ -1,10 +1,10 @@
-import HeroMen from "../../../public/hero-men.png";
-import HeroWomen from "../../../public/hero-women.png";
-import HeroJewelry from "../../../public/hero-jewelry.png";
+import HeroMen from "@/../public/hero-men.png";
+import HeroWomen from "@/../public/hero-women.png";
+import HeroJewelry from "@/../public/hero-jewelry.png";
 
-import CategoryMen from "../../../public/category-men.png";
-import CategoryWomen from "../../../public/category-women.png";
-import CategoryJewelry from "../../../public/category-jewelry.png";
+import CategoryMen from "@/../public/category-men.png";
+import CategoryWomen from "@/../public/category-women.png";
+import CategoryJewelry from "@/../public/category-jewelry.png";
 
 export const urlData = [
   {

@@ -14,6 +14,10 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import UserCredentials from "@/models/userCredentials";
 import loginImage from "@/../public/login.png";
 
+const formStyle =
+  "rounded-md outline-none bg-white h-[3rem] px-3 \
+    text-gray-600 focus:outline-base-secondary border border-gray-200";
+
 function createDummyToken(): string {
   //taken from:
   //https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
@@ -28,10 +32,6 @@ function createDummyToken(): string {
   }
   return token;
 }
-
-const formStyle =
-  "rounded-md outline-none bg-white h-[3rem] px-3 \
-    text-gray-600 focus:outline-base-secondary border border-gray-200";
 
 function Login(): JSX.Element {
   const router = useRouter();

@@ -44,7 +44,7 @@ function UpdateShipmentData({
   email,
   setUserData,
   setEditUserData,
-}: Props) {
+}: Props): JSX.Element {
   const {
     register,
     handleSubmit,

@@ -22,6 +22,8 @@ import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
 import logo from "@/../public/logo.png";
 
+const iconStyle = "hover:text-base-secondary text-lg";
+
 function Navbar(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
@@ -30,7 +32,6 @@ function Navbar(): JSX.Element {
   const { basketItems, userId, setUserId } = useGlobalContext();
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
 
-  const iconStyle = "hover:text-base-secondary text-lg";
   const navbarBg =
     navOnTop && currentPath === "/"
       ? "bg-transparent"

@@ -1,6 +1,10 @@
 import { useState } from "react";
 
 const SIZES = ["2XS", "XS", "M", "L", "2XL"];
+const availableStyle =
+  "hover:bg-base-secondary hover:text-white border-base-secondary\
+ text-base-secondary";
+const notAvailableStyle = "disabled bg-gray-300"; //style for sizes that are not in stock
 
 type Props = {
   chosenSize: number;
@@ -11,10 +15,6 @@ function Sizes({ chosenSize, setChosenSize }: Props): JSX.Element {
   const [available, setAvailable] = useState<boolean[]>( // API doesn't support sizing
     new Array(SIZES.length).fill(false)
   );
-  const availableStyle =
-    "hover:bg-base-secondary hover:text-white border-base-secondary\
-     text-base-secondary";
-  const notAvailableStyle = "disabled bg-gray-300"; //should be disabled
 
   return (
     <div className="flex gap-2 mt-10 mx-auto lg:mx-0">

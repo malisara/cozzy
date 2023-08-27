@@ -8,14 +8,14 @@ type Props = {
   quantity: number;
 };
 
-function BasketPopover({ item, quantity }: Props) {
+function BasketPopover({ item, quantity }: Props): JSX.Element {
   return (
     <div
       className="fixed top-[70px] right-5 p-2 bg-white
      shadow-md rounded-md z-50"
     >
       <div className="flex items-center">
-        <div className="w-14 h-14 mr-2">
+        <div className="w-14 h-fit mr-2">
           <Image src={item.image} alt={item.title} width={50} height={50} />
         </div>
         <div className="text-sm">

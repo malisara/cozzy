@@ -5,7 +5,7 @@ import Confetti from "react-confetti";
 
 import { flexCenter } from "@/components/utils/style";
 
-function SuccessfulPurchase() {
+function SuccessfulPurchase(): JSX.Element {
   function getWindowSize() {
     if (typeof window !== "undefined") {
       return [window.innerWidth, window.innerHeight];

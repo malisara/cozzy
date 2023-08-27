@@ -11,7 +11,7 @@ type Props = {
   setModalIsOpen: (modalIsOpen: boolean) => void;
 };
 
-function DiscountModal({ modalIsOpen, setModalIsOpen }: Props) {
+function DiscountModal({ modalIsOpen, setModalIsOpen }: Props): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const { setDiscount, discount } = useGlobalContext();

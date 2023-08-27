@@ -10,23 +10,21 @@ import { imageCover } from "@/components/utils/style";
 import registerImage from "@/../public/register.png";
 import { AiOutlineClose } from "react-icons/ai";
 
-class UserRegisterCredentials {
-  constructor(
-    public username: string,
-    public password: string,
-    public firstName: string,
-    public lastName: string,
-    public city: string,
-    public street: string,
-    public number: number,
-    public zip: number,
-    public email: string
-  ) {}
-}
-
 const formStyle =
   "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
      focus:outline-base-secondary border border-gray-200 w-full xl:w-[48%]";
+
+type UserRegisterCredentials = {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  city: string;
+  street: string;
+  number: number;
+  zip: number;
+  email: string;
+};
 
 //todo better handling of input data
 //change hard-coded values
@@ -213,7 +211,7 @@ function Register(): JSX.Element {
           >
             <AiOutlineClose />
           </button>
-          <p
+          <div
             className="text-base font-bold mb-4 flex
            flex-col gap-5 text-gray-600"
           >
@@ -226,7 +224,7 @@ function Register(): JSX.Element {
             >
               Login here
             </Link>
-          </p>
+          </div>
         </div>
       </ReactModal>
 
