@@ -1,13 +1,18 @@
-import React from "react";
 import { Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+
 import { wideBtnStyle } from "./utils/style";
+import {
+  invalidMailMessage,
+  mailRegEx,
+  onlyLettersMessage,
+  onlyLettersRegEx,
+  onlyNumbersMessage,
+  onlyNumbersRegEx,
+} from "@/utils/regExValues";
 
 const formStyle = "border px-3 h-[3rem] me-2 mb-2";
 const inputDivStyle = "flex flex-col w-[45%]";
-
-const onlyLettersMessage = "the field must contain only letters";
-const onlyNumbersMessage = "the field must contain only numbers";
 const requiredFieldMessage = "This field is required";
 
 type Props = {
@@ -69,13 +74,14 @@ function UpdateShipmentData({
       onSubmit={handleSubmit(onSubmit)}
       className="flex gap-5 lg:gap-2 flex-wrap"
     >
+      {/* name */}
       <div className={inputDivStyle}>
         <input
           defaultValue={name}
           {...register("name", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[a-zA-Z]+$/,
+              value: onlyLettersRegEx,
               message: onlyLettersMessage,
             },
           })}
@@ -84,13 +90,14 @@ function UpdateShipmentData({
         {errors.name && <span>{errors.name.message}</span>}
       </div>
 
+      {/* last name */}
       <div className={inputDivStyle}>
         <input
           defaultValue={lastName}
           {...register("lastName", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[a-zA-Z]+$/,
+              value: onlyLettersRegEx,
               message: onlyLettersMessage,
             },
           })}
@@ -99,6 +106,7 @@ function UpdateShipmentData({
         {errors.lastName && <span>{errors.lastName.message}</span>}
       </div>
 
+      {/* street */}
       <div className={inputDivStyle}>
         <input
           defaultValue={street}
@@ -114,13 +122,14 @@ function UpdateShipmentData({
         {errors.street && <span>{errors.street.message}</span>}
       </div>
 
+      {/* number */}
       <div className={inputDivStyle}>
         <input
           defaultValue={number}
           {...register("number", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[0-9]*$/,
+              value: onlyNumbersRegEx,
               message: onlyNumbersMessage,
             },
           })}
@@ -129,14 +138,14 @@ function UpdateShipmentData({
         {errors.number && <span>{errors.number.message}</span>}
       </div>
 
+      {/* zip code */}
       <div className={inputDivStyle}>
         <input
           defaultValue={zip}
           {...register("zip", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[0-9]*$/,
-
+              value: onlyNumbersRegEx,
               message: onlyNumbersMessage,
             },
           })}
@@ -145,13 +154,14 @@ function UpdateShipmentData({
         {errors.zip && <span>{errors.zip.message}</span>}
       </div>
 
+      {/* city */}
       <div className={inputDivStyle}>
         <input
           defaultValue={city}
           {...register("city", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[a-zA-Z]+$/,
+              value: onlyLettersRegEx,
               message: onlyLettersMessage,
             },
           })}
@@ -160,14 +170,15 @@ function UpdateShipmentData({
         {errors.city && <span>{errors.city.message}</span>}
       </div>
 
+      {/* email */}
       <div className={inputDivStyle}>
         <input
           defaultValue={email}
           {...register("email", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-              message: "invalid email format",
+              value: mailRegEx,
+              message: invalidMailMessage,
             },
           })}
           className={formStyle}

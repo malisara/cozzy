@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import { useRef } from "react";
 import Confetti from "react-confetti";
 
 import { flexCenter } from "@/components/utils/style";

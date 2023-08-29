@@ -62,6 +62,7 @@ function PaymentForm(): JSX.Element {
         onSubmit={handleSubmit(onSubmit)}
         className="flex gap-5 lg:gap-2 flex-wrap"
       >
+        {/* credit card */}
         <div className={`${inputDivStyle} lg:w-[40%]`}>
           <input
             placeholder="Card number"
@@ -77,6 +78,7 @@ function PaymentForm(): JSX.Element {
           {errors.cardNumber && <span>{errors.cardNumber.message}</span>}
         </div>
 
+        {/* exp date */}
         <div className={`${inputDivStyle} lg:w-[30%]`}>
           <input
             placeholder="Exp.Date (YY/MM)"
@@ -93,6 +95,7 @@ function PaymentForm(): JSX.Element {
           {errors.date && <span>{errors.date.message}</span>}
         </div>
 
+        {/* cvv */}
         <div className={`${inputDivStyle} lg:w-[20%] mb-5`}>
           <input
             placeholder="CVV"
