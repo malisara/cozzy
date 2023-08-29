@@ -72,7 +72,7 @@ function Navbar(): JSX.Element {
         px-10 z-10 transtion-all duration-300 ${navbarBg}`}
       >
         <Link href="/" className="pe-5">
-          <Image src={logo} alt="" height={70} width={70} />
+          <p className="font-bold text-2xl mr-4">COZZY </p>
         </Link>
 
         {/* links */}
@@ -143,7 +143,7 @@ function Navbar(): JSX.Element {
           >
             <div className="pe-10 flex py-10 justify-between items-center">
               <Link href="/" className="pe-5">
-                <Image src={logo} alt="" height={70} width={70} />
+                <p className="font-bold text-2xl">COZZY </p>
               </Link>
 
               <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
