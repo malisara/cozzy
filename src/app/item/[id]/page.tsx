@@ -41,7 +41,7 @@ function DetailView(): JSX.Element {
   }
 
   async function handleAddItemToBasket() {
-    if (userId === 0) {
+    if (userId === null) {
       //check if user auth token is missing
       //redirect user to login when he's not authenticated
       router.push("/login");
@@ -57,9 +57,9 @@ function DetailView(): JSX.Element {
       // when user first adds an item, basketItems attributes values are set
       await initializeBasket();
     } else if (existingItemIndex === -1) {
-      addNewItem(basketItems.basketId);
+      addNewItem(basketItems.basketId, userId);
     } else {
-      updateExistingItem(existingItemIndex, basketItems.basketId);
+      updateExistingItem(existingItemIndex, basketItems.basketId, userId);
     }
 
     setShowPopover(true);
@@ -99,7 +99,11 @@ function DetailView(): JSX.Element {
     setBasketItems(basketItemsCopy);
   }
 
-  function updateExistingItem(index: number, basketId: number): void {
+  function updateExistingItem(
+    index: number,
+    basketId: number,
+    userId: number
+  ): void {
     const itemsCopy = [...basketItems.items];
     itemsCopy[index].quantity += quantity;
 
@@ -108,7 +112,7 @@ function DetailView(): JSX.Element {
     setBasketItems(updatedBasket);
   }
 
-  function addNewItem(basketId: number): void {
+  function addNewItem(basketId: number, userId: number): void {
     const newItem = new BasketItem(Number(params.id), quantity);
     const updatedBasket = {
       ...basketItems,
