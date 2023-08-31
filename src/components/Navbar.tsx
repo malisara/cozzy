@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,27 +14,32 @@ import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { toast } from "react-toastify";
 
-import { SESSION_TOKEN, USER_ID } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
-import logo from "@/../public/logo.png";
+import { BasketItems } from "@/models/basket";
 
 const iconStyle = "hover:text-base-secondary text-lg";
 
-function Navbar(): JSX.Element {
+function Navbar(): JSX.Element | null {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
-  const currentPath = usePathname();
-  const { basketItems, userId, setUserId } = useGlobalContext();
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
+  const { basketItems, setBasketItems, userId, setUserId } = useGlobalContext();
+  const currentPath = usePathname();
 
   const navbarBg =
     navOnTop && currentPath === "/"
       ? "bg-transparent"
       : "bg-stone-50 border-b-2 border-b-base-secondary";
+
+  useEffect(() => {
+    //prevent hydration error
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     //handle scroll
@@ -46,24 +50,31 @@ function Navbar(): JSX.Element {
     return () => window.removeEventListener("scroll", handleScroll);
   });
 
-  function logout(): void {
-    //todo
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem(SESSION_TOKEN, "");
-      sessionStorage.setItem(USER_ID, JSON.stringify(0));
-    }
-    setUserId(0);
-    toast.success("you're logegd out");
-  }
-
   useEffect(() => {
     //calculate number of items in basket
-    const basketItemsCount = basketItems.items.reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-    setBasketItemsCount(basketItemsCount);
+    if (basketItems.items.length > 0) {
+      const basketItemsCount = basketItems.items.reduce(
+        (total, item) => total + item.quantity,
+        0
+      );
+      setBasketItemsCount(basketItemsCount);
+    } else {
+      setBasketItemsCount(0);
+    }
   }, [basketItems]);
+
+  if (!hasMounted) {
+    return null;
+  }
+
+  function logout(): void {
+    setUserId(null);
+    setBasketItems(new BasketItems(null, null, null, []));
+
+    sessionStorage.clear(); //delete all saved data when user logs out
+
+    toast.success("you're logegd out");
+  }
 
   return (
     <div>
@@ -72,7 +83,7 @@ function Navbar(): JSX.Element {
         px-10 z-10 transtion-all duration-300 ${navbarBg}`}
       >
         <Link href="/" className="pe-5">
-          <p className="font-bold text-2xl mr-4">COZZY </p>
+          <p className="font-bold text-2xl mr-4">COZZY</p>
         </Link>
 
         {/* links */}
@@ -103,7 +114,7 @@ function Navbar(): JSX.Element {
           <Link href="/basket" className="relative">
             <BsBasket3 className={iconStyle} />
 
-            {basketItemsCOunt > 0 && userId !== 0 && (
+            {basketItemsCOunt > 0 && userId !== null && (
               <div
                 className={`absolute top-0 right-0 bg-yellow-500
                  text-white font-bold rounded-full w-5 h-5 text-xs 
@@ -114,7 +125,7 @@ function Navbar(): JSX.Element {
             )}
           </Link>
 
-          {userId === 0 ? (
+          {userId === null ? (
             <Link href={"/login"}>
               <AiOutlineUser className={iconStyle} />
             </Link>
