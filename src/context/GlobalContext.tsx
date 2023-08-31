@@ -1,13 +1,24 @@
 "use client";
 
-import { USER_ID_KEY } from "@/constants";
-import { BasketItems } from "@/models/basket";
+import { BASKET_ID_KEY, BASKET_ITEMS_KEY, USER_ID_KEY } from "@/constants";
+import { BasketItem, BasketItems } from "@/models/basket";
 
 function getUserId(): number | null {
   if (typeof window !== "undefined") {
     return Number(sessionStorage.getItem(USER_ID_KEY)) || null;
   }
   return null;
+}
+
+function getBasketId(): number | null {
+  if (typeof window !== "undefined") {
+    return Number(sessionStorage.getItem(BASKET_ID_KEY)) || null;
+  }
+  return null;
+}
+
+function getBasketItems(): BasketItem[] {
+  return JSON.parse(sessionStorage.getItem(BASKET_ITEMS_KEY) || "[]");
 }
 
 import {
@@ -21,8 +32,6 @@ import {
 type ContextProps = {
   basketItems: BasketItems;
   setBasketItems: Dispatch<SetStateAction<BasketItems>>;
-  // userToken: string | null;
-  // setUserToken: Dispatch<SetStateAction<string | null>>;
   userId: number | null;
   setUserId: Dispatch<SetStateAction<number | null>>;
   orderSum: number;
@@ -32,10 +41,8 @@ type ContextProps = {
 };
 
 const GlobalContext = createContext<ContextProps>({
-  basketItems: new BasketItems(null, null, null, []),
+  basketItems: new BasketItems(getBasketId(), getUserId(), null, []),
   setBasketItems: (): BasketItems => new BasketItems(null, null, null, []),
-  // userToken: getSessioToken(),
-  // setUserToken: (): string | null => getSessioToken(),
   userId: getUserId(),
   setUserId: (): number | null => null,
   orderSum: 0,
@@ -48,9 +55,13 @@ type ContextChildrenProp = {
   children: React.ReactNode;
 };
 export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
-  const newBasket = new BasketItems(null, null, null, []);
+  const newBasket = new BasketItems(
+    getBasketId(),
+    getUserId(),
+    null,
+    getBasketItems()
+  );
   const [basketItems, setBasketItems] = useState<BasketItems>(newBasket);
-  // const [userToken, setUserToken] = useState<string | null>(getSessioToken());
   const [userId, setUserId] = useState<number | null>(getUserId());
   const [orderSum, setOrderSum] = useState<number>(0);
   const [discount, setDiscount] = useState<number>(0);
@@ -60,8 +71,6 @@ export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
       value={{
         basketItems,
         setBasketItems,
-        // userToken,
-        // setUserToken,
         userId,
         setUserId,
         orderSum,
