@@ -4,27 +4,41 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import useSWR from "swr";
 
+import BasketPopover from "@/components/BasketPopover";
 import Button from "@/components/Button";
-import Loading from "@/components/Loading";
 import NoItemsError from "@/components/errorComponents/NoItemsError";
+import Loading from "@/components/Loading";
 import Reviews from "@/components/Reviews";
 import Sizes from "@/components/Sizes";
-import { getItem } from "@/fetchers/fetchItems";
+import {
+  BACKEND_API_URL,
+  BASKET_ID_KEY,
+  BASKET_ITEMS_KEY,
+  SIZES,
+} from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { itemFetcher } from "@/fetchers/fetchItems";
 import { BasketItem } from "@/models/basket";
 import { updateBasketData } from "@/utils/updateBasket";
-import { useGlobalContext } from "@/context/GlobalContext";
-import BasketPopover from "@/components/BasketPopover";
 
 function DetailView(): JSX.Element {
-  const params = useParams();
   const [quantity, setQuantity] = useState<number>(1);
-  const [chosenSize, setChosenSize] = useState<number>(0);
-  const { basketItems, setBasketItems, userId } = useGlobalContext();
+  const [chosenSize, setChosenSize] = useState<number>(2);
   const [showPopover, setShowPopover] = useState<boolean>(false);
-  const router = useRouter();
+  const [inStock, setInstock] = useState<boolean[]>(
+    new Array(SIZES.length).fill(false)
+  );
 
-  const { data, error, isLoading } = getItem(params.id);
+  const params = useParams();
+  const router = useRouter();
+  const { basketItems, setBasketItems, userId } = useGlobalContext();
+
+  const itemId = params.id;
+  const { data, error, isLoading } = useSWR({ itemId }, () =>
+    itemFetcher(itemId)
+  );
 
   if (error) return <NoItemsError />;
   if (isLoading || !data) return <Loading />;
@@ -42,24 +56,22 @@ function DetailView(): JSX.Element {
 
   async function handleAddItemToBasket() {
     if (userId === null) {
-      //check if user auth token is missing
-      //redirect user to login when he's not authenticated
       router.push("/login");
       return;
     }
 
-    const existingItemIndex = basketItems.items.findIndex(
-      (item) => item.productId === Number(params.id)
+    const itemInBasketIndex = basketItems.items.findIndex(
+      (item) => item.productId === Number(itemId)
     );
 
     if (basketItems.basketId === null) {
       // initially basketItems attributes are set to null
       // when user first adds an item, basketItems attributes values are set
       await initializeBasket();
-    } else if (existingItemIndex === -1) {
+    } else if (itemInBasketIndex === -1) {
       addNewItem(basketItems.basketId, userId);
     } else {
-      updateExistingItem(existingItemIndex, basketItems.basketId, userId);
+      updateExistingItem(itemInBasketIndex, basketItems.basketId, userId);
     }
 
     setShowPopover(true);
@@ -68,11 +80,28 @@ function DetailView(): JSX.Element {
     }, 3000);
   }
 
+  async function initializeBasket(): Promise<void> {
+    const basketItemsCopy = { ...basketItems };
+    const date = new Date();
+    const items = new BasketItem(Number(itemId), quantity);
+
+    const basketId = await createNewBasket(date, items);
+    basketItemsCopy.basketId = basketId;
+    basketItemsCopy.date = date;
+    basketItemsCopy.userId = userId;
+    basketItemsCopy.items.push(items);
+
+    sessionStorage.setItem(BASKET_ID_KEY, JSON.stringify(basketId));
+    sessionStorage.setItem(BASKET_ITEMS_KEY, JSON.stringify(items));
+
+    setBasketItems(basketItemsCopy);
+  }
+
   async function createNewBasket(
     date: Date,
     products: BasketItem
   ): Promise<number> {
-    return fetch("https://fakestoreapi.com/carts", {
+    return fetch(`${BACKEND_API_URL}/carts`, {
       method: "POST",
       body: JSON.stringify({
         userId: userId,
@@ -87,16 +116,14 @@ function DetailView(): JSX.Element {
       });
   }
 
-  async function initializeBasket(): Promise<void> {
-    const basketItemsCopy = { ...basketItems };
-    const date = new Date();
-    const items = new BasketItem(Number(params.id), quantity);
-
-    basketItemsCopy.basketId = await createNewBasket(date, items);
-    basketItemsCopy.date = date;
-    basketItemsCopy.userId = userId;
-    basketItemsCopy.items.push(items);
-    setBasketItems(basketItemsCopy);
+  function addNewItem(basketId: number, userId: number): void {
+    const newItem = new BasketItem(Number(itemId), quantity);
+    const updatedBasket = {
+      ...basketItems,
+      items: [...basketItems.items, newItem],
+    };
+    updateBasketData(userId, basketId, updatedBasket.items);
+    setBasketItems(updatedBasket);
   }
 
   function updateExistingItem(
@@ -108,16 +135,6 @@ function DetailView(): JSX.Element {
     itemsCopy[index].quantity += quantity;
 
     const updatedBasket = { ...basketItems, items: itemsCopy };
-    updateBasketData(userId, basketId, updatedBasket.items);
-    setBasketItems(updatedBasket);
-  }
-
-  function addNewItem(basketId: number, userId: number): void {
-    const newItem = new BasketItem(Number(params.id), quantity);
-    const updatedBasket = {
-      ...basketItems,
-      items: [...basketItems.items, newItem],
-    };
     updateBasketData(userId, basketId, updatedBasket.items);
     setBasketItems(updatedBasket);
   }
@@ -170,7 +187,11 @@ function DetailView(): JSX.Element {
 
             {/* sizes */}
             <div className="flex w-full lg:mt-5 flex-col">
-              <Sizes chosenSize={chosenSize} setChosenSize={setChosenSize} />
+              <Sizes
+                chosenSize={chosenSize}
+                setChosenSize={setChosenSize}
+                inStock={inStock}
+              />
 
               {/* quantity form */}
               <div className="mt-7 flex flex-row h-[3rem]">

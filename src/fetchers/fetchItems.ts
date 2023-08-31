@@ -17,11 +17,6 @@ export function getItemsById(ids: string[]): FetchResult<Item[]> {
   return new FetchResult(data, error, isLoading);
 }
 
-export function getItem(id: string): FetchResult<Item> {
-  const { data, error, isLoading } = useSWR({ id }, () => itemFetcher(id));
-  return new FetchResult(data, error, isLoading);
-}
-
 export function getItemsByCategory(
   category: string,
   limit?: number
@@ -36,7 +31,7 @@ async function itemsByIdsFetcher(ids: string[]): Promise<Item[]> {
   return Promise.all(ids.map((id) => itemFetcher(id)));
 }
 
-async function itemFetcher(id: string): Promise<Item> {
+export async function itemFetcher(id: string): Promise<Item> {
   return await fetch(`${BACKEND_API_URL}/products/${id}`)
     .then((response) => response.json())
     .then((data) => {
