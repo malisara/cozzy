@@ -55,7 +55,7 @@ function Login(): JSX.Element | null {
     const userId = getRandomUserId();
     sessionStorage.setItem(USER_ID_KEY, JSON.stringify(userId));
 
-    router.push("/");
+    router.back();
     setUserId(userId);
   };
 
