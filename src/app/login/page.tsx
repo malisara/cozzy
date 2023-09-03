@@ -9,13 +9,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import Button from "@/components/Button";
 import { imageCover } from "@/components/utils/style";
-// import { BACKEND_API_URL } from "@/constants";
 // import { SESSION_TOKEN } from "@/constants";
 
-import { USER_ID_KEY } from "@/constants";
+import { BACKEND_API_URL, BASKET_SESSION_KEY, USER_ID_KEY } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
-import loginImage from "@/../public/login.png";
+import { BasketItem, BasketItems } from "@/models/basket";
 import { noBlankSpacesMEssage, noBlankSpacesRegEx } from "@/utils/regExValues";
+import loginImage from "@/../public/login.png";
 
 const formStyle =
   "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
@@ -36,7 +36,7 @@ function getRandomUserId(): number {
 function Login(): JSX.Element | null {
   const router = useRouter();
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
-  const { userId, setUserId } = useGlobalContext();
+  const { userId, setUserId, setBasketItems } = useGlobalContext();
 
   const {
     register,
@@ -54,10 +54,41 @@ function Login(): JSX.Element | null {
   const onSubmit: SubmitHandler<Inputs> = () => {
     const userId = getRandomUserId();
     sessionStorage.setItem(USER_ID_KEY, JSON.stringify(userId));
-
-    router.back();
     setUserId(userId);
+    router.back();
   };
+
+  useEffect(() => {
+    if (userId !== null) {
+      setBasket();
+    }
+  }, [userId]);
+
+  async function setBasket() {
+    const basket = await getBasketItems();
+    setBasketItems(basket);
+    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
+  }
+
+  async function getBasketItems(): Promise<BasketItems> {
+    return fetch(`${BACKEND_API_URL}/carts/user/${userId}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.length < 1) {
+          //user doesn't have a basket yet
+          return new BasketItems(null, userId, null, []);
+        }
+        //return the first basket if user has multiple baskets
+        return new BasketItems(
+          json[0].id,
+          userId,
+          json[0].date,
+          json[0].products.map(
+            (item: any) => new BasketItem(item.productId, item.quantity)
+          )
+        );
+      });
+  }
 
   function togglePasswordVisibility() {
     setPasswordIsVisible((previous) => !previous);
