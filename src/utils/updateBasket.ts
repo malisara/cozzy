@@ -1,4 +1,4 @@
-import { BACKEND_API_URL, BASKET_ITEMS_KEY } from "@/constants";
+import { BACKEND_API_URL, BASKET_SESSION_KEY } from "@/constants";
 import { BasketItem } from "@/models/basket";
 
 function getDate(): string {
@@ -11,8 +11,14 @@ export async function updateBasketData(
   cardNumber: number,
   updatedBasket: BasketItem[]
 ): Promise<void> {
-  //update SS
-  sessionStorage.setItem(BASKET_ITEMS_KEY, JSON.stringify(updatedBasket));
+  const savedBasket = JSON.parse(
+    sessionStorage.getItem(BASKET_SESSION_KEY) || "null"
+  );
+
+  if (savedBasket !== null) {
+    savedBasket.items = updatedBasket;
+    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(savedBasket));
+  }
 
   //send data to backend
   fetch(`${BACKEND_API_URL}/carts/${cardNumber}`, {
