@@ -15,9 +15,10 @@ import { wideBtnStyle } from "@/components/utils/style";
 import { SHOPPING_BAG_NUMBER } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { getItemsById } from "@/fetchers/fetchItems";
-import { BasketItems, BasketItem } from "@/models/basket";
-import { shortenTitle } from "@/utils/functions";
+import { roundNumber, shortenTitle } from "@/utils/functions";
 import { updateBasketData } from "@/utils/updateBasket";
+
+const optionsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Basket(): JSX.Element {
   const { basketItems, setBasketItems, userId, setOrderSum } =
@@ -25,35 +26,7 @@ function Basket(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const itemIds = basketItems
-    ? basketItems?.items.map((item) => item.productId.toString())
-    : [];
-
-  useEffect(() => {
-    //Initial basket fetch
-    if (userId !== 0) {
-      fetch(`https://fakestoreapi.com/carts/${SHOPPING_BAG_NUMBER}`)
-        .then((res) => res.json())
-        .then((json) => {
-          let items = json.products.map((item: any) => {
-            return new BasketItem(item.productId, item.quantity);
-          });
-
-          if (items === undefined) {
-            items = [];
-          }
-
-          setBasketItems(new BasketItems(null, json.userId, json.date, items)); //todo basket id
-        })
-        .catch((error) => {
-          console.error("Error fetching basket data:", error);
-        });
-    } else {
-      const basketItemsCopy = { ...basketItems };
-      basketItemsCopy.items = [];
-      setBasketItems(basketItemsCopy);
-    }
-  }, [userId]);
+  const itemIds = basketItems.items.map((item) => item.productId.toString());
 
   const { data, error, isLoading } = getItemsById(itemIds);
 
@@ -81,7 +54,7 @@ function Basket(): JSX.Element {
     e: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ): void {
-    if (basketItems) {
+    if (basketItems && userId !== null) {
       const newQuantity = Number(e.target.value);
       const basketItemsCopy = { ...basketItems };
       basketItemsCopy.items[index].quantity = newQuantity;
@@ -90,7 +63,7 @@ function Basket(): JSX.Element {
     }
   }
 
-  function handleDeleteBasketItem(index: number): void {
+  function handleDeleteBasketItem(index: number, userId: number): void {
     const basketItemsCopy = { ...basketItems };
     basketItemsCopy.items.splice(index, 1);
     setBasketItems(basketItemsCopy);
@@ -108,7 +81,7 @@ function Basket(): JSX.Element {
       <div className="flex flex-wrap md:px-[5rem]">
         <div className="w-[90%] lg:w-[45%] mx-auto order-2 lg:order-1">
           {/* Basket items */}
-          {basketItems.items?.length > 0 && (
+          {basketItems.items?.length > 0 && userId !== null && (
             <>
               {data.map((item, index) => (
                 <div key={index}>
@@ -118,7 +91,7 @@ function Basket(): JSX.Element {
                   >
                     <div
                       className="absolute top-1 right-1 p-2 cursor-pointer"
-                      onClick={() => handleDeleteBasketItem(index)}
+                      onClick={() => handleDeleteBasketItem(index, userId)}
                     >
                       <ImBin2 className="text-[15px] hover:text-gray-500" />
                     </div>
@@ -148,17 +121,20 @@ function Basket(): JSX.Element {
                             value={basketItems.items[index].quantity}
                             onChange={(e) => handleQuantityChange(e, index)}
                           >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            {/* API doesn't support available quantity of items */}
+                            {optionsArray.map((value: number) => (
+                              <option key={value} value={value}>
+                                {value}
+                              </option>
+                            ))}
+                            {/* API doesn't provide available quantity of items */}
                           </select>
                         </form>
 
                         <div className="font-bold text-l text-gray-600">
-                          {basketItems.items[index].quantity * item.price}€
+                          {roundNumber(
+                            basketItems.items[index].quantity * item.price
+                          )}
+                          €
                         </div>
                       </div>
                     </div>
