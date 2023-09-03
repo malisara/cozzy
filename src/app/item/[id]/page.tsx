@@ -12,12 +12,7 @@ import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Loading from "@/components/Loading";
 import Reviews from "@/components/Reviews";
 import Sizes from "@/components/Sizes";
-import {
-  BACKEND_API_URL,
-  BASKET_ID_KEY,
-  BASKET_ITEMS_KEY,
-  SIZES,
-} from "@/constants";
+import { BACKEND_API_URL, BASKET_SESSION_KEY, SIZES } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { itemFetcher } from "@/fetchers/fetchItems";
 import { BasketItem } from "@/models/basket";
@@ -88,12 +83,9 @@ function DetailView(): JSX.Element {
     const basketId = await createNewBasket(date, items);
     basketItemsCopy.basketId = basketId;
     basketItemsCopy.date = date;
-    basketItemsCopy.userId = userId;
     basketItemsCopy.items.push(items);
 
-    sessionStorage.setItem(BASKET_ID_KEY, JSON.stringify(basketId));
-    sessionStorage.setItem(BASKET_ITEMS_KEY, JSON.stringify(items));
-
+    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basketItemsCopy));
     setBasketItems(basketItemsCopy);
   }
 

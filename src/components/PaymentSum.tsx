@@ -1,10 +1,7 @@
 "use client";
 
 import { useGlobalContext } from "@/context/GlobalContext";
-
-function roundNumber(number: number): number {
-  return Math.round((number + Number.EPSILON) * 100) / 100;
-}
+import { roundNumber } from "@/utils/functions";
 
 type Props = {
   setModalIsOpen?: (modalIsOpen: boolean) => void;
@@ -42,7 +39,7 @@ function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
       <div className="text-gray-500 flex flex-col gap-3">
         <div className="flex justify-between">
           <div>Order value</div>
-          <div>{orderSum} €</div>
+          <div>{roundNumber(orderSum)} €</div>
         </div>
 
         {discount > 0 && (

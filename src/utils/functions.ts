@@ -4,3 +4,7 @@ export function shortenTitle(title: string, maxNumber: number): string {
   }
   return title;
 }
+
+export function roundNumber(number: number): number {
+  return Math.round((number + Number.EPSILON) * 100) / 100;
+}
