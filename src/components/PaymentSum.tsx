@@ -6,10 +6,15 @@ import { roundNumber } from "@/utils/functions";
 type Props = {
   setModalIsOpen?: (modalIsOpen: boolean) => void;
   postage?: number;
+  orderSum: number;
 };
 
-function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
-  const { orderSum, basketItems, discount } = useGlobalContext();
+function PaymentSum({
+  setModalIsOpen,
+  postage = 0,
+  orderSum,
+}: Props): JSX.Element {
+  const { basketItems, discount } = useGlobalContext();
 
   function discountInEur(discount: number): number {
     return roundNumber((discount / 100) * orderSum);
@@ -24,7 +29,7 @@ function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
       className="w-[80%] mb-[2rem]
           lg:my-0 mx-auto"
     >
-      {setModalIsOpen !== undefined && (
+      {setModalIsOpen !== undefined && orderSum > 0 && (
         <div className="flex justify-between text-sm mb-10">
           <div>discount</div>
           <div
@@ -42,7 +47,7 @@ function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
           <div>{roundNumber(orderSum)} €</div>
         </div>
 
-        {discount > 0 && (
+        {discount > 0 && orderSum > 0 && (
           <div className="flex justify-between text-red-400">
             <div>Discount</div>
             <div>-{discount}% </div>
@@ -66,7 +71,7 @@ function PaymentSum({ setModalIsOpen, postage = 0 }: Props): JSX.Element {
           <div>{roundNumber(orderSum + postage)}€</div>
         </div>
 
-        {discount > 0 && (
+        {discount > 0 && orderSum > 0 && (
           <>
             <div className="flex justify-end text-red-400">
               <div>-{discountInEur(discount)}€</div>

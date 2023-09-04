@@ -21,26 +21,26 @@ import { updateBasketData } from "@/utils/updateBasket";
 const optionsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Basket(): JSX.Element {
-  const { basketItems, setBasketItems, userId, setOrderSum } =
-    useGlobalContext();
+  const { basketItems, setBasketItems, userId } = useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const router = useRouter();
 
   const itemIds = basketItems.items.map((item) => item.productId.toString());
 
   const { data, error, isLoading } = getItemsById(itemIds);
+  const [orderSum, setOrderSum] = useState<number>(0);
 
   useEffect(() => {
     //update total sum
     let sum = 0;
     if (data !== undefined) {
-      {
-        data.map(
-          (item, index) =>
-            (sum += basketItems.items[index].quantity * item.price)
-        );
-      }
+      sum = data.reduce(
+        (accumulator, item, index) =>
+          accumulator + basketItems.items[index].quantity * item.price,
+        0
+      );
     }
+    sessionStorage.setItem("order_sum", JSON.stringify(sum));
     setOrderSum(sum);
   }, [data, basketItems]);
 
@@ -157,7 +157,7 @@ function Basket(): JSX.Element {
           setModalIsOpen={setModalIsOpen}
         />
         <div className="order-1 lg:order-2 w-full lg:w-[30%] mb-7 lg:mb-0">
-          <PaymentSum setModalIsOpen={setModalIsOpen} />
+          <PaymentSum setModalIsOpen={setModalIsOpen} orderSum={orderSum} />
         </div>
       </div>
     </div>
