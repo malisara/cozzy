@@ -102,7 +102,7 @@ function DetailView(): JSX.Element {
       }),
     })
       .then((res) => res.json())
-      .then((json) => json.id) //returns basket Id
+      .then((data) => data.id) //returns basket Id
       .catch((error) => {
         console.error("Error updating basket data:", error);
       });

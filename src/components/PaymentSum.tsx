@@ -1,10 +1,11 @@
 "use client";
+import { Dispatch, SetStateAction } from "react";
 
 import { useGlobalContext } from "@/context/GlobalContext";
 import { roundNumber } from "@/utils/functions";
 
 type Props = {
-  setModalIsOpen?: (modalIsOpen: boolean) => void;
+  setModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   postage?: number;
   orderSum: number;
 };

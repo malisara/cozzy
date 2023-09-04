@@ -1,10 +1,12 @@
 "use client";
+
+import { Dispatch, SetStateAction } from "react";
 import { TfiViewGrid, TfiViewList } from "react-icons/tfi";
 
 const chosenIcon = "bg-gray-200 py-2 px-2 border border-black duration-300";
 
 type Props = {
-  onDisplayChange: (value: boolean) => void;
+  onDisplayChange: Dispatch<SetStateAction<boolean>>;
   hasGridDisplay: boolean;
 };
 

@@ -12,7 +12,7 @@ import Loading from "@/components/Loading";
 import Title from "@/components/Title";
 import PaymentSum from "@/components/PaymentSum";
 import { wideBtnStyle } from "@/components/utils/style";
-import { SHOPPING_BAG_NUMBER } from "@/constants";
+import { ORDER_SUM_SESSION_KEY } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { getItemsById } from "@/fetchers/fetchItems";
 import { roundNumber, shortenTitle } from "@/utils/functions";
@@ -40,7 +40,7 @@ function Basket(): JSX.Element {
         0
       );
     }
-    sessionStorage.setItem("order_sum", JSON.stringify(sum));
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, JSON.stringify(sum));
     setOrderSum(sum);
   }, [data, basketItems]);
 
@@ -59,7 +59,9 @@ function Basket(): JSX.Element {
       const basketItemsCopy = { ...basketItems };
       basketItemsCopy.items[index].quantity = newQuantity;
       setBasketItems(basketItemsCopy);
-      updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
+      if (basketItems.basketId !== null) {
+        updateBasketData(userId, basketItems.basketId, basketItemsCopy.items);
+      }
     }
   }
 
@@ -67,7 +69,9 @@ function Basket(): JSX.Element {
     const basketItemsCopy = { ...basketItems };
     basketItemsCopy.items.splice(index, 1);
     setBasketItems(basketItemsCopy);
-    updateBasketData(userId, SHOPPING_BAG_NUMBER, basketItemsCopy.items);
+    if (basketItems.basketId !== null) {
+      updateBasketData(userId, basketItems.basketId, basketItemsCopy.items);
+    }
   }
 
   function handleRedirect() {

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import ReactModal from "react-modal";
 
@@ -8,7 +8,7 @@ const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
 
 type Props = {
   modalIsOpen: boolean;
-  setModalIsOpen: (modalIsOpen: boolean) => void;
+  setModalIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 function DiscountModal({ modalIsOpen, setModalIsOpen }: Props): JSX.Element {

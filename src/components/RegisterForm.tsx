@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "@/components/Button";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
+import { BACKEND_API_URL } from "@/constants";
 import {
   invalidMailMessage,
   mailRegEx,
@@ -54,7 +55,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     // geolacation is currently hard-coded
-    fetch("https://fakestoreapi.com/users", {
+    fetch(`${BACKEND_API_URL}/users`, {
       method: "POST",
       body: JSON.stringify({
         email: data.email,
@@ -78,7 +79,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
       }),
     })
       .then((res) => res.json())
-      .then((json) => console.log(json))
+      .then((data) => console.log(data)) //todo
       .catch((error) => {
         console.error("Error unable to register:", error);
       });

@@ -1,13 +1,15 @@
 "use client";
-import { useState } from "react";
+
+import { useState, Dispatch, SetStateAction } from "react";
 import { BiDownArrow, BiUpArrow } from "react-icons/bi";
+
 import { sortByPricedata } from "./sortData";
 
 const liStyle =
   "block w-full px-4 py-2 text-xs hover:text-black active:no-underline";
 
 type Props = {
-  onSortChange: (value: boolean) => void;
+  onSortChange: Dispatch<SetStateAction<boolean>>;
 };
 
 function SortButton({ onSortChange }: Props): JSX.Element {

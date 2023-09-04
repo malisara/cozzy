@@ -73,17 +73,17 @@ function Login(): JSX.Element | null {
   async function getBasketItems(): Promise<BasketItems> {
     return fetch(`${BACKEND_API_URL}/carts/user/${userId}`)
       .then((res) => res.json())
-      .then((json) => {
-        if (json.length < 1) {
+      .then((data) => {
+        if (data.length < 1) {
           //user doesn't have a basket yet
           return new BasketItems(null, userId, null, []);
         }
         //return the first basket if user has multiple baskets
         return new BasketItems(
-          json[0].id,
+          data[0].id,
           userId,
-          json[0].date,
-          json[0].products.map(
+          data[0].date,
+          data[0].products.map(
             (item: any) => new BasketItem(item.productId, item.quantity)
           )
         );
@@ -105,10 +105,10 @@ function Login(): JSX.Element | null {
   //     }),
   //   })
   //     .then((res) => res.json())
-  //     .then((json) => {
+  //     .then((data) => {
   //       //returns {'token' : '...'}
-  //       if ("token" in json && typeof window !== "undefined") {
-  //         sessionStorage.setItem(SESSION_TOKEN, json["token"]);
+  //       if ("token" in data && typeof window !== "undefined") {
+  //         sessionStorage.setItem(SESSION_TOKEN, data["token"]);
   //         router.push("/");
   //       }
   //     })

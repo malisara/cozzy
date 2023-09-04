@@ -64,7 +64,7 @@ function ItemList({
   if (isLoading || !data) return <Loading />;
 
   function sortItems(items: Item[]): Item[] {
-    if (sortPriceDescending === true) {
+    if (sortPriceDescending) {
       items.sort((a, b) => b.price - a.price);
     } else {
       items.sort((a, b) => a.price - b.price);

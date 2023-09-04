@@ -33,7 +33,7 @@ async function itemsByIdsFetcher(ids: string[]): Promise<Item[]> {
 
 export async function itemFetcher(id: string): Promise<Item> {
   return await fetch(`${BACKEND_API_URL}/products/${id}`)
-    .then((response) => response.json())
+    .then((res) => res.json())
     .then((data) => {
       return new Item(
         data.id,
@@ -56,7 +56,7 @@ async function itemsByCategoryFetcher(
     apiUrl += `?limit=${limit}`;
   }
   return await fetch(apiUrl)
-    .then((response) => response.json())
+    .then((res) => res.json())
     .then((data) => {
       return data.map((itemObj: any) => {
         return new Item(

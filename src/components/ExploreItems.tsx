@@ -29,14 +29,6 @@ function ExploreItems({ limit }: Props): JSX.Element {
   const result =
     categoriesAndTitles[currentPath as keyof typeof categoriesAndTitles];
 
-  function changeItemsDisplay(value: boolean) {
-    sethasGridDisplay(value);
-  }
-
-  function changeSorting(value: boolean) {
-    setsortPriceDescending(value);
-  }
-
   return (
     <div className="bg-white">
       <Title title={result.title} />
@@ -44,9 +36,9 @@ function ExploreItems({ limit }: Props): JSX.Element {
         className="px-4 h-fit w-full flex flex-wrap 
       justify-center gap-6 mb-6"
       >
-        <ItemSort onSortChange={changeSorting} />
+        <ItemSort onSortChange={setsortPriceDescending} />
         <ItemDisplay
-          onDisplayChange={changeItemsDisplay}
+          onDisplayChange={sethasGridDisplay}
           hasGridDisplay={hasGridDisplay}
         />
       </div>
