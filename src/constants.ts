@@ -4,6 +4,7 @@ export const BACKEND_API_URL = "https://fakestoreapi.com";
 export const SESSION_TOKEN = "session_token";
 export const USER_ID_KEY = "user_id";
 export const BASKET_SESSION_KEY = "basket";
+export const ORDER_SUM_SESSION_KEY = "order_sum";
 
 export const ITEM_DISPLAY_LIMIT = 5;
 

@@ -11,11 +11,14 @@ import {
   FaCcJcb,
 } from "react-icons/fa";
 
-import { wideBtnStyle } from "./utils/style";
+import { BASKET_SESSION_KEY, ORDER_SUM_SESSION_KEY } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { disabledWideBtnStyle, wideBtnStyle } from "./utils/style";
+import { BasketItems } from "@/models/basket";
 
 const formStyle = "border px-3 h-[3rem]";
 const inputDivStyle = "flex flex-col w-full";
-const dateRegEx = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+const dateRegEx = /^([0-9]{2})\/?(0[1-9]|1[0-2])$/;
 const creditCardsPattern =
   /^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/;
 // Taken from: https://stackoverflow.com/questions/9315647/regex-credit-card-number-tests
@@ -28,10 +31,12 @@ type Inputs = {
 
 function PaymentForm(): JSX.Element {
   const router = useRouter();
+  const { setBasketItems, userId } = useGlobalContext();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -40,11 +45,14 @@ function PaymentForm(): JSX.Element {
     const card = data.cardNumber;
     const date = data.date;
     const cvv = data.cvv;
-    console.log("data submitted");
+    router.push("/successfulPurchase");
+    resetBasketData();
   };
 
-  function handleRedirect() {
-    router.push("/successfulPurchase");
+  function resetBasketData() {
+    sessionStorage.removeItem(BASKET_SESSION_KEY);
+    sessionStorage.removeItem(ORDER_SUM_SESSION_KEY);
+    setBasketItems(new BasketItems(null, userId, null, []));
   }
 
   return (
@@ -84,7 +92,7 @@ function PaymentForm(): JSX.Element {
             placeholder="Exp.Date (YY/MM)"
             {...register("date", {
               required: "This field is required",
-              maxLength: 4,
+              maxLength: 5,
               pattern: {
                 value: dateRegEx,
                 message: "Invalid date format",
@@ -113,7 +121,10 @@ function PaymentForm(): JSX.Element {
           {errors.cvv && <span>{errors.cvv.message}</span>}
         </div>
 
-        <button type="submit" className={wideBtnStyle} onClick={handleRedirect}>
+        <button
+          type="submit"
+          className={!isDirty ? disabledWideBtnStyle : wideBtnStyle}
+        >
           Pay
         </button>
       </form>
