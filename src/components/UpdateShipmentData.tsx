@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import User from "@/models/user";
 import { wideBtnStyle } from "./utils/style";
 import {
   invalidMailMessage,
@@ -16,16 +17,8 @@ const inputDivStyle = "flex flex-col w-[45%]";
 const requiredFieldMessage = "This field is required";
 
 type Props = {
-  name: string;
-  lastName: string;
-  street: string;
-  number: number;
-  zip: number;
-  city: string;
-  email: string;
-  setUserData: Dispatch<
-    SetStateAction<[string, string, string, string, number, number, string]>
-  >;
+  user: User;
+  setUserData: Dispatch<SetStateAction<User>>;
   setEditUserData: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -40,13 +33,7 @@ type Inputs = {
 };
 
 function UpdateShipmentData({
-  name,
-  lastName,
-  street,
-  number,
-  zip,
-  city,
-  email,
+  user,
   setUserData,
   setEditUserData,
 }: Props): JSX.Element {
@@ -57,15 +44,7 @@ function UpdateShipmentData({
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setUserData([
-      data.name,
-      data.lastName,
-      data.city,
-      data.street,
-      data.number,
-      data.zip,
-      data.email,
-    ]);
+    setUserData(data);
     setEditUserData(false);
   };
 
@@ -77,7 +56,7 @@ function UpdateShipmentData({
       {/* name */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={name}
+          defaultValue={user.name}
           {...register("name", {
             required: requiredFieldMessage,
             pattern: {
@@ -93,7 +72,7 @@ function UpdateShipmentData({
       {/* last name */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={lastName}
+          defaultValue={user.lastName}
           {...register("lastName", {
             required: requiredFieldMessage,
             pattern: {
@@ -109,7 +88,7 @@ function UpdateShipmentData({
       {/* street */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={street}
+          defaultValue={user.street}
           {...register("street", {
             required: requiredFieldMessage,
             pattern: {
@@ -125,7 +104,7 @@ function UpdateShipmentData({
       {/* number */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={number}
+          defaultValue={user.number}
           {...register("number", {
             required: requiredFieldMessage,
             pattern: {
@@ -141,7 +120,7 @@ function UpdateShipmentData({
       {/* zip code */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={zip}
+          defaultValue={user.zip}
           {...register("zip", {
             required: requiredFieldMessage,
             pattern: {
@@ -157,7 +136,7 @@ function UpdateShipmentData({
       {/* city */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={city}
+          defaultValue={user.city}
           {...register("city", {
             required: requiredFieldMessage,
             pattern: {
@@ -173,7 +152,7 @@ function UpdateShipmentData({
       {/* email */}
       <div className={inputDivStyle}>
         <input
-          defaultValue={email}
+          defaultValue={user.email}
           {...register("email", {
             required: requiredFieldMessage,
             pattern: {
