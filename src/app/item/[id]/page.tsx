@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { toast } from "react-toastify";
 import useSWR from "swr";
 
 import BasketPopover from "@/components/BasketPopover";
@@ -52,6 +53,7 @@ function DetailView(): JSX.Element {
   async function handleAddItemToBasket() {
     if (userId === null) {
       router.push("/login");
+      toast.info("Please login to continue with the purchase.");
       return;
     }
 

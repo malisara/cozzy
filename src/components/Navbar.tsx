@@ -72,8 +72,7 @@ function Navbar(): JSX.Element | null {
     setBasket(new Basket(null, null, null, []));
 
     sessionStorage.clear(); //delete all saved data when user logs out
-
-    toast.success("you're logegd out");
+    toast.success("You're logegd out.");
   }
 
   return (
