@@ -1,9 +1,14 @@
-import { Dispatch, SetStateAction, useState } from "react";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "@/components/Button";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
-import { BACKEND_API_URL } from "@/constants";
+import { BACKEND_API_URL, RANDOM_USER_POSITION } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
+
 import {
   invalidMailMessage,
   mailRegEx,
@@ -14,6 +19,7 @@ import {
   onlyNumbersMessage,
   onlyNumbersRegEx,
 } from "@/utils/regExValues";
+import User from "@/models/user";
 
 const formStyle =
   "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
@@ -21,40 +27,34 @@ const formStyle =
 const inputDivStyle = "w-full lg:w-[45%] flex flex-col";
 const requiredFieldText = "This field is required";
 
-type Inputs = {
-  username: string;
-  password: string;
-  passwordConfimation: string;
-  firstName: string;
-  lastName: string;
-  city: string;
-  street: string;
-  number: number;
-  zip: number;
-  email: string;
-  phoneNumber: number;
-};
-
 type Props = {
   setModalIsOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 function RegisterForm({ setModalIsOpen }: Props) {
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
+  const { userId } = useGlobalContext();
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     watch,
     reset,
     formState: { errors, isDirty },
-  } = useForm<Inputs>();
+  } = useForm<User>();
+
+  useEffect(() => {
+    if (userId !== null) {
+      router.push("/");
+    }
+  }, []);
 
   function togglePasswordVisibility() {
     setPasswordIsVisible((previous) => !previous);
   }
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // geolacation is currently hard-coded
+  const onSubmit: SubmitHandler<User> = (data) => {
     fetch(`${BACKEND_API_URL}/users`, {
       method: "POST",
       body: JSON.stringify({
@@ -62,24 +62,23 @@ function RegisterForm({ setModalIsOpen }: Props) {
         username: data.username,
         password: data.password,
         name: {
-          firstname: data.firstName,
+          firstname: data.name,
           lastname: data.lastName,
         },
         address: {
           city: data.city,
           street: data.street,
           number: data.number,
-          zipcode: data.zip,
+          zipcode: data.zip.toString(),
           geolocation: {
-            lat: "-37.3159",
-            long: "81.1496",
+            lat: RANDOM_USER_POSITION[0],
+            long: RANDOM_USER_POSITION[0],
           },
         },
-        phone: data.phoneNumber.toString(),
+        phone: data.phone.toString(),
       }),
     })
       .then((res) => res.json())
-      .then((data) => console.log(data)) //todo
       .catch((error) => {
         console.error("Error unable to register:", error);
       });
@@ -98,7 +97,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
         <div className={inputDivStyle}>
           <input
             placeholder="First name"
-            {...register("firstName", {
+            {...register("name", {
               required: requiredFieldText,
 
               pattern: {
@@ -108,7 +107,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
             })}
             className={formStyle}
           />
-          {errors.firstName && <span>{errors.firstName.message}</span>}
+          {errors.name && <span>{errors.name.message}</span>}
         </div>
 
         {/* Last name */}
@@ -196,20 +195,21 @@ function RegisterForm({ setModalIsOpen }: Props) {
         <div className={inputDivStyle}>
           <input
             placeholder="Password confirmation"
-            {...register("passwordConfimation", {
+            {...register("passwordConfirm", {
               required: requiredFieldText,
 
-              validate: (val: string) => {
+              validate: (val: string | undefined) => {
                 if (watch("password") != val) {
                   return "Passwords do no match";
                 }
               },
             })}
             className={formStyle}
+            type="password"
           />
 
-          {errors.passwordConfimation && (
-            <span>{errors.passwordConfimation.message}</span>
+          {errors.passwordConfirm && (
+            <span>{errors.passwordConfirm.message}</span>
           )}
         </div>
 
@@ -289,7 +289,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
         <div className={inputDivStyle}>
           <input
             placeholder="Phone number"
-            {...register("phoneNumber", {
+            {...register("phone", {
               required: requiredFieldText,
 
               pattern: {
@@ -300,7 +300,7 @@ function RegisterForm({ setModalIsOpen }: Props) {
             className={formStyle}
           />
 
-          {errors.phoneNumber && <span>{errors.phoneNumber.message}</span>}
+          {errors.phone && <span>{errors.phone.message}</span>}
         </div>
       </div>
 

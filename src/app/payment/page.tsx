@@ -18,9 +18,14 @@ import User from "@/models/user";
 const containerStyle = "border p-4 flex flex-col mb-4";
 const bolderTextStyle = "text-gray-500 font-bold";
 const subTitleStyle = "font-bold text-xl mb-4 text-gray-600";
-const orderSum = JSON.parse(
-  sessionStorage.getItem(ORDER_SUM_SESSION_KEY) || "0"
-);
+const orderSum = getOrderSum();
+
+function getOrderSum(): number {
+  if (typeof window !== "undefined") {
+    return JSON.parse(sessionStorage.getItem(ORDER_SUM_SESSION_KEY) || "0");
+  }
+  return 0;
+}
 
 const postageOptions = [
   { label: "1-3 days", price: 15 },
@@ -33,7 +38,7 @@ function Payment(): JSX.Element {
   const [editUserData, setEditUserData] = useState<boolean>(false);
   const [shouldFetch, setShouldFetch] = useState<boolean>(false);
   const [user, setUserData] = useState<User>(
-    new User("", "", "", "", 0, 0, "")
+    new User("", "", "", "", 0, 0, "", 0, "", "")
   );
 
   const router = useRouter();
@@ -55,7 +60,10 @@ function Payment(): JSX.Element {
             data.address.street,
             data.address.number,
             data.address.zipcode,
-            data.email
+            data.email,
+            data.phone,
+            data.username,
+            data.password
           );
           setUserData(userData);
           return userData;
@@ -124,6 +132,7 @@ function Payment(): JSX.Element {
                 </div>
 
                 <div className="mt-4">{user.email}</div>
+                <p>{user.phone}</p>
               </>
             ) : (
               <UpdateShipmentData
