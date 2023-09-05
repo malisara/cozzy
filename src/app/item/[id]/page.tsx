@@ -28,7 +28,7 @@ function DetailView(): JSX.Element {
 
   const params = useParams();
   const router = useRouter();
-  const { basketItems, setBasketItems, userId } = useGlobalContext();
+  const { basket, setBasket, userId } = useGlobalContext();
 
   const itemId = params.id;
   const { data, error, isLoading } = useSWR({ itemId }, () =>
@@ -55,18 +55,18 @@ function DetailView(): JSX.Element {
       return;
     }
 
-    const itemInBasketIndex = basketItems.items.findIndex(
+    const itemInBasketIndex = basket.items.findIndex(
       (item) => item.productId === Number(itemId)
     );
 
-    if (basketItems.basketId === null) {
-      // initially basketItems attributes are set to null
-      // when user first adds an item, basketItems attributes values are set
+    if (basket.basketId === null) {
+      // initially basket attributes are set to null
+      // when user first adds an item, basket attributes values are set
       await initializeBasket();
     } else if (itemInBasketIndex === -1) {
-      addNewItem(basketItems.basketId, userId);
+      addNewItem(basket.basketId, userId);
     } else {
-      updateExistingItem(itemInBasketIndex, basketItems.basketId, userId);
+      updateExistingItem(itemInBasketIndex, basket.basketId, userId);
     }
 
     setShowPopover(true);
@@ -76,17 +76,17 @@ function DetailView(): JSX.Element {
   }
 
   async function initializeBasket(): Promise<void> {
-    const basketItemsCopy = { ...basketItems };
+    const basketCopy = { ...basket };
     const date = new Date();
     const items = new BasketItem(Number(itemId), quantity);
 
     const basketId = await createNewBasket(date, items);
-    basketItemsCopy.basketId = basketId;
-    basketItemsCopy.date = date;
-    basketItemsCopy.items.push(items);
+    basketCopy.basketId = basketId;
+    basketCopy.date = date;
+    basketCopy.items.push(items);
 
-    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basketItemsCopy));
-    setBasketItems(basketItemsCopy);
+    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basketCopy));
+    setBasket(basketCopy);
   }
 
   async function createNewBasket(
@@ -111,11 +111,11 @@ function DetailView(): JSX.Element {
   function addNewItem(basketId: number, userId: number): void {
     const newItem = new BasketItem(Number(itemId), quantity);
     const updatedBasket = {
-      ...basketItems,
-      items: [...basketItems.items, newItem],
+      ...basket,
+      items: [...basket.items, newItem],
     };
     updateBasketData(userId, basketId, updatedBasket.items);
-    setBasketItems(updatedBasket);
+    setBasket(updatedBasket);
   }
 
   function updateExistingItem(
@@ -123,12 +123,12 @@ function DetailView(): JSX.Element {
     basketId: number,
     userId: number
   ): void {
-    const itemsCopy = [...basketItems.items];
+    const itemsCopy = [...basket.items];
     itemsCopy[index].quantity += quantity;
 
-    const updatedBasket = { ...basketItems, items: itemsCopy };
+    const updatedBasket = { ...basket, items: itemsCopy };
     updateBasketData(userId, basketId, updatedBasket.items);
-    setBasketItems(updatedBasket);
+    setBasket(updatedBasket);
   }
 
   return (

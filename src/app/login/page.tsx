@@ -13,7 +13,7 @@ import { imageCover } from "@/components/utils/style";
 
 import { BACKEND_API_URL, BASKET_SESSION_KEY, USER_ID_KEY } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { BasketItem, BasketItems } from "@/models/basket";
+import { BasketItem, Basket } from "@/models/basket";
 import { noBlankSpacesMEssage, noBlankSpacesRegEx } from "@/utils/regExValues";
 import loginImage from "@/../public/login.png";
 
@@ -36,7 +36,7 @@ function getRandomUserId(): number {
 function Login(): JSX.Element | null {
   const router = useRouter();
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
-  const { userId, setUserId, setBasketItems } = useGlobalContext();
+  const { userId, setUserId, setBasket } = useGlobalContext();
 
   const {
     register,
@@ -60,26 +60,26 @@ function Login(): JSX.Element | null {
 
   useEffect(() => {
     if (userId !== null) {
-      setBasket();
+      setBasketData();
     }
   }, [userId]);
 
-  async function setBasket() {
-    const basket = await getBasketItems();
-    setBasketItems(basket);
+  async function setBasketData() {
+    const basket = await getBasket();
+    setBasket(basket);
     sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
   }
 
-  async function getBasketItems(): Promise<BasketItems> {
+  async function getBasket(): Promise<Basket> {
     return fetch(`${BACKEND_API_URL}/carts/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.length < 1) {
           //user doesn't have a basket yet
-          return new BasketItems(null, userId, null, []);
+          return new Basket(null, userId, null, []);
         }
         //return the first basket if user has multiple baskets
-        return new BasketItems(
+        return new Basket(
           data[0].id,
           userId,
           data[0].date,

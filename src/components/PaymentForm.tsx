@@ -14,7 +14,7 @@ import {
 import { BASKET_SESSION_KEY, ORDER_SUM_SESSION_KEY } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { disabledWideBtnStyle, wideBtnStyle } from "./utils/style";
-import { BasketItems } from "@/models/basket";
+import { Basket } from "@/models/basket";
 
 const formStyle = "border px-3 h-[3rem]";
 const inputDivStyle = "flex flex-col w-full";
@@ -31,7 +31,7 @@ type Inputs = {
 
 function PaymentForm(): JSX.Element {
   const router = useRouter();
-  const { setBasketItems, userId } = useGlobalContext();
+  const { setBasket, userId } = useGlobalContext();
 
   const {
     register,
@@ -52,7 +52,7 @@ function PaymentForm(): JSX.Element {
   function resetBasketData() {
     sessionStorage.removeItem(BASKET_SESSION_KEY);
     sessionStorage.removeItem(ORDER_SUM_SESSION_KEY);
-    setBasketItems(new BasketItems(null, userId, null, []));
+    setBasket(new Basket(null, userId, null, []));
   }
 
   return (

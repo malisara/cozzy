@@ -21,11 +21,11 @@ import { updateBasketData } from "@/utils/updateBasket";
 const optionsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Basket(): JSX.Element {
-  const { basketItems, setBasketItems, userId } = useGlobalContext();
+  const { basket, setBasket, userId } = useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const itemIds = basketItems.items.map((item) => item.productId.toString());
+  const itemIds = basket.items.map((item) => item.productId.toString());
 
   const { data, error, isLoading } = getItemsById(itemIds);
   const [orderSum, setOrderSum] = useState<number>(0);
@@ -36,13 +36,13 @@ function Basket(): JSX.Element {
     if (data !== undefined) {
       sum = data.reduce(
         (accumulator, item, index) =>
-          accumulator + basketItems.items[index].quantity * item.price,
+          accumulator + basket.items[index].quantity * item.price,
         0
       );
     }
     sessionStorage.setItem(ORDER_SUM_SESSION_KEY, JSON.stringify(sum));
     setOrderSum(sum);
-  }, [data, basketItems]);
+  }, [data, basket]);
 
   if (error)
     return (
@@ -54,23 +54,23 @@ function Basket(): JSX.Element {
     e: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ): void {
-    if (basketItems && userId !== null) {
+    if (basket && userId !== null) {
       const newQuantity = Number(e.target.value);
-      const basketItemsCopy = { ...basketItems };
-      basketItemsCopy.items[index].quantity = newQuantity;
-      setBasketItems(basketItemsCopy);
-      if (basketItems.basketId !== null) {
-        updateBasketData(userId, basketItems.basketId, basketItemsCopy.items);
+      const basketCopy = { ...basket };
+      basketCopy.items[index].quantity = newQuantity;
+      setBasket(basketCopy);
+      if (basket.basketId !== null) {
+        updateBasketData(userId, basket.basketId, basketCopy.items);
       }
     }
   }
 
   function handleDeleteBasketItem(index: number, userId: number): void {
-    const basketItemsCopy = { ...basketItems };
-    basketItemsCopy.items.splice(index, 1);
-    setBasketItems(basketItemsCopy);
-    if (basketItems.basketId !== null) {
-      updateBasketData(userId, basketItems.basketId, basketItemsCopy.items);
+    const basketCopy = { ...basket };
+    basketCopy.items.splice(index, 1);
+    setBasket(basketCopy);
+    if (basket.basketId !== null) {
+      updateBasketData(userId, basket.basketId, basketCopy.items);
     }
   }
 
@@ -85,7 +85,7 @@ function Basket(): JSX.Element {
       <div className="flex flex-wrap md:px-[5rem]">
         <div className="w-[90%] lg:w-[45%] mx-auto order-2 lg:order-1">
           {/* Basket items */}
-          {basketItems.items?.length > 0 && userId !== null && (
+          {basket.items?.length > 0 && userId !== null && (
             <>
               {data.map((item, index) => (
                 <div key={index}>
@@ -122,7 +122,7 @@ function Basket(): JSX.Element {
                             id="quantity"
                             className="px-2 py-1 text-gray-700 border-2
                            bg-transparent rounded-lg me-2"
-                            value={basketItems.items[index].quantity}
+                            value={basket.items[index].quantity}
                             onChange={(e) => handleQuantityChange(e, index)}
                           >
                             {optionsArray.map((value: number) => (
@@ -136,7 +136,7 @@ function Basket(): JSX.Element {
 
                         <div className="font-bold text-l text-gray-600">
                           {roundNumber(
-                            basketItems.items[index].quantity * item.price
+                            basket.items[index].quantity * item.price
                           )}
                           €
                         </div>
@@ -148,7 +148,7 @@ function Basket(): JSX.Element {
             </>
           )}
 
-          {basketItems.items?.length > 0 && (
+          {basket.items?.length > 0 && (
             <button className={wideBtnStyle} onClick={handleRedirect}>
               Continue with purchase
             </button>

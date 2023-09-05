@@ -1,7 +1,7 @@
 "use client";
 
 import { BASKET_SESSION_KEY, USER_ID_KEY } from "@/constants";
-import { BasketItems } from "@/models/basket";
+import { Basket } from "@/models/basket";
 
 function getUserId(): number | null {
   if (typeof window !== "undefined") {
@@ -10,12 +10,12 @@ function getUserId(): number | null {
   return null;
 }
 
-function getBasket(): BasketItems {
+function getBasket(): Basket {
   const savedBasket = JSON.parse(
     sessionStorage.getItem(BASKET_SESSION_KEY) || "null"
   );
   if (savedBasket === null) {
-    return new BasketItems(null, getUserId(), null, []);
+    return new Basket(null, getUserId(), null, []);
   }
   return savedBasket;
 }
@@ -29,8 +29,8 @@ import {
 } from "react";
 
 type ContextProps = {
-  basketItems: BasketItems;
-  setBasketItems: Dispatch<SetStateAction<BasketItems>>;
+  basket: Basket;
+  setBasket: Dispatch<SetStateAction<Basket>>;
   userId: number | null;
   setUserId: Dispatch<SetStateAction<number | null>>;
   discount: number;
@@ -38,8 +38,8 @@ type ContextProps = {
 };
 
 const GlobalContext = createContext<ContextProps>({
-  basketItems: getBasket(),
-  setBasketItems: (): BasketItems => getBasket(),
+  basket: getBasket(),
+  setBasket: (): Basket => getBasket(),
   userId: getUserId(),
   setUserId: (): number | null => null,
   discount: 0,
@@ -50,15 +50,15 @@ type ContextChildrenProp = {
   children: React.ReactNode;
 };
 export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
-  const [basketItems, setBasketItems] = useState<BasketItems>(getBasket());
+  const [basket, setBasket] = useState<Basket>(getBasket());
   const [userId, setUserId] = useState<number | null>(getUserId());
   const [discount, setDiscount] = useState<number>(0);
 
   return (
     <GlobalContext.Provider
       value={{
-        basketItems,
-        setBasketItems,
+        basket,
+        setBasket,
         userId,
         setUserId,
         discount,

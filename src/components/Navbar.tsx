@@ -18,7 +18,7 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
-import { BasketItems } from "@/models/basket";
+import { Basket } from "@/models/basket";
 
 const iconStyle = "hover:text-base-secondary text-lg";
 
@@ -28,7 +28,7 @@ function Navbar(): JSX.Element | null {
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
   const [hasMounted, setHasMounted] = useState(false);
-  const { basketItems, setBasketItems, userId, setUserId } = useGlobalContext();
+  const { basket, setBasket, userId, setUserId } = useGlobalContext();
   const currentPath = usePathname();
 
   const navbarBg =
@@ -52,8 +52,8 @@ function Navbar(): JSX.Element | null {
 
   useEffect(() => {
     //calculate number of items in basket
-    if (basketItems.items.length > 0) {
-      const basketItemsCount = basketItems.items.reduce(
+    if (basket.items.length > 0) {
+      const basketItemsCount = basket.items.reduce(
         (total, item) => total + item.quantity,
         0
       );
@@ -61,7 +61,7 @@ function Navbar(): JSX.Element | null {
     } else {
       setBasketItemsCount(0);
     }
-  }, [basketItems]);
+  }, [basket]);
 
   if (!hasMounted) {
     return null;
@@ -69,7 +69,7 @@ function Navbar(): JSX.Element | null {
 
   function logout(): void {
     setUserId(null);
-    setBasketItems(new BasketItems(null, null, null, []));
+    setBasket(new Basket(null, null, null, []));
 
     sessionStorage.clear(); //delete all saved data when user logs out
 

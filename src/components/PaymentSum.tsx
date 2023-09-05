@@ -15,7 +15,7 @@ function PaymentSum({
   postage = 0,
   orderSum,
 }: Props): JSX.Element {
-  const { basketItems, discount } = useGlobalContext();
+  const { basket, discount } = useGlobalContext();
 
   function discountInEur(discount: number): number {
     return roundNumber((discount / 100) * orderSum);
@@ -55,7 +55,7 @@ function PaymentSum({
           </div>
         )}
 
-        {basketItems.items.length > 0 && postage !== 0 && (
+        {basket.items.length > 0 && postage !== 0 && (
           <div className="flex justify-between">
             <div>Postage</div>
             <div>{postage} €</div>

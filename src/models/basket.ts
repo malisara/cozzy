@@ -1,4 +1,4 @@
-export class BasketItems {
+export class Basket {
   constructor(
     public basketId: number | null,
     public userId: number | null,
