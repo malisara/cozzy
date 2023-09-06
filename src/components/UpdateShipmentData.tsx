@@ -1,6 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-toastify";
 
+import { useGlobalContext } from "@/context/GlobalContext";
+import { BACKEND_API_URL, RANDOM_USER_POSITION } from "@/constants";
 import User from "@/models/user";
 import { wideBtnStyle } from "./utils/style";
 import {
@@ -26,10 +29,11 @@ type Inputs = {
   name: string;
   lastName: string;
   street: string;
-  number: number;
+  number: string;
   zip: number;
   city: string;
   email: string;
+  phone: string;
 };
 
 function UpdateShipmentData({
@@ -37,16 +41,59 @@ function UpdateShipmentData({
   setUserData,
   setEditUserData,
 }: Props): JSX.Element {
+  const { userId } = useGlobalContext();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setUserData(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+    const userCopy = { ...user };
+    userCopy.name = data.name;
+    userCopy.lastName = data.lastName;
+    userCopy.street = data.street;
+    userCopy.number = data.number;
+    userCopy.zip = Number(data.zip);
+    userCopy.city = data.city;
+    userCopy.email = data.email;
+    userCopy.phone = data.phone;
+
+    setUserData(userCopy);
     setEditUserData(false);
+    await updateUserData(data);
+    toast.success("Shipping data was successfully updated.");
   };
+
+  async function updateUserData(data: Inputs) {
+    fetch(`${BACKEND_API_URL}/users/${userId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        email: data.email,
+        username: user.username,
+        password: user.password,
+        name: {
+          firstname: data.name,
+          lastname: data.lastName,
+        },
+        address: {
+          city: data.city,
+          street: data.street,
+          number: data.number,
+          zipcode: data.zip,
+          geolocation: {
+            lat: RANDOM_USER_POSITION[0],
+            long: RANDOM_USER_POSITION[1],
+          },
+        },
+        phone: data.phone,
+      }),
+    })
+      .then((res) => res.json())
+      .catch((error) =>
+        console.error("Error unable to update user's data:", error)
+      );
+  }
 
   return (
     <form
@@ -92,7 +139,7 @@ function UpdateShipmentData({
           {...register("street", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[a-zA-Z\s]*$/,
+              value: /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/,
               message: "invalid street format",
             },
           })}
@@ -108,8 +155,8 @@ function UpdateShipmentData({
           {...register("number", {
             required: requiredFieldMessage,
             pattern: {
-              value: onlyNumbersRegEx,
-              message: onlyNumbersMessage,
+              value: /^\d+\s?[A-Za-z]*$/,
+              message: "Invalid house number format",
             },
           })}
           className={formStyle}
@@ -140,8 +187,8 @@ function UpdateShipmentData({
           {...register("city", {
             required: requiredFieldMessage,
             pattern: {
-              value: onlyLettersRegEx,
-              message: onlyLettersMessage,
+              value: /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/,
+              message: "invalid city format",
             },
           })}
           className={formStyle}
@@ -163,6 +210,22 @@ function UpdateShipmentData({
           className={formStyle}
         />
         {errors.email && <span>{errors.email.message}</span>}
+      </div>
+
+      {/* phone */}
+      <div className={inputDivStyle}>
+        <input
+          defaultValue={user.phone}
+          {...register("phone", {
+            required: requiredFieldMessage,
+            pattern: {
+              value: /^[0-9]+(?:-[0-9]+)*$/,
+              message: "Invalid phone number format",
+            },
+          })}
+          className={formStyle}
+        />
+        {errors.phone && <span>{errors.phone.message}</span>}
       </div>
 
       <div className={inputDivStyle}>

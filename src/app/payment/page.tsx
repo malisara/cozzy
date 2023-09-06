@@ -38,7 +38,7 @@ function Payment(): JSX.Element {
   const [editUserData, setEditUserData] = useState<boolean>(false);
   const [shouldFetch, setShouldFetch] = useState<boolean>(false);
   const [user, setUserData] = useState<User>(
-    new User("", "", "", "", 0, 0, "", 0, "", "")
+    new User("", "", "", "", "", 0, "", "", "", "")
   );
 
   const router = useRouter();
@@ -83,9 +83,11 @@ function Payment(): JSX.Element {
       router.push("/");
       return;
     }
-
-    setShouldFetch(true);
   }, [userId]);
+
+  useEffect(() => {
+    setShouldFetch(true);
+  }, [userId, user]);
 
   if (error)
     return (

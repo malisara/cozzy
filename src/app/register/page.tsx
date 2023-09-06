@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
+import { useGlobalContext } from "@/context/GlobalContext";
 import RegisterForm from "@/components/RegisterForm";
 import { imageCover } from "@/components/utils/style";
 import registerImage from "@/../public/register.png";
@@ -11,6 +13,14 @@ import RegisterModal from "@/components/RegisterModal";
 
 function Register(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const { userId } = useGlobalContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userId !== null) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <div
