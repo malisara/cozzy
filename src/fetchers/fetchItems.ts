@@ -10,14 +10,14 @@ class FetchResult<T> {
   ) {}
 }
 
-export function getItemsById(ids: string[]): FetchResult<Item[]> {
+export function useGetItemsById(ids: string[]): FetchResult<Item[]> {
   const { data, error, isLoading } = useSWR({ ids }, () =>
     itemsByIdsFetcher(ids)
   );
   return new FetchResult(data, error, isLoading);
 }
 
-export function getItemsByCategory(
+export function useGetItemsByCategory(
   category: string,
   limit?: number
 ): FetchResult<Item[]> {

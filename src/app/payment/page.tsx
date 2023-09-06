@@ -20,6 +20,25 @@ const bolderTextStyle = "text-gray-500 font-bold";
 const subTitleStyle = "font-bold text-xl mb-4 text-gray-600";
 const orderSum = getOrderSum();
 
+async function userFetcher(userId: number | null): Promise<User | null> {
+  return await fetch(`${BACKEND_API_URL}/users/${userId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      return new User(
+        data.name.firstname,
+        data.name.lastname,
+        data.address.city,
+        data.address.street,
+        data.address.number,
+        data.address.zipcode,
+        data.email,
+        data.phone,
+        data.username,
+        data.password
+      );
+    });
+}
+
 function getOrderSum(): number {
   if (typeof window !== "undefined") {
     return JSON.parse(sessionStorage.getItem(ORDER_SUM_SESSION_KEY) || "0");
@@ -48,30 +67,6 @@ function Payment(): JSX.Element {
     () => userFetcher(userId)
   );
 
-  async function userFetcher(userId: number | null): Promise<User | null> {
-    if (userId !== null) {
-      return await fetch(`${BACKEND_API_URL}/users/${userId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const userData = new User(
-            data.name.firstname,
-            data.name.lastname,
-            data.address.city,
-            data.address.street,
-            data.address.number,
-            data.address.zipcode,
-            data.email,
-            data.phone,
-            data.username,
-            data.password
-          );
-          setUserData(userData);
-          return userData;
-        });
-    }
-    return null;
-  }
-
   useEffect(() => {
     if (userId === null) {
       router.push("/login");
@@ -86,8 +81,18 @@ function Payment(): JSX.Element {
   }, [userId]);
 
   useEffect(() => {
-    setShouldFetch(true);
-  }, [userId, user]);
+    if (userId !== null) {
+      setShouldFetch(true);
+      return;
+    }
+    setShouldFetch(false);
+  }, [userId]);
+
+  useEffect(() => {
+    if (data) {
+      setUserData(data);
+    }
+  }, [data]);
 
   if (error)
     return (

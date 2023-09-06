@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Loading from "@/components/Loading";
 import { DEFAULT_HOMEPAGE_CATEGORY, LS_KEY_SAVED_ITEMS } from "@/constants";
-import { getItemsByCategory, getItemsById } from "@/fetchers/fetchItems";
+import { useGetItemsByCategory, useGetItemsById } from "@/fetchers/fetchItems";
 import Item from "@/models/item";
 import SingleItem from "./SingleItem";
 
@@ -33,9 +33,9 @@ function ItemList({
 
   function getItems() {
     if (currentRoute === "/saved") {
-      return getItemsById(savedItems);
+      return useGetItemsById(savedItems);
     }
-    return getItemsByCategory(category, limit);
+    return useGetItemsByCategory(category, limit);
   }
 
   useEffect(() => {

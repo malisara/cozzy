@@ -14,7 +14,7 @@ import PaymentSum from "@/components/PaymentSum";
 import { wideBtnStyle } from "@/components/utils/style";
 import { ORDER_SUM_SESSION_KEY } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { getItemsById } from "@/fetchers/fetchItems";
+import { useGetItemsById } from "@/fetchers/fetchItems";
 import { roundNumber, shortenTitle } from "@/utils/functions";
 import { updateBasketData } from "@/utils/updateBasket";
 
@@ -27,7 +27,7 @@ function Basket(): JSX.Element {
 
   const itemIds = basket.items.map((item) => item.productId.toString());
 
-  const { data, error, isLoading } = getItemsById(itemIds);
+  const { data, error, isLoading } = useGetItemsById(itemIds);
   const [orderSum, setOrderSum] = useState<number>(0);
 
   useEffect(() => {
