@@ -1,15 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Button from "@/components/Button";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 import { BACKEND_API_URL, RANDOM_USER_POSITION } from "@/constants";
-import { useGlobalContext } from "@/context/GlobalContext";
-
+import Button from "@/components/Button";
+import User from "@/models/user";
 import {
+  houseNumberRegEx,
   invalidMailMessage,
   mailRegEx,
   noBlankSpacesMEssage,
@@ -18,8 +17,9 @@ import {
   onlyLettersRegEx,
   onlyNumbersMessage,
   onlyNumbersRegEx,
+  phoneRegEx,
+  stringWithSpaceRegEx,
 } from "@/utils/regExValues";
-import User from "@/models/user";
 
 const formStyle =
   "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
@@ -33,8 +33,6 @@ type Props = {
 
 function RegisterForm({ setModalIsOpen }: Props) {
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
-  const { userId } = useGlobalContext();
-  const router = useRouter();
 
   const {
     register,
@@ -43,13 +41,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
     reset,
     formState: { errors, isDirty },
   } = useForm<User>();
-
-  useEffect(() => {
-    if (userId !== null) {
-      router.push("/");
-    }
-  }, []);
-
   function togglePasswordVisibility() {
     setPasswordIsVisible((previous) => !previous);
   }
@@ -78,12 +69,14 @@ function RegisterForm({ setModalIsOpen }: Props) {
         phone: data.phone.toString(),
       }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        res.json();
+        reset(); //deletes form data
+        setModalIsOpen(true);
+      })
       .catch((error) => {
         console.error("Error unable to register:", error);
       });
-    reset(); //deletes form data
-    setModalIsOpen(true);
   };
 
   return (
@@ -99,7 +92,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="First name"
             {...register("name", {
               required: requiredFieldText,
-
               pattern: {
                 value: onlyLettersRegEx,
                 message: onlyLettersMessage,
@@ -116,7 +108,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Last name"
             {...register("lastName", {
               required: requiredFieldText,
-
               pattern: {
                 value: onlyLettersRegEx,
                 message: onlyLettersMessage,
@@ -124,7 +115,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             })}
             className={formStyle}
           />
-
           {errors.lastName && <span>{errors.lastName.message}</span>}
         </div>
 
@@ -134,7 +124,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Email"
             {...register("email", {
               required: requiredFieldText,
-
               pattern: {
                 value: mailRegEx,
                 message: invalidMailMessage,
@@ -142,7 +131,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             })}
             className={formStyle}
           />
-
           {errors.email && <span>{errors.email.message}</span>}
         </div>
 
@@ -152,7 +140,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Username"
             {...register("username", {
               required: requiredFieldText,
-
               pattern: {
                 value: noBlankSpacesRegEx,
                 message: noBlankSpacesMEssage,
@@ -160,7 +147,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             })}
             className={formStyle}
           />
-
           {errors.username && <span>{errors.username.message}</span>}
         </div>
 
@@ -170,7 +156,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Password"
             {...register("password", {
               required: requiredFieldText,
-
               pattern: {
                 value: noBlankSpacesRegEx,
                 message: noBlankSpacesMEssage,
@@ -179,7 +164,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             className={formStyle}
             type={passwordIsVisible ? "text" : "password"}
           />
-
           {errors.password && <span>{errors.password.message}</span>}
 
           <span
@@ -197,7 +181,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Password confirmation"
             {...register("passwordConfirm", {
               required: requiredFieldText,
-
               validate: (val: string | undefined) => {
                 if (watch("password") != val) {
                   return "Passwords do no match";
@@ -207,7 +190,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             className={formStyle}
             type="password"
           />
-
           {errors.passwordConfirm && (
             <span>{errors.passwordConfirm.message}</span>
           )}
@@ -219,15 +201,13 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="City"
             {...register("city", {
               required: requiredFieldText,
-
               pattern: {
-                value: onlyLettersRegEx,
-                message: onlyLettersMessage,
+                value: stringWithSpaceRegEx,
+                message: "Invalid city format",
               },
             })}
             className={formStyle}
           />
-
           {errors.city && <span>{errors.city.message}</span>}
         </div>
 
@@ -237,15 +217,13 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Street"
             {...register("street", {
               required: requiredFieldText,
-
               pattern: {
-                value: onlyLettersRegEx,
-                message: onlyLettersMessage,
+                value: stringWithSpaceRegEx,
+                message: "invalid street format",
               },
             })}
             className={formStyle}
           />
-
           {errors.street && <span>{errors.street.message}</span>}
         </div>
 
@@ -255,15 +233,13 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Number"
             {...register("number", {
               required: requiredFieldText,
-
               pattern: {
-                value: onlyNumbersRegEx,
-                message: onlyNumbersMessage,
+                value: houseNumberRegEx,
+                message: "Invalid house number",
               },
             })}
             className={formStyle}
           />
-
           {errors.number && <span>{errors.number.message}</span>}
         </div>
 
@@ -273,7 +249,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Zip-code"
             {...register("zip", {
               required: requiredFieldText,
-
               pattern: {
                 value: onlyNumbersRegEx,
                 message: onlyNumbersMessage,
@@ -281,7 +256,6 @@ function RegisterForm({ setModalIsOpen }: Props) {
             })}
             className={formStyle}
           />
-
           {errors.zip && <span>{errors.zip.message}</span>}
         </div>
 
@@ -291,15 +265,13 @@ function RegisterForm({ setModalIsOpen }: Props) {
             placeholder="Phone number"
             {...register("phone", {
               required: requiredFieldText,
-
               pattern: {
-                value: onlyNumbersRegEx,
-                message: onlyNumbersMessage,
+                value: phoneRegEx,
+                message: "Invalid phone number",
               },
             })}
             className={formStyle}
           />
-
           {errors.phone && <span>{errors.phone.message}</span>}
         </div>
       </div>

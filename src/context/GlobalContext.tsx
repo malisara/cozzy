@@ -40,7 +40,7 @@ type ContextProps = {
   setDiscount: Dispatch<SetStateAction<number>>;
 };
 
-const GlobalContext = createContext<ContextProps>({
+export const GlobalContext = createContext<ContextProps>({
   basket: getBasket(),
   setBasket: (): Basket => getBasket(),
   userId: getUserId(),

@@ -55,17 +55,21 @@ function Login(): JSX.Element | null {
     const userId = getRandomUserId();
     sessionStorage.setItem(USER_ID_KEY, JSON.stringify(userId));
     setUserId(userId);
-    router.back();
   };
 
   useEffect(() => {
-    if (userId !== null) {
+    if (
+      userId !== null &&
+      sessionStorage.getItem(BASKET_SESSION_KEY) === null
+    ) {
       setBasketData();
+      router.back();
     }
   }, [userId]);
 
   async function setBasketData() {
     const basket = await getBasket();
+
     setBasket(basket);
     sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
   }
@@ -78,6 +82,7 @@ function Login(): JSX.Element | null {
           //user doesn't have a basket yet
           return new Basket(null, userId, null, []);
         }
+
         //return the first basket if user has multiple baskets
         return new Basket(
           data[0].id,
@@ -123,9 +128,9 @@ function Login(): JSX.Element | null {
       px-2 md:px-10 mb-[6rem]"
     >
       <div className="flex-1 text-center">
-        <p className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
+        <h2 className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
           Welcome back!
-        </p>
+        </h2>
         <p className=" text-l md:text-xl pb-8">Let's get you logged in</p>
 
         <form
@@ -146,7 +151,6 @@ function Login(): JSX.Element | null {
               })}
               className={formStyle}
             />
-
             {errors.userName && <span>{errors.userName.message}</span>}
           </div>
 
@@ -179,8 +183,7 @@ function Login(): JSX.Element | null {
 
         <Link
           href="/register"
-          className="text-s underline
-         hover:text-base-secondary"
+          className="text-s underline hover:text-base-secondary"
         >
           Register?
         </Link>

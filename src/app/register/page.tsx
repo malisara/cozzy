@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 
 import { useGlobalContext } from "@/context/GlobalContext";
 import RegisterForm from "@/components/RegisterForm";
+import RegisterModal from "@/components/RegisterModal";
 import { imageCover } from "@/components/utils/style";
 import registerImage from "@/../public/register.png";
-import RegisterModal from "@/components/RegisterModal";
 
 function Register(): JSX.Element {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
@@ -17,6 +17,7 @@ function Register(): JSX.Element {
   const router = useRouter();
 
   useEffect(() => {
+    //redirect logged-in user to homepage
     if (userId !== null) {
       router.push("/");
     }
@@ -33,9 +34,9 @@ function Register(): JSX.Element {
       />
 
       <div className="flex-1 text-center">
-        <div className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
+        <h2 className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
           Create an account and join our community today
-        </div>
+        </h2>
         <p className=" text-l md:text-xl pb-8">
           We're thrilled to have you onboard!
         </p>

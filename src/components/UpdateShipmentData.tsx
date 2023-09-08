@@ -7,12 +7,15 @@ import { BACKEND_API_URL, RANDOM_USER_POSITION } from "@/constants";
 import User from "@/models/user";
 import { wideBtnStyle } from "./utils/style";
 import {
+  houseNumberRegEx,
   invalidMailMessage,
   mailRegEx,
   onlyLettersMessage,
   onlyLettersRegEx,
   onlyNumbersMessage,
   onlyNumbersRegEx,
+  phoneRegEx,
+  stringWithSpaceRegEx,
 } from "@/utils/regExValues";
 
 const formStyle = "border px-3 h-[3rem] me-2 mb-2";
@@ -139,7 +142,7 @@ function UpdateShipmentData({
           {...register("street", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/,
+              value: stringWithSpaceRegEx,
               message: "invalid street format",
             },
           })}
@@ -155,7 +158,7 @@ function UpdateShipmentData({
           {...register("number", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^\d+\s?[A-Za-z]*$/,
+              value: houseNumberRegEx,
               message: "Invalid house number format",
             },
           })}
@@ -187,7 +190,7 @@ function UpdateShipmentData({
           {...register("city", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[A-Za-z]+(?:\s+[A-Za-z]+)*$/,
+              value: stringWithSpaceRegEx,
               message: "invalid city format",
             },
           })}
@@ -219,7 +222,7 @@ function UpdateShipmentData({
           {...register("phone", {
             required: requiredFieldMessage,
             pattern: {
-              value: /^[0-9]+(?:-[0-9]+)*$/,
+              value: phoneRegEx,
               message: "Invalid phone number format",
             },
           })}
