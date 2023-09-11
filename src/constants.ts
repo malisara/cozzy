@@ -9,6 +9,7 @@ export const ORDER_SUM_SESSION_KEY = "order_sum";
 export const ITEM_DISPLAY_LIMIT = 5;
 
 export const SIZES = ["2XS", "XS", "M", "L", "2XL"];
+export const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
 
 //hardcoded latitude and longitude
 export const RANDOM_USER_POSITION = ["39.9526", "-75.1652"];

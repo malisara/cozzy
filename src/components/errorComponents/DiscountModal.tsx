@@ -3,8 +3,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import ReactModal from "react-modal";
 
 import { useGlobalContext } from "@/context/GlobalContext";
-
-const DISCOUNT_CODES = { goodDiscount: 20, betterDiscount: 40 };
+import { DISCOUNT_CODES } from "@/constants";
 
 type Props = {
   modalIsOpen: boolean;
@@ -15,6 +14,7 @@ function DiscountModal({ modalIsOpen, setModalIsOpen }: Props): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null);
   const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const { setDiscount, discount } = useGlobalContext();
+
   const modalBtnStyle = btnDisabled
     ? "bg-gray-400"
     : "border-base-secondary bg-base-secondary hover:opacity-75 rounded-md \
@@ -32,7 +32,7 @@ function DiscountModal({ modalIsOpen, setModalIsOpen }: Props): JSX.Element {
   }
 
   function closeModal(): void {
-    setDiscount(0); //resets invalid code text
+    setDiscount(0);
     setModalIsOpen(false);
   }
 
@@ -76,12 +76,13 @@ function DiscountModal({ modalIsOpen, setModalIsOpen }: Props): JSX.Element {
         <div className="text-xl mb-2">Discount</div>
         <div className="mb-2 text-sm">Enter the discount code</div>
 
-        <form action="" className="flex flex-wrap mt-5">
+        <form className="flex flex-wrap mt-5">
           <input
             ref={inputRef}
             className="border border-gray-400 h-[2.5rem] rounded-lg
         w-[95%] lg:w-[75%] mx-auto px-2"
             onChange={(e) => handleDiscountCodeChange(e)}
+            data-testid="discountInput"
           />
           <button
             disabled={btnDisabled}

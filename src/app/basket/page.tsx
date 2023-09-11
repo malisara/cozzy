@@ -1,8 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ImBin2 } from "react-icons/im";
 
@@ -24,11 +24,10 @@ function Basket(): JSX.Element {
   const { basket, setBasket, userId } = useGlobalContext();
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const router = useRouter();
-
+  const [orderSum, setOrderSum] = useState<number>(0);
   const itemIds = basket.items.map((item) => item.productId.toString());
 
   const { data, error, isLoading } = useGetItemsById(itemIds);
-  const [orderSum, setOrderSum] = useState<number>(0);
 
   useEffect(() => {
     //update total sum
@@ -54,7 +53,7 @@ function Basket(): JSX.Element {
     e: React.ChangeEvent<HTMLSelectElement>,
     index: number
   ): void {
-    if (basket && userId !== null) {
+    if (basket.items.length > 0 && userId !== null) {
       const newQuantity = Number(e.target.value);
       const basketCopy = { ...basket };
       basketCopy.items[index].quantity = newQuantity;
@@ -72,10 +71,6 @@ function Basket(): JSX.Element {
     if (basket.basketId !== null) {
       updateBasketData(userId, basket.basketId, basketCopy.items);
     }
-  }
-
-  function handleRedirect() {
-    router.push("/payment");
   }
 
   return (
@@ -149,7 +144,10 @@ function Basket(): JSX.Element {
           )}
 
           {basket.items?.length > 0 && (
-            <button className={wideBtnStyle} onClick={handleRedirect}>
+            <button
+              className={wideBtnStyle}
+              onClick={() => router.push("/payment")}
+            >
               Continue with purchase
             </button>
           )}
