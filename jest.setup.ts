@@ -5,6 +5,7 @@ import { jest } from "@jest/globals";
 jest.mock("next/navigation", () => ({
   __esModule: true,
   useRouter: jest.fn(),
+  usePathname: jest.fn(),
 }));
 
 require("jest-fetch-mock").enableMocks();
