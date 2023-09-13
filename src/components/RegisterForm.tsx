@@ -15,10 +15,9 @@ import {
   noBlankSpacesRegEx,
   onlyLettersMessage,
   onlyLettersRegEx,
-  onlyNumbersMessage,
-  onlyNumbersRegEx,
   phoneRegEx,
   stringWithSpaceRegEx,
+  zipRegEx,
 } from "@/utils/regExValues";
 
 const formStyle =
@@ -60,13 +59,13 @@ function RegisterForm({ setModalIsOpen }: Props) {
           city: data.city,
           street: data.street,
           number: data.number,
-          zipcode: data.zip.toString(),
+          zipcode: data.zip,
           geolocation: {
             lat: RANDOM_USER_POSITION[0],
             long: RANDOM_USER_POSITION[0],
           },
         },
-        phone: data.phone.toString(),
+        phone: data.phone,
       }),
     })
       .then((res) => {
@@ -250,8 +249,8 @@ function RegisterForm({ setModalIsOpen }: Props) {
             {...register("zip", {
               required: requiredFieldText,
               pattern: {
-                value: onlyNumbersRegEx,
-                message: onlyNumbersMessage,
+                value: zipRegEx,
+                message: "Invalid zip-code",
               },
             })}
             className={formStyle}

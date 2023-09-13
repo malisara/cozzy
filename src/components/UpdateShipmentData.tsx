@@ -12,10 +12,9 @@ import {
   mailRegEx,
   onlyLettersMessage,
   onlyLettersRegEx,
-  onlyNumbersMessage,
-  onlyNumbersRegEx,
   phoneRegEx,
   stringWithSpaceRegEx,
+  zipRegEx,
 } from "@/utils/regExValues";
 
 const formStyle = "border px-3 h-[3rem] me-2 mb-2";
@@ -33,7 +32,7 @@ type Inputs = {
   lastName: string;
   street: string;
   number: string;
-  zip: number;
+  zip: string;
   city: string;
   email: string;
   phone: string;
@@ -57,7 +56,7 @@ function UpdateShipmentData({
     userCopy.lastName = data.lastName;
     userCopy.street = data.street;
     userCopy.number = data.number;
-    userCopy.zip = Number(data.zip);
+    userCopy.zip = data.zip;
     userCopy.city = data.city;
     userCopy.email = data.email;
     userCopy.phone = data.phone;
@@ -102,6 +101,7 @@ function UpdateShipmentData({
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex gap-5 lg:gap-2 flex-wrap"
+      data-testid="updateUserForm"
     >
       {/* name */}
       <div className={inputDivStyle}>
@@ -174,8 +174,8 @@ function UpdateShipmentData({
           {...register("zip", {
             required: requiredFieldMessage,
             pattern: {
-              value: onlyNumbersRegEx,
-              message: onlyNumbersMessage,
+              value: zipRegEx,
+              message: "Invalid zip-code",
             },
           })}
           className={formStyle}
