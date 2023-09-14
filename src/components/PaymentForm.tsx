@@ -39,12 +39,9 @@ function PaymentForm(): JSX.Element {
     formState: { errors, isDirty },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = () => {
     //Function doesn't execute payments
     //TODO use stripe
-    const card = data.cardNumber;
-    const date = data.date;
-    const cvv = data.cvv;
     router.push("/successfulPurchase");
     resetBasketData();
   };

@@ -18,7 +18,12 @@ import User from "@/models/user";
 const containerStyle = "border p-4 flex flex-col mb-4";
 const bolderTextStyle = "text-gray-500 font-bold";
 const subTitleStyle = "font-bold text-xl mb-4 text-gray-600";
-const orderSum = getOrderSum();
+
+const postageOptions = [
+  { label: "1-3 days", price: 15 },
+  { label: "4-9 days", price: 10 },
+  { label: "10-30 days", price: 5 },
+];
 
 async function userFetcher(userId: number | null): Promise<User | null> {
   return await fetch(`${BACKEND_API_URL}/users/${userId}`)
@@ -32,9 +37,7 @@ async function userFetcher(userId: number | null): Promise<User | null> {
         data.address.number,
         data.address.zipcode,
         data.email,
-        data.phone,
-        data.username,
-        data.password
+        data.phone
       );
     });
 }
@@ -46,46 +49,34 @@ function getOrderSum(): number {
   return 0;
 }
 
-const postageOptions = [
-  { label: "1-3 days", price: 15 },
-  { label: "4-9 days", price: 10 },
-  { label: "10-30 days", price: 5 },
-];
-
 function Payment(): JSX.Element {
   const [selectedOption, setSelectedOption] = useState(postageOptions[1]);
   const [editUserData, setEditUserData] = useState<boolean>(false);
   const [shouldFetch, setShouldFetch] = useState<boolean>(false);
-  const [user, setUserData] = useState<User>(
-    new User("", "", "", "", "", 0, "", "", "", "")
-  );
-
   const router = useRouter();
   const { userId } = useGlobalContext();
+  const [user, setUserData] = useState<User>(
+    new User("", "", "", "", "", "", "", "", "", "")
+  );
+
   const { data, error, isLoading } = useSWR(
     shouldFetch ? { userId } : null,
     () => userFetcher(userId)
   );
 
   useEffect(() => {
-    if (userId === null) {
-      router.push("/login");
-      return;
-    }
-
-    if (orderSum === 0) {
+    if (getOrderSum() === 0) {
       //user has an empty basket => redirect to homepage
+      setShouldFetch(false);
       router.push("/");
       return;
     }
-  }, [userId]);
-
-  useEffect(() => {
-    if (userId !== null) {
+    if (userId === null) {
+      setShouldFetch(false);
+      router.push("/login");
+    } else {
       setShouldFetch(true);
-      return;
     }
-    setShouldFetch(false);
   }, [userId]);
 
   useEffect(() => {
@@ -98,7 +89,6 @@ function Payment(): JSX.Element {
     return (
       <GeneralError errorMessage="An errror occurred while loading the payment page." />
     );
-
   if (isLoading || !data) return <Loading />;
 
   function handlePostageChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -118,7 +108,7 @@ function Payment(): JSX.Element {
         lg:order-1 mb-[5rem] lg:mb-0"
         >
           <div className={containerStyle}>
-            <p className={subTitleStyle}>Shipping address</p>
+            <h2 className={subTitleStyle}>Shipping address</h2>
 
             {!editUserData ? (
               <>
@@ -126,6 +116,7 @@ function Payment(): JSX.Element {
                   <FiEdit2
                     className="absolute end-0 top-0"
                     onClick={() => setEditUserData(true)}
+                    data-testid="editUserBtn"
                   />
                   <p>
                     {user.name} {user.lastName}
@@ -151,12 +142,13 @@ function Payment(): JSX.Element {
           </div>
 
           <div className={containerStyle}>
-            <p className={subTitleStyle}>Shipping options</p>
+            <h2 className={subTitleStyle}>Shipping options</h2>
             <form>
               <select
                 value={selectedOption.label}
                 className="px-2 py-3 bg-gray-50 text-gray-500 mb-4"
                 onChange={(e) => handlePostageChange(e)}
+                data-testid="selectPostage"
               >
                 {postageOptions.map((option) => (
                   <option key={option.label} value={option.label}>
@@ -176,13 +168,13 @@ function Payment(): JSX.Element {
           </div>
 
           <div className={containerStyle}>
-            <p className={subTitleStyle}>Payment</p>
+            <h2 className={subTitleStyle}>Payment</h2>
             <PaymentForm />
           </div>
         </div>
 
         <div className="order-1 lg:order-2 w-full lg:w-[30%] mb-7 lg:m-0">
-          <PaymentSum postage={selectedOption.price} orderSum={orderSum} />
+          <PaymentSum postage={selectedOption.price} orderSum={getOrderSum()} />
         </div>
       </div>
     </div>

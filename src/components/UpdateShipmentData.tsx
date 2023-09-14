@@ -2,10 +2,9 @@ import { Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { useGlobalContext } from "@/context/GlobalContext";
 import { BACKEND_API_URL, RANDOM_USER_POSITION } from "@/constants";
+import { useGlobalContext } from "@/context/GlobalContext";
 import User from "@/models/user";
-import { wideBtnStyle } from "./utils/style";
 import {
   houseNumberRegEx,
   invalidMailMessage,
@@ -16,6 +15,7 @@ import {
   stringWithSpaceRegEx,
   zipRegEx,
 } from "@/utils/regExValues";
+import { wideBtnStyle } from "./utils/style";
 
 const formStyle = "border px-3 h-[3rem] me-2 mb-2";
 const inputDivStyle = "flex flex-col w-[45%]";
@@ -25,17 +25,6 @@ type Props = {
   user: User;
   setUserData: Dispatch<SetStateAction<User>>;
   setEditUserData: Dispatch<SetStateAction<boolean>>;
-};
-
-type Inputs = {
-  name: string;
-  lastName: string;
-  street: string;
-  number: string;
-  zip: string;
-  city: string;
-  email: string;
-  phone: string;
 };
 
 function UpdateShipmentData({
@@ -48,16 +37,16 @@ function UpdateShipmentData({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<User>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+  const onSubmit: SubmitHandler<User> = async (data: User) => {
     const userCopy = { ...user };
     userCopy.name = data.name;
     userCopy.lastName = data.lastName;
+    userCopy.city = data.city;
     userCopy.street = data.street;
     userCopy.number = data.number;
     userCopy.zip = data.zip;
-    userCopy.city = data.city;
     userCopy.email = data.email;
     userCopy.phone = data.phone;
 
@@ -67,7 +56,7 @@ function UpdateShipmentData({
     toast.success("Shipping data was successfully updated.");
   };
 
-  async function updateUserData(data: Inputs) {
+  async function updateUserData(data: User) {
     fetch(`${BACKEND_API_URL}/users/${userId}`, {
       method: "PUT",
       body: JSON.stringify({
