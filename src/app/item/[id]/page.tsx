@@ -181,12 +181,14 @@ function DetailView(): JSX.Element {
 
             {/* sizes */}
             <div className="flex w-full lg:mt-5 flex-col">
-              <Sizes
-                chosenSize={chosenSize}
-                setChosenSize={setChosenSize}
-                inStock={inStock}
-              />
-
+              {(data.category == "men's clothing" ||
+                data.category === "women's clothing") && (
+                <Sizes
+                  chosenSize={chosenSize}
+                  setChosenSize={setChosenSize}
+                  inStock={inStock}
+                />
+              )}
               {/* quantity form */}
               <div className="mt-7 flex flex-row h-[3rem]">
                 <form

@@ -42,7 +42,8 @@ export async function itemFetcher(id: string): Promise<Item> {
         data.image,
         data.rating.rate,
         data.rating.count,
-        data.description
+        data.description,
+        data.category
       );
     });
 }

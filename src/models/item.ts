@@ -6,6 +6,7 @@ export default class Item {
     public image: string,
     public rate?: number,
     public rate_count?: number,
-    public description?: string
+    public description?: string,
+    public category?: string
   ) {}
 }
