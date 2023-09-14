@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import useSWR from "swr";
@@ -12,6 +12,7 @@ import Button from "@/components/Button";
 import NoItemsError from "@/components/errorComponents/NoItemsError";
 import Loading from "@/components/Loading";
 import Reviews from "@/components/Reviews";
+import { urlData } from "@/components/utils/routes";
 import Sizes from "@/components/Sizes";
 import { BACKEND_API_URL, BASKET_SESSION_KEY, SIZES } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
@@ -29,12 +30,24 @@ function DetailView(): JSX.Element {
 
   const params = useParams();
   const router = useRouter();
-  const { basket, setBasket, userId } = useGlobalContext();
+  const { basket, setBasket, userId, setItemCategory } = useGlobalContext();
 
   const itemId = params.id;
   const { data, error, isLoading } = useSWR({ itemId }, () =>
     itemFetcher(itemId)
   );
+
+  useEffect(() => {
+    //Set item catgory for navbar display
+    if (data !== undefined) {
+      for (const item of urlData) {
+        if (data.category === item.alt) {
+          setItemCategory(item.url);
+          break;
+        }
+      }
+    }
+  }, [data]);
 
   if (error) return <NoItemsError />;
   if (isLoading || !data) return <Loading />;

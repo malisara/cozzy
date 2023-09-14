@@ -38,6 +38,8 @@ type ContextProps = {
   setUserId: Dispatch<SetStateAction<number | null>>;
   discount: number;
   setDiscount: Dispatch<SetStateAction<number>>;
+  itemCategory: string;
+  setItemCategory: Dispatch<SetStateAction<string>>;
 };
 
 export const GlobalContext = createContext<ContextProps>({
@@ -47,6 +49,8 @@ export const GlobalContext = createContext<ContextProps>({
   setUserId: (): number | null => null,
   discount: 0,
   setDiscount: (): number => 0,
+  itemCategory: "",
+  setItemCategory: (): string => "",
 });
 
 type ContextChildrenProp = {
@@ -56,6 +60,7 @@ export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
   const [basket, setBasket] = useState<Basket>(getBasket());
   const [userId, setUserId] = useState<number | null>(getUserId());
   const [discount, setDiscount] = useState<number>(0);
+  const [itemCategory, setItemCategory] = useState<string>("");
 
   return (
     <GlobalContext.Provider
@@ -66,6 +71,8 @@ export const GlobalContextProvider = ({ children }: ContextChildrenProp) => {
         setUserId,
         discount,
         setDiscount,
+        itemCategory,
+        setItemCategory,
       }}
     >
       {children}

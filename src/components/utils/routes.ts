@@ -29,7 +29,7 @@ export const urlData = [
     id: 2,
     src: HeroJewelry,
     nav_title: "jewelry",
-    alt: "jewelry",
+    alt: "jewelery", //typo in docs
     title: "Timeless pieces",
     url: "/jewelry",
     category_image: CategoryJewelry,

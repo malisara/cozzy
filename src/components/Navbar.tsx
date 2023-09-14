@@ -28,7 +28,14 @@ function Navbar(): JSX.Element | null {
   const [navOnTop, setNavOnTop] = useState<boolean>(true);
   const [basketItemsCOunt, setBasketItemsCount] = useState(0);
   const [hasMounted, setHasMounted] = useState(false);
-  const { basket, setBasket, userId, setUserId } = useGlobalContext();
+  const {
+    basket,
+    setBasket,
+    userId,
+    setUserId,
+    itemCategory,
+    setItemCategory,
+  } = useGlobalContext();
   const currentPath = usePathname();
 
   const navbarBg =
@@ -40,6 +47,13 @@ function Navbar(): JSX.Element | null {
     //prevent hydration error
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    //reset chosen category display
+    if (!currentPath.startsWith("/item")) {
+      setItemCategory("");
+    }
+  }, [currentPath]);
 
   useEffect(() => {
     //handle scroll
@@ -94,7 +108,10 @@ function Navbar(): JSX.Element | null {
                   key={link.id}
                   href={link.url}
                   className={`hover:text-base-secondary
-                  ${currentPath === link.url && "text-base-secondary"}
+                  ${
+                    (currentPath === link.url || itemCategory === link.url) &&
+                    "text-base-secondary"
+                  }
                   `}
                 >
                   {link.nav_title.toUpperCase()}
