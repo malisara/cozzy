@@ -1,11 +1,14 @@
 import { expect, describe, it, beforeEach, jest } from "@jest/globals";
 import { useRouter } from "next/navigation";
-import { ReactElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import Payment from "@/app/payment/page";
-import { GlobalContext } from "@/context/GlobalContext";
-import { Basket, BasketItem } from "@/models/basket";
+import { GlobalContextProvider } from "@/context/GlobalContext";
+import {
+  BASKET_SESSION_KEY,
+  ORDER_SUM_SESSION_KEY,
+  USER_ID_KEY,
+} from "@/constants";
 
 const city = "kilcoole";
 const street = "new road";
@@ -15,16 +18,6 @@ const email = "john@gmail.com";
 const firstname = "john";
 const lastname = "doe";
 const phone = "1-570-236-7033";
-
-const customRender = (
-  ui: ReactElement,
-  { providerProps, ...renderOptions }: any
-) => {
-  return render(
-    <GlobalContext.Provider {...providerProps}>{ui}</GlobalContext.Provider>,
-    renderOptions
-  );
-};
 
 function fetchResonse(): string {
   return JSON.stringify({
@@ -45,14 +38,7 @@ function fetchResonse(): string {
   });
 }
 
-const providerProps = {
-  value: {
-    userId: 1,
-    basket: new Basket(1, 1, new Date(), [new BasketItem(1, 1)]),
-  },
-};
-
-describe("Register", () => {
+describe("Payment", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
@@ -63,25 +49,46 @@ describe("Register", () => {
       push: jest.fn(),
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    render(<Payment />);
+
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
+
+    expect(mockRouter.push).toBeCalledTimes(1);
+    expect(screen.queryAllByAltText("PAYMENT").length).toBe(0);
+  });
+
+  it("redirects authenticated user with empty basket", () => {
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    const mockRouter = {
+      push: jest.fn(),
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
 
     expect(mockRouter.push).toBeCalledTimes(1);
     expect(screen.queryAllByAltText("PAYMENT").length).toBe(0);
   });
 
   it("renders payment component", async () => {
-    const mockRouter = {
-      push: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
     fetchMock.mockResponseOnce(fetchResonse());
 
-    customRender(<Payment />, { providerProps });
-    expect(mockRouter.push).toBeCalledTimes(1);
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
 
-    const heading = await screen.findByText("PAYMENT");
-    expect(heading).toBeInTheDocument();
+    expect(await screen.findByText("PAYMENT")).toBeInTheDocument();
 
     //Shipping data
     expect(await screen.findByText(`Shipping address`)).toBeInTheDocument();
@@ -96,22 +103,27 @@ describe("Register", () => {
     //Shippping options:
     expect(screen.getByText(`Shipping options`)).toBeInTheDocument();
     expect(screen.getByText(`4-9 days`)).toBeInTheDocument();
-    expect(screen.getByText(`10 €`)).toBeInTheDocument(); //default shipping price
+    expect(screen.getByText(`10€`)).toBeInTheDocument(); //default shipping price
+
+    //Payment
+    expect(screen.getByTestId("paymentForm")).toBeInTheDocument();
 
     //Sum
     expect(screen.getByText(`Order value`)).toBeInTheDocument();
-    expect(screen.getByText(`0 €`)).toBeInTheDocument(); //sno sum in session storage
+    expect(screen.getByText(`20 €`)).toBeInTheDocument();
   });
 
   it("updates user data", async () => {
-    const mockRouter = {
-      push: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
     fetchMock.mockResponseOnce(fetchResonse());
 
-    customRender(<Payment />, { providerProps });
-    //the form isn't avaibla before clicking on the 'edit' button
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
+
     expect(screen.queryAllByTestId("updateUserForm").length).toBe(0);
 
     fireEvent.click(screen.getByTestId("editUserBtn"));
@@ -124,21 +136,91 @@ describe("Register", () => {
     expect(await screen.findByText(`Patrick ${lastname}`)).toBeInTheDocument();
   });
 
-  it("updates shipping price", async () => {
-    const mockRouter = {
-      push: jest.fn(),
-      back: jest.fn(),
-    };
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+  it("changes total sum when different shipping option is chosen", async () => {
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
     fetchMock.mockResponseOnce(fetchResonse());
 
-    customRender(<Payment />, { providerProps });
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
+    expect(screen.queryAllByAltText("15€").length).toBe(0);
+    expect(screen.queryAllByAltText("35€").length).toBe(0);
 
-    fireEvent.change(screen.getByTestId("selectPostage"), {
+    fireEvent.change(await screen.findByTestId("selectPostage"), {
       target: { value: "1-3 days" },
     });
-    expect(screen.getByText("15 €")).toBeInTheDocument();
+    expect(screen.getByText("15€")).toBeInTheDocument(); //updated shipping value
+    expect(screen.getByText("35€")).toBeInTheDocument(); //updated total sum value
+  });
+
+  it("handles invalid credit card information", async () => {
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
+    fetchMock.mockResponseOnce(fetchResonse());
+
+    const mockRouter = {
+      push: jest.fn(),
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
+
+    expect(screen.getByTestId("paymentForm")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText("Card number"), {
+      target: { value: 4111111111111111 },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Exp.Date (YY/MM)"), {
+      target: { value: "24/12" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("CVV"), {
+      target: { value: "wrongCVV" },
+    });
+    fireEvent.click(await screen.findByText("Pay"));
+    await screen.findByText("PAYMENT");
+    expect(mockRouter.push).not.toBeCalled();
+  });
+
+  it("redirects user and deletes session storage data after successful payment", async () => {
+    sessionStorage.setItem(USER_ID_KEY, "1");
+    sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
+    fetchMock.mockResponseOnce(fetchResonse());
+
+    const mockRouter = {
+      push: jest.fn(),
+    };
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+
+    render(
+      <GlobalContextProvider>
+        <Payment />
+      </GlobalContextProvider>
+    );
+
+    expect(screen.getByTestId("paymentForm")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText("Card number"), {
+      target: { value: 4111111111111111 },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Exp.Date (YY/MM)"), {
+      target: { value: "24/12" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("CVV"), {
+      target: { value: "123" },
+    });
+    fireEvent.click(await screen.findByText("Pay"));
+    await screen.findByText("PAYMENT");
+
+    expect(mockRouter.push).toBeCalledTimes(1);
+    expect(mockRouter.push).toHaveBeenCalledWith("/successfulPurchase");
+    expect(sessionStorage.getItem(ORDER_SUM_SESSION_KEY)).toBe(null);
+    expect(sessionStorage.getItem(BASKET_SESSION_KEY)).toBe(null);
   });
 });
-//todo test payment form-render, change, submit
-//test payment sum
