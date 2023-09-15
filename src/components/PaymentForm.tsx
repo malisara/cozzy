@@ -66,6 +66,7 @@ function PaymentForm(): JSX.Element {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex gap-5 lg:gap-2 flex-wrap"
+        data-testid="paymentForm"
       >
         {/* credit card */}
         <div className={`${inputDivStyle} lg:w-[40%]`}>
