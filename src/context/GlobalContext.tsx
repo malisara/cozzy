@@ -11,16 +11,15 @@ function getUserId(): number | null {
 }
 
 function getBasket(): Basket {
-  const emptyBasket = new Basket(null, getUserId(), null, []);
   if (typeof window !== "undefined") {
     const savedBasket = JSON.parse(
       sessionStorage.getItem(BASKET_SESSION_KEY) || "null"
     );
-    if (savedBasket === null) {
-      return emptyBasket;
+    if (savedBasket !== null) {
+      return savedBasket;
     }
   }
-  return emptyBasket;
+  return new Basket(null, getUserId(), null, []);
 }
 
 import {

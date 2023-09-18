@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ImBin2 } from "react-icons/im";
 
@@ -54,9 +54,8 @@ function Basket(): JSX.Element {
     index: number
   ): void {
     if (basket.items.length > 0 && userId !== null) {
-      const newQuantity = Number(e.target.value);
       const basketCopy = { ...basket };
-      basketCopy.items[index].quantity = newQuantity;
+      basketCopy.items[index].quantity = Number(e.target.value);
       setBasket(basketCopy);
       if (basket.basketId !== null) {
         updateBasketData(userId, basket.basketId, basketCopy.items);
@@ -86,11 +85,12 @@ function Basket(): JSX.Element {
                 <div key={index}>
                   <div
                     className="flex border border-gray-300 m-auto p-4 
-                relative mb-7 h-[8rem]"
+                    relative mb-7 h-[8rem]"
                   >
                     <div
                       className="absolute top-1 right-1 p-2 cursor-pointer"
                       onClick={() => handleDeleteBasketItem(index, userId)}
+                      data-testid="deleteItem"
                     >
                       <ImBin2 className="text-[15px] hover:text-gray-500" />
                     </div>
@@ -114,11 +114,11 @@ function Basket(): JSX.Element {
                         <form>
                           <select
                             name="quantity"
-                            id="quantity"
                             className="px-2 py-1 text-gray-700 border-2
-                           bg-transparent rounded-lg me-2"
+                            bg-transparent rounded-lg me-2"
                             value={basket.items[index].quantity}
                             onChange={(e) => handleQuantityChange(e, index)}
+                            data-testid="selectQuantityChange"
                           >
                             {optionsArray.map((value: number) => (
                               <option key={value} value={value}>

@@ -31,8 +31,7 @@ function PaymentSum({
           lg:my-0 mx-auto"
     >
       {setModalIsOpen !== undefined && orderSum > 0 && (
-        <div className="flex justify-between text-sm mb-10">
-          <div>discount</div>
+        <div className="flex justify-end text-sm mb-10">
           <div
             className="underline hover:cursor-pointer"
             onClick={() => setModalIsOpen(true)}
