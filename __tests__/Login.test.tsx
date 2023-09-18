@@ -42,7 +42,7 @@ describe("Login", () => {
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  it("redirects logged-in user with non-empty basket", async () => {
+  it("redirects logged-in user with non-empty basket", () => {
     sessionStorage.setItem(USER_ID_KEY, "1");
     sessionStorage.setItem(BASKET_SESSION_KEY, "1");
 

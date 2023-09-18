@@ -91,10 +91,8 @@ describe("Payment", () => {
     expect(await screen.findByText("PAYMENT")).toBeInTheDocument();
 
     //Shipping data
-    expect(await screen.findByText(`Shipping address`)).toBeInTheDocument();
-    expect(
-      await screen.findByText(`${firstname} ${lastname}`)
-    ).toBeInTheDocument();
+    expect(screen.getByText(`Shipping address`)).toBeInTheDocument();
+    expect(screen.getByText(`${firstname} ${lastname}`)).toBeInTheDocument();
     expect(screen.getByText(`${street} ${number}`)).toBeInTheDocument();
     expect(screen.getByText(`${zip} ${city}`)).toBeInTheDocument();
     expect(screen.getByText(`${email}`)).toBeInTheDocument();
@@ -149,7 +147,7 @@ describe("Payment", () => {
     expect(screen.queryAllByAltText("15€").length).toBe(0);
     expect(screen.queryAllByAltText("35€").length).toBe(0);
 
-    fireEvent.change(await screen.findByTestId("selectPostage"), {
+    fireEvent.change(screen.getByTestId("selectPostage"), {
       target: { value: "1-3 days" },
     });
     expect(screen.getByText("15€")).toBeInTheDocument(); //updated shipping value
@@ -183,7 +181,7 @@ describe("Payment", () => {
     fireEvent.change(screen.getByPlaceholderText("CVV"), {
       target: { value: "wrongCVV" },
     });
-    fireEvent.click(await screen.findByText("Pay"));
+    fireEvent.click(screen.getByText("Pay"));
     await screen.findByText("PAYMENT");
     expect(mockRouter.push).not.toBeCalled();
   });
@@ -215,7 +213,7 @@ describe("Payment", () => {
     fireEvent.change(screen.getByPlaceholderText("CVV"), {
       target: { value: "123" },
     });
-    fireEvent.click(await screen.findByText("Pay"));
+    fireEvent.click(screen.getByText("Pay"));
     await screen.findByText("PAYMENT");
 
     expect(mockRouter.push).toBeCalledTimes(1);

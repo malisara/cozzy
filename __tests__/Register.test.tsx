@@ -43,7 +43,6 @@ describe("Register", () => {
     sessionStorage.setItem(USER_ID_KEY, "1");
     const mockRouter = {
       push: jest.fn(),
-      back: jest.fn(),
     };
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
 
