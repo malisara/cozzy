@@ -1,13 +1,18 @@
-import { PiCoatHanger } from "react-icons/pi";
+"use client";
+
+import { Triangle } from "react-loader-spinner";
 
 import { flexCenter } from "./utils/style";
 
 function Loading(): JSX.Element {
   return (
     <div className={`${flexCenter}  mt-[30vh] lg:mt-[40vh]`}>
-      <PiCoatHanger
-        className="animate-spin text-[7rem]
-       text-base-secondary"
+      <Triangle
+        height="90"
+        width="90"
+        color="#F8B723"
+        ariaLabel="triangle-loading"
+        visible={true}
       />
     </div>
   );
