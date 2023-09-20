@@ -8,7 +8,6 @@ import { urlData } from "./utils/routes";
 import { flexCenter, imageCover } from "./utils/style";
 
 const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
-
 const variants = {
   //taken from:
   //https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed=&file=/src/Example.tsx:1038-1045
@@ -53,8 +52,8 @@ function Hero(): JSX.Element {
   return (
     // carousel insipred by:
     //https://tailwind-elements.com/docs/standard/components/carousel/
-    <div>
-      <div className="absolute w-full top-0">
+    <>
+      <div className="absolute w-full top-0" data-testid="heroCarrousel">
         <div className="h-[20rem] overflow-hidden lg:h-[50rem]">
           <AnimatePresence custom={direction} initial={false}>
             {/* Hero Images */}
@@ -129,7 +128,7 @@ function Hero(): JSX.Element {
           </AnimatePresence>
         </div>
 
-        {/* Control Buttons */}
+        {/* Left Control Button */}
         <div className={`absolute top-0 left-0 h-full px-4 ${flexCenter}`}>
           <button
             className={`w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-50 
@@ -151,7 +150,7 @@ function Hero(): JSX.Element {
             </svg>
           </button>
         </div>
-
+        {/* Right Control Button */}
         <div className={`absolute top-0 right-0 h-full px-4 ${flexCenter}`}>
           <button
             className={`w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-50
@@ -174,7 +173,7 @@ function Hero(): JSX.Element {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

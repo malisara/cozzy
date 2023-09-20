@@ -16,6 +16,7 @@ export async function updateBasketData(
   );
 
   if (savedBasket !== null) {
+    //todo
     savedBasket.items = updatedBasket;
     sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(savedBasket));
   }

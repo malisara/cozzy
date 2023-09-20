@@ -7,13 +7,16 @@ import useMediaQuery from "./hooks/useMediaQuery";
 import { urlData } from "./utils/routes";
 import { flexCenter } from "./utils/style";
 
-const categoryTitleSTyle = "text-base-secondary text-lg font-semibold";
+const titleStyle = "text-base-secondary text-lg font-semibold";
 
 function Categories(): JSX.Element {
   const isDesktop = useMediaQuery("(min-width: 1060px)");
 
   return (
-    <div className="flex flex-wrap gap-5 justify-center mb-5">
+    <div
+      className="flex flex-wrap gap-5 justify-center mb-5"
+      data-testid="categories"
+    >
       {urlData.map((category) => {
         return (
           <Link
@@ -21,7 +24,7 @@ function Categories(): JSX.Element {
             key={category.id}
             className="relative group"
           >
-            <div className="">
+            <div>
               <Image
                 src={category.category_image}
                 alt={category.alt}
@@ -35,18 +38,14 @@ function Categories(): JSX.Element {
                bg-black/50 transition-all duration-300 
                group-hover:opacity-100 scale-105"
                 >
-                  <p className={categoryTitleSTyle}>
-                    {category.alt.toUpperCase()}
-                  </p>
+                  <p className={titleStyle}>{category.alt.toUpperCase()}</p>
                 </div>
               ) : (
                 <div
                   className={`absolute inset-0 transition-opacity duration-300
                    bg-black/40 ${flexCenter}`}
                 >
-                  <p className={categoryTitleSTyle}>
-                    {category.alt.toUpperCase()}
-                  </p>
+                  <p className={titleStyle}>{category.alt.toUpperCase()}</p>
                 </div>
               )}
             </div>
