@@ -38,7 +38,7 @@ function Register(): JSX.Element {
           Create an account and join our community today
         </h2>
         <p className=" text-l md:text-xl pb-8">
-          We're thrilled to have you onboard!
+          We&apos;re thrilled to have you onboard!
         </p>
 
         <RegisterForm setModalIsOpen={setModalIsOpen} />

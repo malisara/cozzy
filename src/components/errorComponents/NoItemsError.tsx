@@ -10,7 +10,7 @@ function NoItemsError(): JSX.Element {
       </div>
 
       <div className={`font-normal text-xl ${margins}`}>
-        Oops! We couldn't find any items matching your search.
+        Oops! We couldn&apos;t find any items matching your search.
       </div>
 
       <div className={margins}>

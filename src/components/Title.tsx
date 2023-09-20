@@ -18,7 +18,7 @@ function Title({ title }: Props): JSX.Element {
         whileHover={{ scale: 1.1 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
       >
-        {title.toUpperCase()}
+        <h1>{title.toUpperCase()}</h1>
       </motion.div>
     </div>
   );

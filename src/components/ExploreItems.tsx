@@ -2,12 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import Title from "./Title";
 
+import { DEFAULT_HOMEPAGE_CATEGORY } from "@/constants";
 import ItemDisplay from "./ItemDisplay";
 import ItemList from "./ItemList";
 import ItemSort from "./itemSort/ItemSort";
-import { DEFAULT_HOMEPAGE_CATEGORY } from "@/constants";
+import Title from "./Title";
 
 type Props = {
   limit?: number;
@@ -22,7 +22,7 @@ const categoriesAndTitles = {
 
 function ExploreItems({ limit }: Props): JSX.Element {
   let currentPath = usePathname().slice(1);
-  currentPath = currentPath ? currentPath : "home";
+  currentPath = currentPath.length > 0 ? currentPath : "home";
   const [hasGridDisplay, sethasGridDisplay] = useState<boolean>(true);
   const [sortPriceDescending, setsortPriceDescending] =
     useState<boolean>(false);
@@ -36,7 +36,7 @@ function ExploreItems({ limit }: Props): JSX.Element {
         className="px-4 h-fit w-full flex flex-wrap 
       justify-center gap-6 mb-6"
       >
-        <ItemSort onSortChange={setsortPriceDescending} />
+        <ItemSort onSortItemsChange={setsortPriceDescending} />
         <ItemDisplay
           onDisplayChange={sethasGridDisplay}
           hasGridDisplay={hasGridDisplay}

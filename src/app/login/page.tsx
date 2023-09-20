@@ -131,7 +131,7 @@ function Login(): JSX.Element | null {
         <h2 className="mt-4 md:mt-0 text-3xl pb-3 md:pb-10 font-semibold">
           Welcome back!
         </h2>
-        <p className=" text-l md:text-xl pb-8">Let's get you logged in</p>
+        <p className=" text-l md:text-xl pb-8">Let&apos;s get you logged in</p>
 
         <form
           action="submit"

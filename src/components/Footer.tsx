@@ -6,7 +6,7 @@ function Footer(): JSX.Element {
       className={`fixed bottom-0 w-full h-16 bg-stone-50 drop-shadow-lg 
       ${flexCenter}`}
     >
-      copyright © Cozzy 2023{" "}
+      <p> copyright © Cozzy 2023 </p>
     </footer>
   );
 }
