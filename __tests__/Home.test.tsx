@@ -1,9 +1,11 @@
 import fetchMock from "jest-fetch-mock";
 import { expect, describe, it, jest, beforeEach } from "@jest/globals";
 import { usePathname } from "next/navigation";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import Home from "@/app/page";
+import { LS_KEY_SAVED_ITEMS } from "@/constants";
+import { GlobalContextProvider } from "@/context/GlobalContext";
 
 function jsonResponse() {
   return JSON.stringify([
@@ -31,13 +33,18 @@ function jsonResponse() {
 describe("Homepage test", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    sessionStorage.clear();
   });
 
   it("renders homepage component", async () => {
     fetchMock.mockResponseOnce(jsonResponse());
     (usePathname as jest.Mock).mockReturnValue("");
 
-    render(<Home />);
+    render(
+      <GlobalContextProvider>
+        <Home />
+      </GlobalContextProvider>
+    );
 
     //hero
     expect(await screen.findByTestId("heroCarrousel")).toBeInTheDocument();
@@ -62,5 +69,55 @@ describe("Homepage test", () => {
     expect(await screen.findByText("Item 1")).toBeInTheDocument();
     expect(screen.getByText("Item 2")).toBeInTheDocument();
     expect(screen.getAllByRole("img").length).toBe(6); //2 items + 3 categories + 1 carousel
+  });
+
+  it("saves and unsaves items", async () => {
+    fetchMock.mockResponseOnce(jsonResponse());
+    (usePathname as jest.Mock).mockReturnValue("");
+
+    render(
+      <GlobalContextProvider>
+        <Home />
+      </GlobalContextProvider>
+    );
+
+    expect(
+      JSON.parse(localStorage.getItem(LS_KEY_SAVED_ITEMS) || "").length
+    ).toBe(0);
+    const saveBtns = await screen.findAllByTestId("saveItemBtn");
+
+    //save
+    fireEvent.click(saveBtns[0]);
+    expect(
+      JSON.parse(localStorage.getItem(LS_KEY_SAVED_ITEMS) || "").length
+    ).toBe(1);
+
+    //unsave
+    fireEvent.click(saveBtns[0]);
+    expect(
+      JSON.parse(localStorage.getItem(LS_KEY_SAVED_ITEMS) || "").length
+    ).toBe(0);
+  });
+
+  it("sorts items by price", async () => {
+    fetchMock.mockResponseOnce(jsonResponse());
+    (usePathname as jest.Mock).mockReturnValue("");
+
+    render(
+      <GlobalContextProvider>
+        <Home />
+      </GlobalContextProvider>
+    );
+
+    //cheapest items first by default
+    const itemImagesBeforeSort = await screen.findAllByTestId("itemImage");
+    expect((itemImagesBeforeSort[0] as HTMLImageElement).alt).toBe("Item 2");
+
+    const saveBtns = await screen.findByTestId("sortByPriceBtn");
+    fireEvent.click(saveBtns);
+    fireEvent.click(screen.getByText("highest price first"));
+
+    const itemImagesAfterSort = await screen.findAllByTestId("itemImage");
+    expect((itemImagesAfterSort[0] as HTMLImageElement).alt).toBe("Item 1");
   });
 });
