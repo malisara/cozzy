@@ -201,7 +201,6 @@ describe("Payment", () => {
         <Payment />
       </GlobalContextProvider>
     );
-
     expect(screen.getByTestId("paymentForm")).toBeInTheDocument();
 
     fireEvent.change(screen.getByPlaceholderText("Card number"), {

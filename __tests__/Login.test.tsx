@@ -1,7 +1,6 @@
 import fetchMock from "jest-fetch-mock";
 import { expect, describe, it, beforeEach, jest } from "@jest/globals";
 import { useRouter } from "next/navigation";
-import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import Login from "@/app/login/page";
