@@ -9,6 +9,7 @@ import {
   AiOutlineClose,
   AiOutlineHeart,
   AiOutlineLogout,
+  AiFillHeart,
 } from "react-icons/ai";
 import { BsBasket3 } from "react-icons/bs";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -35,6 +36,7 @@ function Navbar(): JSX.Element | null {
     setUserId,
     itemCategory,
     setItemCategory,
+    savedItems,
   } = useGlobalContext();
   const currentPath = usePathname();
 
@@ -124,7 +126,11 @@ function Navbar(): JSX.Element | null {
         {/* icons */}
         <div className="flex gap-5 ml-auto">
           <Link href={"/saved"}>
-            <AiOutlineHeart className={iconStyle} />
+            {savedItems.length > 0 ? (
+              <AiFillHeart className={`${iconStyle} text-base-secondary`} />
+            ) : (
+              <AiOutlineHeart className={iconStyle} />
+            )}
           </Link>
 
           <Link href="/basket" className="relative">
