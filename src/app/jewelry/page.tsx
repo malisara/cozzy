@@ -1,7 +1,7 @@
-import ExploreItems from "@/components/ExploreItems";
+import ItemsByCategory from "@/components/ItemsByCategory";
 
 function Jewelry(): JSX.Element {
-  return <ExploreItems />;
+  return <ItemsByCategory />;
 }
 
 export default Jewelry;

@@ -17,7 +17,7 @@ function SortButton({ onSortChange }: Props): JSX.Element {
     [boolean, number]
   >([false, 0]);
 
-  const currentFilter = filters.find((item) => item.id === currentFilterId);
+  const currentFilter = filters.find((sort) => sort.id === currentFilterId);
 
   return (
     <div className="relative w-fit">
@@ -29,7 +29,6 @@ function SortButton({ onSortChange }: Props): JSX.Element {
       >
         <span className="uppercase font-bold">sort by:&nbsp; </span>
         {currentFilter && currentFilter.title}
-
         <span className="ml-2">
           {dropDownOpen ? <BiUpArrow /> : <BiDownArrow />}
         </span>

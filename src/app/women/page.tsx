@@ -1,7 +1,7 @@
-import ExploreItems from "@/components/ExploreItems";
+import ItemsByCategory from "@/components/ItemsByCategory";
 
 function Women(): JSX.Element {
-  return <ExploreItems />;
+  return <ItemsByCategory />;
 }
 
 export default Women;

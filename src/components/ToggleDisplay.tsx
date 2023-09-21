@@ -7,22 +7,22 @@ const chosenIcon = "bg-gray-200 py-2 px-2 border border-black duration-300";
 
 type Props = {
   onDisplayChange: Dispatch<SetStateAction<boolean>>;
-  hasGridDisplay: boolean;
+  gridDisplay: boolean;
 };
 
-function ItemDisplay({ onDisplayChange, hasGridDisplay }: Props): JSX.Element {
+function ToggleDisplay({ onDisplayChange, gridDisplay }: Props): JSX.Element {
   return (
     <div className="flex h-fit items-center gap-3">
       <p className="font-bold text-sm uppercase text-black">Display:</p>
       <button
         onClick={() => onDisplayChange(true)}
-        className={hasGridDisplay ? chosenIcon : ""}
+        className={gridDisplay ? chosenIcon : ""}
       >
         <TfiViewGrid />
       </button>
       <button
         onClick={() => onDisplayChange(false)}
-        className={!hasGridDisplay ? chosenIcon : ""}
+        className={!gridDisplay ? chosenIcon : ""}
       >
         <TfiViewList />
       </button>
@@ -30,4 +30,4 @@ function ItemDisplay({ onDisplayChange, hasGridDisplay }: Props): JSX.Element {
   );
 }
 
-export default ItemDisplay;
+export default ToggleDisplay;

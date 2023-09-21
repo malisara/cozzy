@@ -1,16 +1,19 @@
 "use client";
+
 import Image from "next/image";
-import Item from "@/models/item";
 import Link from "next/link";
 import { AiFillHeart } from "react-icons/ai";
 
+import { useGlobalContext } from "@/context/GlobalContext";
+import Item from "@/models/item";
+
 type Props = {
   item: Item;
-  handleItemSave: (id: number) => void;
-  savedItems: string[];
+  handleSaveItem: (id: number) => void;
 };
+function SingleItem({ item, handleSaveItem }: Props): JSX.Element {
+  const { savedItems } = useGlobalContext();
 
-function SingleItem({ item, handleItemSave, savedItems }: Props): JSX.Element {
   return (
     <div className="flex flex-col w-[20rem] gap-2 text-start flex-shrink-0">
       <div className="w-full h-[19rem] relative">
@@ -21,12 +24,14 @@ function SingleItem({ item, handleItemSave, savedItems }: Props): JSX.Element {
             hover:scale-110 duration-300"
             width={250}
             height={250}
-            alt=""
+            alt={item.title}
+            data-testid="itemImage"
           />
         </Link>
         <button
           className="absolute bottom-0 right-0 p-2"
-          onClick={() => handleItemSave(item.id)}
+          onClick={() => handleSaveItem(item.id)}
+          data-testid="saveItemBtn"
         >
           <AiFillHeart
             className={`text-2xl hover:fill-red-600  ${
