@@ -13,6 +13,7 @@ function BasketPopover({ item, quantity }: Props): JSX.Element {
     <div
       className="fixed top-[70px] right-5 p-2 bg-white
      shadow-md rounded-md z-50"
+      data-testid="basketPopover"
     >
       <div className="flex items-center">
         <div className="w-14 h-fit mr-2">

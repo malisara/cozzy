@@ -19,7 +19,10 @@ type Props = {
 
 function Sizes({ chosenSize, setChosenSize, inStock }: Props): JSX.Element {
   return (
-    <div className="flex gap-2 mt-10 mx-auto lg:mx-0">
+    <div
+      className="flex gap-2 mt-10 mx-auto lg:mx-0"
+      data-testid="sizesContainer"
+    >
       {SIZES.map((size, index) => {
         return (
           <button

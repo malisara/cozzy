@@ -14,7 +14,7 @@ import Loading from "@/components/Loading";
 import Reviews from "@/components/Reviews";
 import { urlData } from "@/components/utils/routes";
 import Sizes from "@/components/Sizes";
-import { BACKEND_API_URL, BASKET_SESSION_KEY, SIZES } from "@/constants";
+import { BACKEND_API_URL, SIZES } from "@/constants";
 import { useGlobalContext } from "@/context/GlobalContext";
 import { itemFetcher } from "@/fetchers/fetchItems";
 import { BasketItem } from "@/models/basket";
@@ -40,9 +40,9 @@ function DetailView(): JSX.Element {
   useEffect(() => {
     //Set item catgory for navbar display
     if (data !== undefined) {
-      for (const item of urlData) {
-        if (data.category === item.alt) {
-          setItemCategory(item.url);
+      for (const urlItem of urlData) {
+        if (data.category === urlItem.alt) {
+          setItemCategory(urlItem.url);
           break;
         }
       }
@@ -56,10 +56,10 @@ function DetailView(): JSX.Element {
     e.preventDefault();
     if (increase) {
       setQuantity((prev) => prev + 1);
-    } else {
-      if (quantity > 1) {
-        setQuantity((prev) => prev - 1);
-      }
+      return;
+    }
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
     }
   }
 
@@ -76,8 +76,7 @@ function DetailView(): JSX.Element {
 
     if (basket.basketId === null) {
       // initially basket attributes are set to null
-      // when user first adds an item, basket attributes values are set
-      await initializeBasket();
+      await initializeBasket(userId);
     } else if (itemInBasketIndex === -1) {
       addNewItem(basket.basketId, userId);
     } else {
@@ -90,18 +89,18 @@ function DetailView(): JSX.Element {
     }, 3000);
   }
 
-  async function initializeBasket(): Promise<void> {
+  async function initializeBasket(userId: number): Promise<void> {
     const basketCopy = { ...basket };
     const date = new Date();
     const items = new BasketItem(Number(itemId), quantity);
-
     const basketId = await createNewBasket(date, items);
+
     basketCopy.basketId = basketId;
     basketCopy.date = date;
     basketCopy.items.push(items);
 
-    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basketCopy));
     setBasket(basketCopy);
+    updateBasketData(userId, basketId, basketCopy.items);
   }
 
   async function createNewBasket(
@@ -124,10 +123,9 @@ function DetailView(): JSX.Element {
   }
 
   function addNewItem(basketId: number, userId: number): void {
-    const newItem = new BasketItem(Number(itemId), quantity);
     const updatedBasket = {
       ...basket,
-      items: [...basket.items, newItem],
+      items: [...basket.items, new BasketItem(Number(itemId), quantity)],
     };
     updateBasketData(userId, basketId, updatedBasket.items);
     setBasket(updatedBasket);
@@ -213,12 +211,14 @@ function DetailView(): JSX.Element {
                     <button
                       className="hover:text-black"
                       onClick={(event) => handleSetQuantity(event, true)}
+                      data-testid="increaseQuantity"
                     >
                       <IoIosArrowUp />
                     </button>
                     <button
                       className="hover:text-black"
                       onClick={(event) => handleSetQuantity(event, false)}
+                      data-testid="decreaseQuantity"
                     >
                       <IoIosArrowDown />
                     </button>

@@ -8,26 +8,24 @@ function getDate(): string {
 
 export async function updateBasketData(
   userId: number,
-  cardNumber: number,
-  updatedBasket: BasketItem[]
+  basketId: number,
+  updatedItems: BasketItem[]
 ): Promise<void> {
-  const savedBasket = JSON.parse(
+  const basket = JSON.parse(
     sessionStorage.getItem(BASKET_SESSION_KEY) || "null"
   );
 
-  if (savedBasket !== null) {
-    //todo
-    savedBasket.items = updatedBasket;
-    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(savedBasket));
-  }
+  basket.items = updatedItems;
+  basket.basketId = basketId;
+  sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
 
   //send data to backend
-  fetch(`${BACKEND_API_URL}/carts/${cardNumber}`, {
+  fetch(`${BACKEND_API_URL}/carts/${basketId}`, {
     method: "PUT",
     body: JSON.stringify({
       userId: userId,
       date: getDate(),
-      products: updatedBasket,
+      products: updatedItems,
     }),
   }).catch((error) => {
     console.error("Error fetching shopping bag data:", error);
