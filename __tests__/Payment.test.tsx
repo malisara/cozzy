@@ -42,6 +42,7 @@ describe("Payment", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
+    fetchMock.resetMocks();
   });
 
   it("redirects unauthenticated user", () => {

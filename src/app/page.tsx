@@ -10,7 +10,9 @@ export default function Home(): JSX.Element {
     <main className="mt-16">
       <Hero />
       <BannerText />
-      <Title title={"explore our categories"} />
+      <div className="text-center">
+        <Title title={"explore our categories"} />
+      </div>
       <Categories />
       <ItemsByCategory limit={ITEM_DISPLAY_LIMIT} />
     </main>

@@ -68,15 +68,14 @@ function Navbar(): JSX.Element | null {
 
   useEffect(() => {
     //calculate number of items in basket
+    let basketItemsCount = 0;
     if (basket.items.length > 0) {
-      const basketItemsCount = basket.items.reduce(
+      basketItemsCount = basket.items.reduce(
         (total, item) => total + item.quantity,
         0
       );
-      setBasketItemsCount(basketItemsCount);
-    } else {
-      setBasketItemsCount(0);
     }
+    setBasketItemsCount(basketItemsCount);
   }, [basket]);
 
   if (!hasMounted) {
@@ -86,7 +85,6 @@ function Navbar(): JSX.Element | null {
   function logout(): void {
     setUserId(null);
     setBasket(new Basket(null, null, null, []));
-
     sessionStorage.clear(); //delete all saved data when user logs out
     toast.success("You're logegd out.");
   }
@@ -125,7 +123,7 @@ function Navbar(): JSX.Element | null {
 
         {/* icons */}
         <div className="flex gap-5 ml-auto">
-          <Link href={"/saved"}>
+          <Link href={"/saved"} data-testid="navbarSavedBtn">
             {savedItems.length > 0 ? (
               <AiFillHeart className={`${iconStyle} text-base-secondary`} />
             ) : (
@@ -133,7 +131,11 @@ function Navbar(): JSX.Element | null {
             )}
           </Link>
 
-          <Link href="/basket" className="relative">
+          <Link
+            href="/basket"
+            className="relative"
+            data-testid="navbarBasketBtn"
+          >
             <BsBasket3 className={iconStyle} />
 
             {basketItemsCOunt > 0 && userId !== null && (
@@ -148,17 +150,20 @@ function Navbar(): JSX.Element | null {
           </Link>
 
           {userId === null ? (
-            <Link href={"/login"}>
+            <Link href={"/login"} data-testid="navbarLogintBtn">
               <AiOutlineUser className={iconStyle} />
             </Link>
           ) : (
-            <button onClick={logout}>
+            <button onClick={logout} data-testid="navbarLogoutBtn">
               <AiOutlineLogout className={iconStyle} />
             </button>
           )}
 
           {!isDesktop && (
-            <button onClick={() => setMobileNavOpen(!mobileNavOpen)}>
+            <button
+              onClick={() => setMobileNavOpen(!mobileNavOpen)}
+              data-testid="navbarHamburgerBtn"
+            >
               <RxHamburgerMenu className={iconStyle} />
             </button>
           )}

@@ -99,7 +99,7 @@ function Payment(): JSX.Element {
   }
 
   return (
-    <div className="mt-[5rem]">
+    <div className="mt-[5rem] mb-[4rem]">
       <Title title="Payment" />
 
       <div className="flex flex-wrap md:px-[5rem]">

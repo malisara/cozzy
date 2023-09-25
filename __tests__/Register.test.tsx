@@ -23,6 +23,7 @@ describe("Register", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
+    fetchMock.resetMocks();
   });
 
   it("renders register component", () => {

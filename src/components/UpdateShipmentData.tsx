@@ -18,7 +18,7 @@ import {
 import { wideBtnStyle } from "./utils/style";
 
 const formStyle = "border px-3 h-[3rem] me-2 mb-2";
-const inputDivStyle = "flex flex-col w-[45%]";
+const inputDivStyle = "flex flex-col w-full md:w-[45%]";
 const requiredFieldMessage = "This field is required";
 
 type Props = {

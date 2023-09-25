@@ -26,6 +26,7 @@ describe("Login", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
+    fetchMock.resetMocks();
   });
 
   it("renders login component", () => {

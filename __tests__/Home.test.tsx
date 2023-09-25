@@ -33,7 +33,7 @@ function jsonResponse() {
 describe("Homepage test", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    sessionStorage.clear();
+    fetchMock.resetMocks();
   });
 
   it("renders homepage component", async () => {

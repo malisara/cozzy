@@ -10,6 +10,7 @@ describe("Saved component", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
+    fetchMock.resetMocks();
   });
 
   it("renders empty saved page when no items are saved", async () => {

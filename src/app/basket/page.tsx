@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ImBin2 } from "react-icons/im";
 
-import DiscountModal from "@/components/errorComponents/DiscountModal";
+import DiscountModal from "@/components/DiscountModal";
 import GeneralError from "@/components/errorComponents/GeneralError";
 import Loading from "@/components/Loading";
 import Title from "@/components/Title";
@@ -76,7 +76,7 @@ function Basket(): JSX.Element {
     <div className="mt-[5rem]">
       <Title title="shopping bag" />
 
-      <div className="flex flex-wrap md:px-[5rem]">
+      <div className="flex flex-wrap md:px-[5rem] mb-[7rem]">
         <div className="w-[90%] lg:w-[45%] mx-auto order-2 lg:order-1">
           {/* Basket items */}
           {basket.items?.length > 0 && userId !== null && (

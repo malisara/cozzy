@@ -28,7 +28,7 @@ function Button({ text, disabled, handleClick, redirect }: Props): JSX.Element {
   return (
     <button
       disabled={disabled}
-      className={`${btnStyle} border px-3 py-2 text-white`}
+      className={`${btnStyle} border px-3 py-2 text-white text-sm sm:text-base`}
       onClick={handleButtonClick}
     >
       {text}
