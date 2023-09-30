@@ -75,8 +75,16 @@ describe("Detail view component", () => {
       JSON.stringify(new Basket(null, 1, new Date(), []))
     );
 
-    fetchMock.once(jsonResponse()).once(JSON.stringify({ id: 5 }));
-    (useParams as jest.Mock).mockReturnValue(1);
+    // fetchMock.mockResponseOnce(jsonResponse());
+    //fetch doesn't reset properly
+    //https://github.com/jefflau/jest-fetch-mock/issues/78
+
+    fetchMock.mockResponseOnce(JSON.stringify({ id: 5 }));
+    (useParams as jest.Mock).mockReturnValue({ id: 1 });
+
+    //fetch PUT
+    const mockedFetchFunc = jest.fn(() => new Promise<string>(() => ""));
+    fetchMock.mockResponseOnce(mockedFetchFunc);
 
     render(
       <GlobalContextProvider>
@@ -99,6 +107,9 @@ describe("Detail view component", () => {
     expect(
       JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items.length
     ).toBe(1);
+
+    //updated basket data is sent fo backed
+    expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
   it("handles updating item quantity", async () => {
@@ -107,7 +118,13 @@ describe("Detail view component", () => {
       BASKET_SESSION_KEY,
       JSON.stringify(new Basket(1, 1, new Date(), [new BasketItem(1, 1)]))
     );
-    fetchMock.mockResponseOnce(jsonResponse());
+
+    // fetchMock.mockResponseOnce(jsonResponse());
+    //fetch doesn't reset properly
+
+    //fetch PUT
+    const mockedFetchFunc = jest.fn(() => new Promise<string>(() => ""));
+    fetchMock.mockResponseOnce(mockedFetchFunc);
 
     (useParams as jest.Mock).mockReturnValue({ id: 1 });
 
@@ -123,12 +140,15 @@ describe("Detail view component", () => {
 
     fireEvent.click(await screen.findByText("Add to basket"));
     expect(await screen.findByTestId("basketPopover")).toBeInTheDocument();
-    const ssBasket1 = JSON.parse(
+    const ssBasket = JSON.parse(
       sessionStorage.getItem(BASKET_SESSION_KEY) || ""
     );
-    expect(ssBasket1.items.length).toBe(1);
-    expect(ssBasket1.items[0].productId).toBe(1);
-    expect(ssBasket1.items[0].quantity).toBe(2);
+    expect(ssBasket.items.length).toBe(1);
+    expect(ssBasket.items[0].productId).toBe(1);
+    expect(ssBasket.items[0].quantity).toBe(2);
+
+    //updated basket data is sent fo backed
+    expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
   it("handles adding new item", async () => {
@@ -137,7 +157,12 @@ describe("Detail view component", () => {
       BASKET_SESSION_KEY,
       JSON.stringify(new Basket(1, 1, new Date(), [new BasketItem(2, 2)]))
     );
-    fetchMock.mockResponseOnce(jsonResponse());
+
+    // fetchMock.mockResponseOnce(jsonResponse());
+    //fetch doesn't reset properly
+
+    const mockedFetchFunc = jest.fn(() => new Promise<string>(() => ""));
+    fetchMock.mockResponseOnce(mockedFetchFunc);
 
     (useParams as jest.Mock).mockReturnValue({ id: 1 });
 
@@ -161,6 +186,9 @@ describe("Detail view component", () => {
     expect(ssBasket.items[0].quantity).toBe(2);
     expect(ssBasket.items[1].productId).toBe(1);
     expect(ssBasket.items[1].quantity).toBe(1);
+
+    //updated basket data is sent fo backed
+    expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
   it("handles quantity increase and decrease", async () => {
