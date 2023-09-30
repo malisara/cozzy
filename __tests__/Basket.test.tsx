@@ -31,6 +31,7 @@ describe("Basket", () => {
   beforeEach(() => {
     sessionStorage.clear();
     jest.clearAllMocks();
+    fetchMock.resetMocks();
   });
 
   it("renders empty basket when user is not authenticated", async () => {
@@ -104,7 +105,13 @@ describe("Basket", () => {
 
   it("handles item quantity change", () => {
     setSessionStorageData();
-    fetchMock.mockResponseOnce(jsonResponse());
+    //fetchMock.mockResponseOnce(jsonResponse());
+    //fetch doesn't reset properly
+    //https://github.com/jefflau/jest-fetch-mock/issues/78
+
+    //fecht PUT
+    const mockedFetchFunc = jest.fn(() => new Promise<string>(() => ""));
+    fetchMock.mockResponseOnce(mockedFetchFunc);
 
     render(
       <GlobalContextProvider>
@@ -112,18 +119,41 @@ describe("Basket", () => {
       </GlobalContextProvider>
     );
 
+    //ss before update
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items.length
+    ).toBe(1);
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items[0]
+        .quantity
+    ).toBe(1);
+
     expect(screen.getByText(fullPrice)).toBeInTheDocument();
     fireEvent.change(screen.getByTestId("selectQuantityChange"), {
       target: { value: 2 },
     });
     expect(screen.queryAllByText(fullPrice).length).toBe(0);
     expect(screen.getByText("219.9 €")).toBeInTheDocument(); //2x price
+
+    //ss is updated & fetch is called with PUT method
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items.length
+    ).toBe(1);
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items[0]
+        .quantity
+    ).toBe(2);
+    expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
   it("handles item delete", () => {
     setSessionStorageData();
-    fetchMock.mockResponseOnce(jsonResponse());
+    // fetchMock.mockResponseOnce(jsonResponse());
+    //fetch doesn't reset properly
 
+    //fecht PUT
+    const mockedFetchFunc = jest.fn(() => new Promise<string>(() => ""));
+    fetchMock.mockResponseOnce(mockedFetchFunc);
     render(
       <GlobalContextProvider>
         <Basket />
@@ -137,6 +167,13 @@ describe("Basket", () => {
     });
     fireEvent.click(screen.getByText("add"));
     expect(screen.getByText("-20%")).toBeInTheDocument();
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items.length
+    ).toBe(1);
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items[0]
+        .quantity
+    ).toBe(1);
 
     //delete item
     expect(screen.getByText(fullPrice)).toBeInTheDocument();
@@ -147,6 +184,12 @@ describe("Basket", () => {
 
     //discount is deleted
     expect(screen.queryAllByText("-20%").length).toBe(0);
+
+    //ss is updated & fetch is called with PUT
+    expect(
+      JSON.parse(sessionStorage.getItem(BASKET_SESSION_KEY) || "").items.length
+    ).toBe(0);
+    expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
   it("redirects user to payment", () => {
