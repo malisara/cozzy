@@ -21,28 +21,25 @@ const formStyle =
   "rounded-md outline-none bg-white h-[3rem] px-3 text-gray-600\
    focus:outline-base-secondary border border-gray-200";
 const inputDivStyle = "flex flex-col w-full";
-const allUsersIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; //https://fakestoreapi.com/users
 
-type Inputs = {
-  userName: string;
-  password: string;
-};
+// The array of all valid user ids (from API) is temp. used for dummy login
+// for more info see the comments below
+const allUsersIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; //https://fakestoreapi.com/users
 
 function getRandomUserId(): number {
   const randomIndex = Math.floor(Math.random() * allUsersIds.length);
   return allUsersIds[randomIndex];
 }
 
+type Inputs = {
+  userName: string;
+  password: string;
+};
+
 function Login(): JSX.Element | null {
   const router = useRouter();
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
   const { userId, setUserId, setBasket } = useGlobalContext();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty, isValid },
-  } = useForm<Inputs>();
 
   useEffect(() => {
     //redirect logged-in user to homepage
@@ -51,57 +48,23 @@ function Login(): JSX.Element | null {
     }
   }, []);
 
-  const onSubmit: SubmitHandler<Inputs> = () => {
-    const userId = getRandomUserId();
-    sessionStorage.setItem(USER_ID_KEY, JSON.stringify(userId));
-    setUserId(userId);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty, isValid },
+  } = useForm<Inputs>();
 
-  useEffect(() => {
-    if (
-      userId !== null &&
-      sessionStorage.getItem(BASKET_SESSION_KEY) === null
-    ) {
-      setBasketData();
-      router.back();
-    }
-  }, [userId]);
+  //The onSubmit is temporarily commented out because the backend currently
+  //doesn't return the expected response (user token).
+  //Since authent. doesn't work, a temp. onSubmit imitates login.
 
-  async function setBasketData() {
-    const basket = await getBasket();
+  //The current onSubmit always logs in user, even if he isn't registered.
+  //It takes a random user Id from API and saves it to SS instead of token
 
-    setBasket(basket);
-    sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
-  }
-
-  async function getBasket(): Promise<Basket> {
-    return fetch(`${BACKEND_API_URL}/carts/user/${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.length < 1) {
-          //user doesn't have a basket yet
-          return new Basket(null, userId, null, []);
-        }
-
-        //return the first basket if user has multiple baskets
-        return new Basket(
-          data[0].id,
-          userId,
-          data[0].date,
-          data[0].products.map(
-            (item: any) => new BasketItem(item.productId, item.quantity)
-          )
-        );
-      });
-  }
-
-  function togglePasswordVisibility() {
-    setPasswordIsVisible((previous) => !previous);
-  }
+  //TODO fix when issue is closed
+  //https://github.com/keikaavousi/fake-store-api/issues/97
 
   // const onSubmit: SubmitHandler<Inputs> = (data) => {
-  //   //TODO fix when issue is closed
-  //   //https://github.com/keikaavousi/fake-store-api/issues/97
   //   fetch(`${BACKEND_API_URL}/auth/login`, {
   //     method: "POST",
   //     body: JSON.stringify({
@@ -121,6 +84,69 @@ function Login(): JSX.Element | null {
   //       console.error("Error unable to login:", error);
   //     });
   // };
+
+  const onSubmit: SubmitHandler<Inputs> = () => {
+    //Temp. solution.
+    //The function takes a random id of one of the users provided in the API,
+    //and imitates login of a random registered user
+
+    const userId = getRandomUserId();
+    sessionStorage.setItem(USER_ID_KEY, JSON.stringify(userId));
+    setUserId(userId);
+  };
+
+  useEffect(() => {
+    if (
+      userId !== null &&
+      sessionStorage.getItem(BASKET_SESSION_KEY) === null
+    ) {
+      fetchAndSaveBasketData();
+      // TODO implement better routing
+      // router.back works fine when when unauthenticated user was previously
+      //'shopping' for items and was redirected to login (he gets redirected
+      // back to item page after login). It also makes a bad UX if he came from
+      // another page and gets redirected back to f.ex. register after login
+      router.back();
+    }
+  }, [userId]);
+
+  async function fetchAndSaveBasketData() {
+    const basket = await fetchBasketData();
+    if (basket instanceof Basket) {
+      setBasket(basket);
+      sessionStorage.setItem(BASKET_SESSION_KEY, JSON.stringify(basket));
+    }
+  }
+
+  async function fetchBasketData(): Promise<Basket | void> {
+    return fetch(`${BACKEND_API_URL}/carts/user/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.length < 1) {
+          //user doesn't have a basket yet
+          return new Basket(null, userId, null, []);
+        }
+
+        //Api can return none, one or multiple baskets. In case when it returns
+        //multiple baskets, the code initializes new Basket instance from
+        //the first one.
+        return new Basket(
+          data[0].id,
+          userId,
+          data[0].date,
+          data[0].products.map(
+            (item: any) => new BasketItem(item.productId, item.quantity)
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error unable to fetch basket:", error);
+      });
+  }
+
+  function togglePasswordVisibility() {
+    setPasswordIsVisible((previous) => !previous);
+  }
 
   return (
     <div
