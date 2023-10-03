@@ -53,6 +53,7 @@ describe("Register", () => {
       </GlobalContextProvider>
     );
     expect(mockRouter.push).toHaveBeenCalledTimes(1);
+    expect(mockRouter.push).toHaveBeenCalledWith("/");
   });
 
   it("shows popup after successful registration", async () => {

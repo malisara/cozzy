@@ -58,6 +58,7 @@ describe("Login", () => {
     );
 
     expect(mockRouter.push).toHaveBeenCalledTimes(1);
+    expect(mockRouter.push).toHaveBeenCalledWith("/");
   });
 
   it("sets userId to session storage when user logs in", async () => {

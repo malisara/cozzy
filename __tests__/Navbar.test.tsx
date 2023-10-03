@@ -32,7 +32,11 @@ describe("Navbar", () => {
 
   it("toggles sidebar", async () => {
     (usePathname as jest.Mock).mockReturnValue("");
-    render(<Navbar />);
+    render(
+      <GlobalContextProvider>
+        <Navbar />
+      </GlobalContextProvider>
+    );
 
     fireEvent.click(screen.getByTestId("navbarHamburgerBtn"));
     expect(screen.getByText("WOMEN")).toBeInTheDocument();

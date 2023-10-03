@@ -66,14 +66,15 @@ function Payment(): JSX.Element {
 
   useEffect(() => {
     if (getOrderSum() === 0) {
-      //user has an empty basket => redirect to homepage
+      if (userId === null) {
+        setShouldFetch(false);
+        router.push("/login");
+        return;
+      }
       setShouldFetch(false);
       router.push("/");
+      //user has an empty basket => redirect to homepage
       return;
-    }
-    if (userId === null) {
-      setShouldFetch(false);
-      router.push("/login");
     } else {
       setShouldFetch(true);
     }

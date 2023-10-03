@@ -58,6 +58,7 @@ describe("Payment", () => {
     );
 
     expect(mockRouter.push).toBeCalledTimes(1);
+    expect(mockRouter.push).toBeCalledWith("/login");
     expect(screen.queryAllByAltText("PAYMENT").length).toBe(0);
   });
 
@@ -75,6 +76,7 @@ describe("Payment", () => {
     );
 
     expect(mockRouter.push).toBeCalledTimes(1);
+    expect(mockRouter.push).toBeCalledWith("/");
     expect(screen.queryAllByAltText("PAYMENT").length).toBe(0);
   });
 
@@ -135,7 +137,7 @@ describe("Payment", () => {
     expect(await screen.findByText(`Patrick ${lastname}`)).toBeInTheDocument();
   });
 
-  it("changes total sum when different shipping option is chosen", async () => {
+  it("changes total sum when different shipping option is chosen", () => {
     sessionStorage.setItem(USER_ID_KEY, "1");
     sessionStorage.setItem(ORDER_SUM_SESSION_KEY, "20");
     fetchMock.mockResponseOnce(fetchResonse());

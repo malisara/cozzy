@@ -191,7 +191,7 @@ describe("Detail view component", () => {
     expect(mockedFetchFunc).toHaveBeenCalledTimes(1);
   });
 
-  it("handles quantity increase and decrease", async () => {
+  it("handles quantity increase and decrease", () => {
     sessionStorage.setItem(USER_ID_KEY, "1");
     sessionStorage.setItem(
       BASKET_SESSION_KEY,
