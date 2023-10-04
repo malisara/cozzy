@@ -35,6 +35,7 @@ function Items({
 
   function toggleSaveItem(id: number) {
     if (savedItems.includes(id.toString())) {
+      //changed saved items are automatically saved to local storage in GlobalContext
       setSavedItems(savedItems.filter((itemId) => itemId !== id.toString()));
       return;
     }
@@ -52,7 +53,7 @@ function Items({
           <SingleItem
             item={item}
             key={item.id}
-            handleSaveItem={toggleSaveItem}
+            handleToggleSaveItem={toggleSaveItem}
           />
         );
       })}

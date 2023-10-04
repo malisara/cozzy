@@ -9,9 +9,9 @@ import Item from "@/models/item";
 
 type Props = {
   item: Item;
-  handleSaveItem: (id: number) => void;
+  handleToggleSaveItem: (id: number) => void;
 };
-function SingleItem({ item, handleSaveItem }: Props): JSX.Element {
+function SingleItem({ item, handleToggleSaveItem }: Props): JSX.Element {
   const { savedItems } = useGlobalContext();
 
   return (
@@ -30,7 +30,7 @@ function SingleItem({ item, handleSaveItem }: Props): JSX.Element {
         </Link>
         <button
           className="absolute bottom-0 right-0 p-2"
-          onClick={() => handleSaveItem(item.id)}
+          onClick={() => handleToggleSaveItem(item.id)}
           data-testid="saveItemBtn"
         >
           <AiFillHeart

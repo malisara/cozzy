@@ -40,6 +40,7 @@ function ItemsByCategory({ limit }: Props): JSX.Element {
     return (
       <GeneralError errorMessage={`unable to load ${category.title} page`} />
     );
+
   if (isLoading || !data) return <Loading />;
 
   return (
