@@ -54,7 +54,7 @@ function Hero(): JSX.Element {
     //https://tailwind-elements.com/docs/standard/components/carousel/
     <>
       <div className="absolute w-full top-0" data-testid="heroCarrousel">
-        <div className="h-[20rem] overflow-hidden lg:h-[50rem]">
+        <div className="h-[40rem] overflow-hidden lg:h-[60rem]">
           <AnimatePresence custom={direction} initial={false}>
             {/* Hero Images */}
             {urlData
