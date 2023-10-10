@@ -1,6 +1,7 @@
+import useSWR from "swr";
+
 import { BACKEND_API_URL } from "@/constants";
 import Item from "@/models/item";
-import useSWR from "swr";
 
 class FetchResult<T> {
   constructor(
