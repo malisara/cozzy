@@ -22,7 +22,8 @@ const optionsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 function Basket(): JSX.Element {
   const { basket, setBasket, userId } = useGlobalContext();
-  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [discountModalIsOpen, setDiscountModalIsOpen] =
+    useState<boolean>(false);
   const router = useRouter();
   const [orderSum, setOrderSum] = useState<number>(0);
   const itemIds = basket.items.map((item) => item.productId.toString());
@@ -155,11 +156,14 @@ function Basket(): JSX.Element {
 
         {/* modal */}
         <DiscountModal
-          modalIsOpen={modalIsOpen}
-          setModalIsOpen={setModalIsOpen}
+          modalIsOpen={discountModalIsOpen}
+          setModalIsOpen={setDiscountModalIsOpen}
         />
         <div className="order-1 lg:order-2 w-full lg:w-[30%] mb-7 lg:mb-0">
-          <PaymentSum setModalIsOpen={setModalIsOpen} orderSum={orderSum} />
+          <PaymentSum
+            setDiscountModalIsOpen={setDiscountModalIsOpen}
+            orderSum={orderSum}
+          />
         </div>
       </div>
     </div>

@@ -5,13 +5,13 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import { roundNumber } from "@/utils/functions";
 
 type Props = {
-  setModalIsOpen?: Dispatch<SetStateAction<boolean>>;
+  setDiscountModalIsOpen?: Dispatch<SetStateAction<boolean>>;
   postage?: number;
   orderSum: number;
 };
 
 function PaymentSum({
-  setModalIsOpen,
+  setDiscountModalIsOpen,
   postage = 0,
   orderSum,
 }: Props): JSX.Element {
@@ -30,11 +30,11 @@ function PaymentSum({
       className="w-[80%] mb-[2rem]
           lg:my-0 mx-auto"
     >
-      {setModalIsOpen !== undefined && orderSum > 0 && (
+      {setDiscountModalIsOpen && orderSum > 0 && (
         <div className="flex justify-end text-sm mb-10">
           <div
             className="underline hover:cursor-pointer"
-            onClick={() => setModalIsOpen(true)}
+            onClick={() => setDiscountModalIsOpen(true)}
           >
             add a discount
           </div>

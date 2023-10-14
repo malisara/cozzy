@@ -25,7 +25,7 @@ const postageOptions = [
   { label: "10-30 days", price: 5 },
 ];
 
-async function userFetcher(userId: number | null): Promise<User | null> {
+async function userFetcher(userId: number | null): Promise<User | void> {
   return await fetch(`${BACKEND_API_URL}/users/${userId}`)
     .then((res) => res.json())
     .then((data) => {
@@ -39,7 +39,8 @@ async function userFetcher(userId: number | null): Promise<User | null> {
         data.email,
         data.phone
       );
-    });
+    })
+    .catch((error) => console.error("Error fetching user data:", error));
 }
 
 function getOrderSum(): number {
@@ -50,9 +51,11 @@ function getOrderSum(): number {
 }
 
 function Payment(): JSX.Element {
-  const [selectedOption, setSelectedOption] = useState(postageOptions[1]);
+  const [selectedPostageOption, setSelectedPostageOption] = useState(
+    postageOptions[1]
+  );
   const [editUserData, setEditUserData] = useState<boolean>(false);
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
+  const [shouldFetchUser, setShouldFetchUSer] = useState<boolean>(false);
   const router = useRouter();
   const { userId } = useGlobalContext();
   const [user, setUserData] = useState<User>(
@@ -60,23 +63,23 @@ function Payment(): JSX.Element {
   );
 
   const { data, error, isLoading } = useSWR(
-    shouldFetch ? { userId } : null,
+    shouldFetchUser ? { userId } : null,
     () => userFetcher(userId)
   );
 
   useEffect(() => {
     if (getOrderSum() === 0) {
       if (userId === null) {
-        setShouldFetch(false);
+        setShouldFetchUSer(false);
         router.push("/login");
         return;
       }
-      setShouldFetch(false);
+      setShouldFetchUSer(false);
       router.push("/");
       //user has an empty basket => redirect to homepage
       return;
     } else {
-      setShouldFetch(true);
+      setShouldFetchUSer(true);
     }
   }, [userId]);
 
@@ -96,7 +99,7 @@ function Payment(): JSX.Element {
     const selected = postageOptions.findIndex(
       (option) => option.label === e.target.value
     );
-    setSelectedOption(postageOptions[selected]);
+    setSelectedPostageOption(postageOptions[selected]);
   }
 
   return (
@@ -146,7 +149,7 @@ function Payment(): JSX.Element {
             <h2 className={subTitleStyle}>Shipping options</h2>
             <form>
               <select
-                value={selectedOption.label}
+                value={selectedPostageOption.label}
                 className="px-2 py-3 bg-gray-50 text-gray-500 mb-4"
                 onChange={(e) => handlePostageChange(e)}
                 data-testid="selectPostage"
@@ -159,11 +162,13 @@ function Payment(): JSX.Element {
               </select>
               <div>
                 Selected option:{" "}
-                <p className={bolderTextStyle}>{selectedOption.label}</p>{" "}
+                <p className={bolderTextStyle}>{selectedPostageOption.label}</p>{" "}
               </div>
               <div>
                 Price:{" "}
-                <p className={bolderTextStyle}>{selectedOption.price}€</p>{" "}
+                <p className={bolderTextStyle}>
+                  {selectedPostageOption.price}€
+                </p>{" "}
               </div>
             </form>
           </div>
@@ -175,7 +180,10 @@ function Payment(): JSX.Element {
         </div>
 
         <div className="order-1 lg:order-2 w-full lg:w-[30%] mb-7 lg:m-0">
-          <PaymentSum postage={selectedOption.price} orderSum={getOrderSum()} />
+          <PaymentSum
+            postage={selectedPostageOption.price}
+            orderSum={getOrderSum()}
+          />
         </div>
       </div>
     </div>
