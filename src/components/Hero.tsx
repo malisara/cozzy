@@ -14,7 +14,7 @@ const variants = {
   enter: (direction: number) => {
     return {
       x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
+      opacity: 0.5,
     };
   },
   center: {
@@ -26,7 +26,7 @@ const variants = {
     return {
       zIndex: 0,
       x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
+      opacity: 0.5,
     };
   },
 };
@@ -101,24 +101,18 @@ function Hero(): JSX.Element {
                         className="absolute flex gap-3 -translate-x-1/2 
                           bottom-16 left-1/2"
                       >
-                        <p
-                          id="sliderBtn-0"
-                          aria-current={0 === shownImage}
-                          className={`[&[aria-current='true']]:bg-white 
-                          ${indicatorStyle}`}
-                        ></p>
-                        <p
-                          id="sliderBtn-1"
-                          aria-current={1 === shownImage}
-                          className={`[&[aria-current='true']]:bg-white
-                           ${indicatorStyle}`}
-                        ></p>
-                        <p
-                          id="sliderBtn-2"
-                          aria-current={2 === shownImage}
-                          className={`[&[aria-current='true']]:bg-white 
-                          ${indicatorStyle}`}
-                        ></p>
+                        {Array.from(
+                          { length: urlData.length },
+                          (_, index: number) => (
+                            <p
+                              id={`sliderBtn-${index}`}
+                              aria-current={index === shownImage}
+                              className={`[&[aria-current='true']]:bg-white 
+                            ${indicatorStyle}`}
+                              key={index}
+                            ></p>
+                          )
+                        )}
                       </div>
                     </div>
                   </div>
