@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { urlData } from "./utils/routes";
 import { flexCenter, imageCover } from "./utils/style";
 
-const indicatorStyle = "bg-gray-400 w-3 h-3 rounded-full";
 const variants = {
   //taken from:
   //https://codesandbox.io/s/framer-motion-image-gallery-pqvx3?from-embed=&file=/src/Example.tsx:1038-1045
@@ -107,10 +106,10 @@ function Hero(): JSX.Element {
                             <p
                               id={`sliderBtn-${index}`}
                               aria-current={index === shownImage}
-                              className={`[&[aria-current='true']]:bg-white 
-                            ${indicatorStyle}`}
+                              className="[&[aria-current='true']]:bg-white 
+                              bg-gray-400 w-3 h-3 rounded-full"
                               key={index}
-                            ></p>
+                            />
                           )
                         )}
                       </div>
